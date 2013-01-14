@@ -75,24 +75,18 @@ public class RRenderer implements GLSurfaceView.Renderer
     {
         GLES20.glViewport(0, 0, width, height);
         
-        float ratio1 = (float) width / height;
-        float ratio2 = (float) height / width;
+        float ratio = 1;
         
-        //tbd willc - theres a bug with the FOV...
-        float pi = 3.14159265359f;        
-        float fovy = 90f;
-        float zNear = 1.0f;
-        float zFar = 100.0f;
-        float top = zNear * (float)Math.tan((pi*180)*fovy/2);
-        float bottom = -top;
-        float right = ratio1*top;
-        float left = -right;        
-
-        // this populates the projection matrix
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        Matrix.frustumM(projMatrix, 0, -ratio1, ratio1, -1, 1, 1f, 100f);        
-        //Matrix.frustumM(projMatrix, 0, left, right, bottom, top, zNear, zFar);
+        if(width > height)
+        {
+        	ratio = (float) height / width; 
+        	Matrix.frustumM(projMatrix, 0, -1, 1, -ratio, ratio, 1f, 100f);
+        }
+        else
+        {
+        	ratio = (float) width / height;
+        	Matrix.frustumM(projMatrix, 0, -ratio, ratio, -1, 1, 1f, 100f);
+        }
     }    
 	   
     

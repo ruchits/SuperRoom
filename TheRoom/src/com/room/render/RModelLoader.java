@@ -38,7 +38,7 @@ public class RModelLoader
 	{
 		//modelHangman = loadModel("hangman.obj");
 		//modelSphere = loadModel("sphere.obj");
-		modelRoom = loadModel("room_with_props.obj");
+		modelRoom = loadModel("room_empty.obj");
 	}
 
 	private class OBJFace
