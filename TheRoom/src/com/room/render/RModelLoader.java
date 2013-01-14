@@ -11,12 +11,11 @@ import java.util.StringTokenizer;
 
 import com.room.MainActivity;
 
-import android.R;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-//tbd willc - using OBJ format is waaay too slow (in debug mode)
-//            for cellphones, we need to implement a binary format
+//tbd willc - using OBJ format is slow in debug mode.
+//            if you're loading lots of data here, don't use debug!
 
 public class RModelLoader
 {
@@ -164,7 +163,7 @@ public class RModelLoader
 
 				else if(groupStart && type.equals("g"))
 				{
-					String groupName = st.nextToken();
+					//String groupName = st.nextToken();
 					
 					//end the group if it has started
 					addModelGroup(model,vertices,normals,textures,faces);
@@ -173,7 +172,7 @@ public class RModelLoader
 				
 				else if(type.equals("g"))
 				{
-					String groupName = st.nextToken();
+					//String groupName = st.nextToken();
 					groupStart = true;
 				}				
 				

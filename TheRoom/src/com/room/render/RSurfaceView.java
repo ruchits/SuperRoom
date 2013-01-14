@@ -22,13 +22,8 @@ public class RSurfaceView extends GLSurfaceView
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(RRenderer.getInstance());
     }
-    
-    float mPreviousX = 0;
-    float mPreviousY = 0;
-    public static float zoom = 1;
-    
-    //tbd willc - implement better camera!!!
-    
+           
+    //tbd willc - implement better camera!!!    
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
@@ -43,8 +38,8 @@ public class RSurfaceView extends GLSurfaceView
         {
             case MotionEvent.ACTION_MOVE:
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
+                float dx = x - prevX;
+                float dy = y - prevY;
                 
                 RRenderer.getInstance().cameraTurn(-dx*0.5f);
                 RRenderer.getInstance().cameraForward(-dy*0.2f);
@@ -52,8 +47,11 @@ public class RSurfaceView extends GLSurfaceView
                 requestRender();
         }
 
-        mPreviousX = x;
-        mPreviousY = y;
+        prevX = x;
+        prevY = y;
         return true;
-    }    
+    }
+    
+    private float prevX = 0;
+    private float prevY = 0;
 }

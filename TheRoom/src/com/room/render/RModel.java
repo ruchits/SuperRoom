@@ -1,7 +1,6 @@
 package com.room.render;
 
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 import android.opengl.GLES20;
@@ -18,7 +17,8 @@ public class RModel
 	}
 	
     public void draw(float[] projViewMatrix, float[] lightDir)
-    {
+    {    	
+    	//Loops through all model groups and draws them:
     	for(int i=0; i<numGroups; ++i)
     	{    	    		
 	        // Add program to OpenGL ES environment
@@ -48,10 +48,9 @@ public class RModel
 	        // Draw the triangles        
 	        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, numTriangles.get(i)*3);
     	}
-
     }  
 	
-	//these are only filled by the ModelLoader
+	//these are only to be filled by the ModelLoader:
     public int numGroups;
     public ArrayList<Integer> numTriangles;
 	public ArrayList<FloatBuffer> vertexBuffer;

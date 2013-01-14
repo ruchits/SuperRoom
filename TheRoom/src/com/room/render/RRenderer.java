@@ -92,12 +92,9 @@ public class RRenderer implements GLSurfaceView.Renderer
     
     public void cameraForward(float distance)
     {
-    	//D3DXVECTOR3 cameraLookAtXZ (cameraLookAtVector.x, 0, cameraLookAtVector.z);
-        
         float[] camLookAtXZ = 
         	{ camLookAt[0]-camPos[0], 0, camLookAt[2]-camPos[2] };
         
-    	//D3DXVec3Normalize(&cameraLookAtXZ,&cameraLookAtXZ);
         RMath.normalize(camLookAtXZ);
         
     	camLookAtXZ[0] *= distance;
@@ -113,6 +110,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     	camLookAt[2] += camLookAtXZ[2];    	
     }
 
+    // tbd willc - Not implemented yet:
     /*public void cameraStrafe(float d)
     {
     	D3DXVECTOR3 cameraLookAtVector = cameraLookAt - cameraPos;
@@ -125,9 +123,6 @@ public class RRenderer implements GLSurfaceView.Renderer
 
     public void cameraTurn(float degrees)
     {
-    	//D3DXMATRIX yRot;
-    	//D3DXMatrixRotationY(&yRot, angle);
-    	
     	float[] yRot = new float[16];
         Matrix.setIdentityM(yRot, 0);
         Matrix.rotateM(yRot, 0, degrees, 0,1,0);    	
@@ -139,10 +134,8 @@ public class RRenderer implements GLSurfaceView.Renderer
         		0
         	};
 
-    	//D3DXVECTOR3 rotatedCameraLookAtVector;
         float[] rotatedCameraLookAtVector = new float[4];
         		
-        //D3DXVec3TransformCoord(&rotatedCameraLookAtVector,&cameraLookAtVector,&yRot);
         Matrix.multiplyMV(rotatedCameraLookAtVector, 0,
         		yRot, 0, camLookAtVector, 0);
 
