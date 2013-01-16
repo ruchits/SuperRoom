@@ -1,3 +1,64 @@
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+  <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:src="@drawable/opening2" android:scaleType="fitXY" />
+
+  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="30dip"
+    android:orientation="horizontal"
+    tools:context=".WelcomeActivity" >    
+    
+    <RelativeLayout
+      android:orientation="vertical"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_gravity="center"
+      android:paddingLeft="50dip"
+      android:paddingRight="50dip"
+      android:layout_alignParentBottom="true">
+      <TableLayout
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:layout_gravity="bottom"
+         android:stretchColumns="*">
+         <TableRow>
+            <Button
+               android:id="@+id/continue_button"
+               android:text="@string/continue_game"
+                />
+            <Button
+               android:id="@+id/new_button"
+               android:text="@string/new_game" />
+         </TableRow>
+         <TableRow>
+            <Button
+               android:id="@+id/options_button"
+               android:text="@string/options" />
+            <Button
+               android:id="@+id/help_button"
+               android:text="@string/help" />
+         </TableRow>
+         <TableRow>
+            <Button
+               android:id="@+id/credits_button"
+               android:text="@string/credits" />
+            <Button
+               android:id="@+id/exit_button"
+               android:text="@string/exit" />
+         </TableRow>
+      </TableLayout>
+    </RelativeLayout>    
+
+</RelativeLayout>
+</FrameLayout>
+
+
+<!-- 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,3 +73,4 @@
         android:text="@string/str_loading" />
 
 </RelativeLayout>
+ -->
