@@ -9,7 +9,8 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import com.room.MainActivity;
+//import com.room.MainActivity;
+import com.room.Game;
 
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -129,8 +130,9 @@ public class RModelLoader
 		
 		boolean groupStart = false;
 				
-		AssetManager assetManager = MainActivity.instance.getAssets();
-				
+//		AssetManager assetManager = MainActivity.instance.getAssets();
+		AssetManager assetManager = Game.instance.getAssets();
+		
 		try
 		{
 			InputStream is = assetManager.open(assetName);			
