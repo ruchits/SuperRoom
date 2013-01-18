@@ -78,7 +78,7 @@ class RCube
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(RShaderLoader.getInstance().progId);
 
-        GLES20.glUniform3fv(RShaderLoader.getInstance().uLightDir, 1, lightDir, 0);
+        //GLES20.glUniform3fv(RShaderLoader.getInstance().uLightDir, 1, lightDir, 0);
         
         vertexBuffer.position(0);
 		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
@@ -89,12 +89,12 @@ class RCube
 		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().aNormal);		
 		
 		texBuffer.position(0);
-		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().uTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
-		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().uTexCoords);
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().aTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().aTexCoords);
 		
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, RTextureLoader.getInstance().idDirt);
-		GLES20.glUniform1i(RShaderLoader.getInstance().uTexLoc, 0);		
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, RTextureLoader.getInstance().invalidTextureID);
+		GLES20.glUniform1i(RShaderLoader.getInstance().uTexId, 0);		
 
         // Apply the projection and view transformation
         GLES20.glUniformMatrix4fv(RShaderLoader.getInstance().uProjViewMatrix, 1, false, projViewMatrix, 0);        

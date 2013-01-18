@@ -14,8 +14,7 @@ public class RSurfaceView extends GLSurfaceView
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         
-        //tbd willc - move this to a global class (when screen resizes, this will get reinited)
-        RModelLoader.getInstance().init();
+
         
         RRenderer.getInstance().glSurfaceView = this;
         

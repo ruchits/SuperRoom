@@ -22,7 +22,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Set the background frame color
-        GLES20.glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         //turn on depth test
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -36,6 +36,8 @@ public class RRenderer implements GLSurfaceView.Renderer
 		//init shaders + resources 
 		RShaderLoader.getInstance().init();
 		RTextureLoader.getInstance().init();
+        //tbd willc - move this to a global class (when screen resizes, this will get reinited)
+        RModelLoader.getInstance().init();
 		
 		camPos[0] = 0;
 		camPos[1] = 15;
@@ -54,7 +56,8 @@ public class RRenderer implements GLSurfaceView.Renderer
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
               
-        float[] lightDir = {camPos[0]-camLookAt[0],camPos[1]-camLookAt[1],camPos[2]-camLookAt[2]};
+        //float[] lightDir = {camPos[0]-camLookAt[0],camPos[1]-camLookAt[1],camPos[2]-camLookAt[2]};
+        float[] camVec = {camLookAt[0]-camPos[0],camLookAt[1]-camPos[1],camLookAt[2]-camPos[2]};
         
         // Set the camera position (View matrix)
         Matrix.setLookAtM
@@ -68,7 +71,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         // Calculate the projection and view transformation
         Matrix.multiplyMM(viewProjMatrix, 0, projMatrix, 0, viewMatrix, 0);                      
         
-        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix, lightDir);
+        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,camPos,camVec);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)

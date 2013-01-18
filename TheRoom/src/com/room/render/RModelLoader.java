@@ -9,7 +9,6 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-//import com.room.MainActivity;
 import com.room.Game;
 
 import android.content.res.AssetManager;
@@ -50,7 +49,7 @@ public class RModelLoader
 	
 	private void addModelGroup(RModel model, ArrayList<RMath.V3> vertices,
 			ArrayList<RMath.V3> normals, ArrayList<RMath.V2> textures,
-			ArrayList<OBJFace> faces)
+			ArrayList<OBJFace> faces, int textureID)
 	{
 		FloatBuffer vertexBuffer;
 		FloatBuffer normalBuffer;
@@ -114,6 +113,7 @@ public class RModelLoader
 		model.normalBuffer.add(normalBuffer);
 		model.texBuffer.add(texBuffer);
 		model.numTriangles.add(numTriangles);
+		model.textureID.add(textureID);
 		
 		model.numGroups++;
 	}
@@ -127,10 +127,10 @@ public class RModelLoader
 		ArrayList<RMath.V3> normals = new ArrayList<RMath.V3>();
 		ArrayList<RMath.V2> textures = new ArrayList<RMath.V2>();
 		ArrayList<OBJFace> faces = new ArrayList<OBJFace>();
+		int textureID = RTextureLoader.getInstance().invalidTextureID;
 		
 		boolean groupStart = false;
 				
-//		AssetManager assetManager = MainActivity.instance.getAssets();
 		AssetManager assetManager = Game.instance.getAssets();
 		
 		try
@@ -148,7 +148,12 @@ public class RModelLoader
 				
 				String type = st.nextToken();
 					
-				if(type.equals("f"))
+				if(type.equals("usemtl"))
+				{
+					String textureName = st.nextToken();
+					textureID = RTextureLoader.getInstance().getTextureID(textureName);
+				}
+				else if(type.equals("f"))
 				{
 					OBJFace f = new OBJFace();
 					f.v1 = Integer.parseInt(st.nextToken());
@@ -168,8 +173,9 @@ public class RModelLoader
 					//String groupName = st.nextToken();
 					
 					//end the group if it has started
-					addModelGroup(model,vertices,normals,textures,faces);
+					addModelGroup(model,vertices,normals,textures,faces,textureID);
 					faces.clear();
+					textureID = RTextureLoader.getInstance().invalidTextureID;
 				}
 				
 				else if(type.equals("g"))
@@ -212,7 +218,9 @@ public class RModelLoader
 			{
 				//end the group if it has started
 				groupStart = false;
-				addModelGroup(model,vertices,normals,textures,faces);
+				addModelGroup(model,vertices,normals,textures,faces,textureID);
+				faces.clear();
+				textureID = RTextureLoader.getInstance().invalidTextureID;				
 			}			
 		}
 		catch(Exception e)

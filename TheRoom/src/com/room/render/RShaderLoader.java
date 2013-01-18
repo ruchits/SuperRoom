@@ -1,5 +1,12 @@
 package com.room.render;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import com.room.Game;
+
+import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.util.Log;
 
@@ -21,55 +28,31 @@ public class RShaderLoader
 	//mapped attributes
 	public int aPosition;
 	public int aNormal;
+	public int aTexCoords;
 	
 	//mapped uniforms
 	public int uProjViewMatrix;
-	public int uTexLoc;
-	public int uTexCoords;
-	public int uLightDir;
+	public int uTexId;
+	//public int uLightDir;
+	public int uEyeVec;
+	public int uEyePos;
 	
 	public void init()
 	{
-		progId = loadProgram(vertexShaderCode, fragmentShaderCode);
+		progId = loadProgram(assetToString("main.vert"), assetToString("main.frag"));
 		
 		//bind attributes
 		aPosition = GLES20.glGetAttribLocation(progId, "aPosition");
-		uTexCoords = GLES20.glGetAttribLocation(progId, "aTexCoords");
+		aTexCoords = GLES20.glGetAttribLocation(progId, "aTexCoords");
 		aNormal = GLES20.glGetAttribLocation(progId, "aNormal");
 		
 		//bind uniforms
 		uProjViewMatrix = GLES20.glGetUniformLocation(progId, "uProjViewMatrix");
-		uTexLoc = GLES20.glGetUniformLocation(progId, "uTexId");
-		uLightDir = GLES20.glGetUniformLocation(progId, "uLightDir");	
+		uTexId = GLES20.glGetUniformLocation(progId, "uTexId");
+		//uLightDir = GLES20.glGetUniformLocation(progId, "uLightDir");
+		uEyeVec = GLES20.glGetUniformLocation(progId, "uEyeVec");
+		uEyePos = GLES20.glGetUniformLocation(progId, "uEyePos");
 	}
-	
-	private String vertexShaderCode =
-	        "uniform mat4 uProjViewMatrix;" +
-	        "attribute vec4 aPosition;" +
-	        "attribute vec3 aNormal;" +
-	        "varying vec3 vNormal;" +
-			"attribute vec2 aTexCoords;" +
-			"varying vec2 vTexCoords;" +	        		
-	        "void main() {" +
-	        "  vTexCoords = aTexCoords;" +
-	        "  vNormal = aNormal;" +
-	        "  gl_Position = uProjViewMatrix * aPosition;" +
-	        "}";
-
-	private String fragmentShaderCode =
-		    "precision mediump float;" +
-		    "uniform vec3 uLightDir;" +
-		    "uniform sampler2D uTexId;" +
-		    "varying vec3 vNormal;" +
-		    "varying vec2 vTexCoords;" +		    
-		    "void main() {" +
-		    "  vec3 light = uLightDir;" +
-		    "  vec3 lightNorm = normalize(light);" +
-		    "  float lightWeight = max(dot(vNormal,lightNorm),0.0);" +
-		    "  vec4 texColor = texture2D(uTexId, vTexCoords);" +		    
-		    "  gl_FragColor = vec4(texColor.rgb * lightWeight, texColor.a);" +
-		    "}";
-		
 	
 	private int loadShader(int type, String shaderCode)
 	{
@@ -97,7 +80,7 @@ public class RShaderLoader
 	private int loadProgram(String vertexSource, String fragmentSource)
 	{
 		int vertexShader;
-		int fragmentShader;
+		int fragmentShader; 
 		int program;
 		
 		int[] linkStatus = new int[1];
@@ -135,6 +118,36 @@ public class RShaderLoader
 		GLES20.glDeleteShader(fragmentShader);
 		return program;
 	}	
+	
+	private String assetToString(String assetName)
+	{
+		String file="";
+
+		AssetManager assetManager = Game.instance.getAssets();
+		
+		try
+		{
+			InputStream is = assetManager.open(assetName);			
+			BufferedReader in = new BufferedReader(new InputStreamReader(is));
+			
+			while(true)
+			{
+				String line = in.readLine();
+				if(line==null) break;
+				
+				file+=line+"\n";
+			}
+			
+			in.close();
+			is.close();			
+		}
+		catch(Exception e)
+		{
+			Log.d("Model Loader", assetName+" failed to load!");
+		}
+		
+		return file;
+	}
 	
 	private static RShaderLoader instance;
 }

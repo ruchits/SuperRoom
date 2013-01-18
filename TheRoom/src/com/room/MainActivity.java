@@ -1,20 +1,14 @@
 package com.room;
 
-//import com.room.render.*;
 
 import android.os.*;
 import android.app.*;
 import android.content.Intent;
-import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements OnClickListener
 {
-/*
-	//private RSurfaceView mGLView;
-	public static MainActivity instance;
-*/	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
