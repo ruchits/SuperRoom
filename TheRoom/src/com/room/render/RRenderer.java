@@ -3,7 +3,10 @@ package com.room.render;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.room.Global;
+
 import android.opengl.*;
+import android.util.Log;
 
 public class RRenderer implements GLSurfaceView.Renderer
 {
@@ -19,6 +22,16 @@ public class RRenderer implements GLSurfaceView.Renderer
 	
 	public RSurfaceView glSurfaceView;
 	
+	public static final float PLAYER_HEIGHT = 15;
+	public static final float PLAYER_MAX_PITCH = 85;
+	public static final float PLAYER_MIN_PITCH = -85;	
+	public static final float FLASHLIGHT_HEIGHT = 8;
+	public static final float FLASHLIGHT_MAX_PITCH = 85;
+	public static final float FLASHLIGHT_MIN_PITCH = -70;
+	public static final float PLAYER_WALK_SPEED = 15; //units per second
+	public static final float PLAYER_PITCH_SPEED = 40; //degrees per second
+	public static final float PLAYER_YAW_SPEED = 90; //degrees per second
+	
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Set the background frame color
@@ -33,31 +46,45 @@ public class RRenderer implements GLSurfaceView.Renderer
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		GLES20.glCullFace(GLES20.GL_BACK);     
         		
-		//init shaders + resources 
+		//trigger init shaders + resources 
+		// TBD - make it so that the resources DONT have to be reinitialized everytime surface changes!!
 		RShaderLoader.getInstance().init();
 		RTextureLoader.getInstance().init();
-        //tbd willc - move this to a global class (when screen resizes, this will get reinited)
         RModelLoader.getInstance().init();
 		
 		camPos[0] = 0;
 		camPos[1] = 15;
 		camPos[2] = 0;
-		camLookAt[0] = -1;
-		camLookAt[1] = 15;
-		camLookAt[2] = -1;	
+		camForward[0] = -1;
+		camForward[1] = 0;
+		camForward[2] = -1;	
 		camUp[0] = 0;
 		camUp[1] = 1;
 		camUp[2] = 0;
-		camCurrentAngle = 0;
+		camCurrentYaw = 0;
+		camCurrentPitch = 0;
+		lastDrawTime = System.currentTimeMillis();
     }
 
     public void onDrawFrame(GL10 unused)
     {
+    	long currentTime = System.currentTimeMillis();
+    	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;    	
+    	lastDrawTime = currentTime;
+    	
+    	//get controller state:
+    	cameraMove(RTouchController.getInstance().getLeftValue()*deltaTimeSeconds*PLAYER_WALK_SPEED,
+				RTouchController.getInstance().getLeftAngle());
+		cameraYaw(-RTouchController.getInstance().getRightVX()*deltaTimeSeconds*PLAYER_YAW_SPEED);
+		cameraPitch(RTouchController.getInstance().getRightVY()*deltaTimeSeconds*PLAYER_PITCH_SPEED);    	
+    	
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
               
         //float[] lightDir = {camPos[0]-camLookAt[0],camPos[1]-camLookAt[1],camPos[2]-camLookAt[2]};
-        float[] camVec = {camLookAt[0]-camPos[0],camLookAt[1]-camPos[1],camLookAt[2]-camPos[2]};
+        //float[] camVec = {camLookAt[0]-camPos[0],camLookAt[1]-camPos[1],camLookAt[2]-camPos[2]};
+        
+        float[] camLookAt = {camPos[0]+camForward[0],camPos[1]+camForward[1],camPos[2]+camForward[2]};
         
         // Set the camera position (View matrix)
         Matrix.setLookAtM
@@ -69,14 +96,42 @@ public class RRenderer implements GLSurfaceView.Renderer
         	);
 
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(viewProjMatrix, 0, projMatrix, 0, viewMatrix, 0);                      
+        Matrix.multiplyMM(viewProjMatrix, 0, projMatrix, 0, viewMatrix, 0);   
+       
         
-        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,camPos,camVec);
+        float[] spotLightPos = {
+        		camPos[0],
+        		FLASHLIGHT_HEIGHT,
+        		camPos[2]
+        		};
+        
+        //first take the XZ component of camForward
+        float[] spotLightVec = { camForward[0], 0, camForward[2], 0 };
+        
+    	//get the left vector by taking the negative recip of the forward XZ components
+    	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
+    	    	
+    	//flashlight_min_pitch + flashlight_range * %_of_current_player_pitch 
+    	float degrees =  FLASHLIGHT_MIN_PITCH
+    			+ (FLASHLIGHT_MAX_PITCH - FLASHLIGHT_MIN_PITCH)
+    			* ((getCamCurrentPitch() - PLAYER_MIN_PITCH)/(PLAYER_MAX_PITCH - PLAYER_MIN_PITCH))
+    			;
+    	
+    	float[] axisRot = new float[16];
+        Matrix.setIdentityM(axisRot, 0);
+        Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);          
+        Matrix.multiplyMV(spotLightVec, 0, axisRot, 0, spotLightVec, 0);
+        
+        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        RTouchController.getInstance().draw();
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
     {
         GLES20.glViewport(0, 0, width, height);
+        
+        Global.SCREEN_WIDTH = width;
+        Global.SCREEN_HEIGHT = height;
         
         float ratio = 1;
         
@@ -93,10 +148,15 @@ public class RRenderer implements GLSurfaceView.Renderer
     }    
 	   
     
-    public void cameraForward(float distance)
+    public void cameraMove(float distance, float degrees)
     {
         float[] camLookAtXZ = 
-        	{ camLookAt[0]-camPos[0], 0, camLookAt[2]-camPos[2] };
+        	{ camForward[0], 0, camForward[2], 0};
+        
+    	float[] yRot = new float[16];
+        Matrix.setIdentityM(yRot, 0);
+        Matrix.rotateM(yRot, 0, degrees, 0,1,0);        
+        Matrix.multiplyMV(camLookAtXZ, 0, yRot, 0, camLookAtXZ, 0);
         
         RMath.normalize(camLookAtXZ);
         
@@ -107,33 +167,56 @@ public class RRenderer implements GLSurfaceView.Renderer
     	camPos[0] += camLookAtXZ[0];
     	camPos[1] += camLookAtXZ[1];
     	camPos[2] += camLookAtXZ[2];
-    
-    	camLookAt[0] += camLookAtXZ[0];
-    	camLookAt[1] += camLookAtXZ[1];
-    	camLookAt[2] += camLookAtXZ[2];    	
+    	
     }
-
-    // tbd willc - Not implemented yet:
-    /*public void cameraStrafe(float d)
+    
+    public void cameraPitch(float degrees)
     {
-    	D3DXVECTOR3 cameraLookAtVector = cameraLookAt - cameraPos;
-    	D3DXVECTOR3 cameraLookAtVector90Rotate (cameraLookAtVector.z,0,-cameraLookAtVector.x);
-    	D3DXVec3Normalize(&cameraLookAtVector90Rotate,&cameraLookAtVector90Rotate);
-    	cameraLookAtVector90Rotate *= d;
-    	cameraPos += cameraLookAtVector90Rotate;
-    	cameraLookAt += cameraLookAtVector90Rotate;
-    }*/
+    	if(camCurrentPitch+degrees > PLAYER_MAX_PITCH)
+    	{
+    		degrees = PLAYER_MAX_PITCH - camCurrentPitch;
+    	}
+    	else if(camCurrentPitch+degrees < PLAYER_MIN_PITCH)
+    	{
+    		degrees = PLAYER_MIN_PITCH - camCurrentPitch;
+    	}
+    	
+    	//get the left vector by taking the negative recip of the forward XZ components
+    	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
+    	
+    	float[] axisRot = new float[16];
+        Matrix.setIdentityM(axisRot, 0);
+        Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);
+        
+        float[] camLookAtVector = {
+        		camForward[0],
+        		camForward[1],
+        		camForward[2],
+        		0
+        	};
 
-    public void cameraTurn(float degrees)
+        float[] rotatedCameraLookAtVector = new float[4];
+        		
+        Matrix.multiplyMV(rotatedCameraLookAtVector, 0,
+        		axisRot, 0, camLookAtVector, 0);
+
+        camForward[0] = rotatedCameraLookAtVector[0];
+        camForward[1] = rotatedCameraLookAtVector[1];
+        camForward[2] = rotatedCameraLookAtVector[2];     
+        
+        camCurrentPitch+=degrees;
+    }
+    
+    public void cameraYaw(float degrees)
     {
     	float[] yRot = new float[16];
         Matrix.setIdentityM(yRot, 0);
         Matrix.rotateM(yRot, 0, degrees, 0,1,0);    	
 
         float[] camLookAtVector = {
-        		camLookAt[0]-camPos[0],
-        		camLookAt[1]-camPos[1],
-        		camLookAt[2]-camPos[2],
+        		camForward[0],
+        		camForward[1],
+        		camForward[2],
         		0
         	};
 
@@ -142,23 +225,30 @@ public class RRenderer implements GLSurfaceView.Renderer
         Matrix.multiplyMV(rotatedCameraLookAtVector, 0,
         		yRot, 0, camLookAtVector, 0);
 
-    	camLookAt[0] = rotatedCameraLookAtVector[0] + camPos[0];
-    	camLookAt[1] = rotatedCameraLookAtVector[1] + camPos[1];
-    	camLookAt[2] = rotatedCameraLookAtVector[2] + camPos[2];
+        camForward[0] = rotatedCameraLookAtVector[0];
+        camForward[1] = rotatedCameraLookAtVector[1];
+        camForward[2] = rotatedCameraLookAtVector[2];
 
-    	camCurrentAngle += degrees;
+    	camCurrentYaw += degrees;
     }    
     
-    public float[] camPos = new float[3];
-    public float[] camLookAt = new float[3];
-    public float[] camUp = new float[3];
+    public float[] camPos = new float[3];		//position
+    public float[] camForward = new float[3];	//vector
+    public float[] camUp = new float[3];		//vector
     
-    public float getCamCurrentAngle()
+    public float getCamCurrentYaw()
     {
-    	return camCurrentAngle;
+    	return camCurrentYaw;
     }
     
-    private float camCurrentAngle;
+    public float getCamCurrentPitch()
+    {
+    	return camCurrentPitch;
+    }    
+    
+    private float camCurrentYaw;
+    private float camCurrentPitch;
+    private long lastDrawTime; //in millis
     
 	private float[] projMatrix = new float[16];
 	private float[] viewMatrix = new float[16];

@@ -17,41 +17,67 @@ public class RShaderLoader
 	{
 		if(instance == null)
 		{
-			instance = new RShaderLoader();			
+			instance = new RShaderLoader();
+			//instance.init();
 		}		
 		return instance;
 	}
 	
-	//default rendering shader program ID
-	public int progId;
+	//shader program ids
+	public int main_progId;
+	public int screenImage_progId;
+	
+	//main variable maps
+	//===================
 	
 	//mapped attributes
-	public int aPosition;
-	public int aNormal;
-	public int aTexCoords;
+	public int main_aPosition;
+	public int main_aNormal;
+	public int main_aTexCoords;
 	
 	//mapped uniforms
-	public int uProjViewMatrix;
-	public int uTexId;
-	//public int uLightDir;
-	public int uEyeVec;
-	public int uEyePos;
+	public int main_uProjViewMatrix;
+	public int main_uTexId;
+	public int main_uSpotLightVec;
+	public int main_uSpotLightPos;
+	
+	//screenImage variable maps
+	//==========================
+	
+	//mapped attributes
+	public int screenImage_aPosition;
+	public int screenImage_aTexCoords;
+	
+	//mapped uniforms
+	public int screenImage_uTexId;
+	public int screenImage_uPosition;
+	public int screenImage_uSize;
+	
 	
 	public void init()
 	{
-		progId = loadProgram(assetToString("main.vert"), assetToString("main.frag"));
+		main_progId = loadProgram(assetToString("main.vert"), assetToString("main.frag"));
+		screenImage_progId = loadProgram(assetToString("screenImage.vert"), assetToString("screenImage.frag"));
 		
-		//bind attributes
-		aPosition = GLES20.glGetAttribLocation(progId, "aPosition");
-		aTexCoords = GLES20.glGetAttribLocation(progId, "aTexCoords");
-		aNormal = GLES20.glGetAttribLocation(progId, "aNormal");
+		//bind main attributes
+		main_aPosition = GLES20.glGetAttribLocation(main_progId, "aPosition");
+		main_aTexCoords = GLES20.glGetAttribLocation(main_progId, "aTexCoords");
+		main_aNormal = GLES20.glGetAttribLocation(main_progId, "aNormal");
 		
-		//bind uniforms
-		uProjViewMatrix = GLES20.glGetUniformLocation(progId, "uProjViewMatrix");
-		uTexId = GLES20.glGetUniformLocation(progId, "uTexId");
-		//uLightDir = GLES20.glGetUniformLocation(progId, "uLightDir");
-		uEyeVec = GLES20.glGetUniformLocation(progId, "uEyeVec");
-		uEyePos = GLES20.glGetUniformLocation(progId, "uEyePos");
+		//bind main uniforms
+		main_uProjViewMatrix = GLES20.glGetUniformLocation(main_progId, "uProjViewMatrix");
+		main_uTexId = GLES20.glGetUniformLocation(main_progId, "uTexId");
+		main_uSpotLightVec = GLES20.glGetUniformLocation(main_progId, "uSpotLightVec");
+		main_uSpotLightPos = GLES20.glGetUniformLocation(main_progId, "uSpotLightPos");
+		
+		//bind screenImage attributes
+		screenImage_aPosition = GLES20.glGetAttribLocation(screenImage_progId, "aPosition");
+		screenImage_aTexCoords = GLES20.glGetAttribLocation(screenImage_progId, "aTexCoords");
+		
+		//bind screenImage uniforms
+		screenImage_uTexId = GLES20.glGetUniformLocation(screenImage_progId, "uTexId");
+		screenImage_uPosition = GLES20.glGetUniformLocation(screenImage_progId, "uPosition");
+		screenImage_uSize = GLES20.glGetUniformLocation(screenImage_progId, "uSize");
 	}
 	
 	private int loadShader(int type, String shaderCode)

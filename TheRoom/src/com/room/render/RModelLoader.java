@@ -24,7 +24,8 @@ public class RModelLoader
 	{
 		if(instance == null)
 		{
-			instance = new RModelLoader();			
+			instance = new RModelLoader();
+			//instance.init();
 		}		
 		return instance;
 	}

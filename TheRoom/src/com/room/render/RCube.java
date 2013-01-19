@@ -76,28 +76,28 @@ class RCube
     public void draw(float[] projViewMatrix, float[] lightDir)
     {
         // Add program to OpenGL ES environment
-        GLES20.glUseProgram(RShaderLoader.getInstance().progId);
+        GLES20.glUseProgram(RShaderLoader.getInstance().main_progId);
 
         //GLES20.glUniform3fv(RShaderLoader.getInstance().uLightDir, 1, lightDir, 0);
         
         vertexBuffer.position(0);
-		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
-		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().aPosition);
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().main_aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().main_aPosition);
       
 		normalBuffer.position(0);
-		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().aNormal, 3, GLES20.GL_FLOAT, false, 0, normalBuffer);
-		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().aNormal);		
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().main_aNormal, 3, GLES20.GL_FLOAT, false, 0, normalBuffer);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().main_aNormal);		
 		
 		texBuffer.position(0);
-		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().aTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
-		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().aTexCoords);
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().main_aTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().main_aTexCoords);
 		
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, RTextureLoader.getInstance().invalidTextureID);
-		GLES20.glUniform1i(RShaderLoader.getInstance().uTexId, 0);		
+		GLES20.glUniform1i(RShaderLoader.getInstance().main_uTexId, 0);		
 
         // Apply the projection and view transformation
-        GLES20.glUniformMatrix4fv(RShaderLoader.getInstance().uProjViewMatrix, 1, false, projViewMatrix, 0);        
+        GLES20.glUniformMatrix4fv(RShaderLoader.getInstance().main_uProjViewMatrix, 1, false, projViewMatrix, 0);        
         
         // Draw the indices
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, 36, GLES20.GL_UNSIGNED_SHORT, indexBuffer);

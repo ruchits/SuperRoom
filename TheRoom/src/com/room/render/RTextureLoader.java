@@ -16,7 +16,8 @@ public class RTextureLoader
 	{
 		if(instance == null)
 		{
-			instance = new RTextureLoader();			
+			instance = new RTextureLoader();	
+			//instance.init();
 		}		
 		return instance;
 	}	
@@ -43,6 +44,8 @@ public class RTextureLoader
 		textureID.put("prop_toilet", loadTexture(R.drawable.prop_toilet));
 		textureID.put("prop_tpaper", loadTexture(R.drawable.prop_tpaper));
 		textureID.put("prop_warrior", loadTexture(R.drawable.prop_warrior));
+		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob));
+		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring));
 	}
 	
 	public int getTextureID(String textureName)
