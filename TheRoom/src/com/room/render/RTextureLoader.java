@@ -26,30 +26,37 @@ public class RTextureLoader
 	
 	public void init()
 	{
-		invalidTextureID = loadTexture(R.drawable.invalid);
+		invalidTextureID = loadTexture(R.drawable.invalid,false,false);
 		
 		textureID = new HashMap<String,Integer>();
-		textureID.put("bathroom_floor_tile", loadTexture(R.drawable.bathroom_floor_tile));
-		textureID.put("bathroom_wall_tile", loadTexture(R.drawable.bathroom_wall_tile));
-		textureID.put("floor_hardwood", loadTexture(R.drawable.floor_hardwood));
-		textureID.put("wall_board", loadTexture(R.drawable.wall_board));
-		textureID.put("wall_plaster", loadTexture(R.drawable.wall_plaster));
-		textureID.put("prop_barrel", loadTexture(R.drawable.prop_barrel));
-		textureID.put("prop_bed", loadTexture(R.drawable.prop_bed));
-		textureID.put("prop_body", loadTexture(R.drawable.prop_body));
-		textureID.put("prop_drawer", loadTexture(R.drawable.prop_drawer));
-		textureID.put("prop_pharoah", loadTexture(R.drawable.prop_pharoah));
-		textureID.put("prop_sink", loadTexture(R.drawable.prop_sink));
-		textureID.put("prop_soldier", loadTexture(R.drawable.prop_soldier));
-		textureID.put("prop_toilet", loadTexture(R.drawable.prop_toilet));
-		textureID.put("prop_tpaper", loadTexture(R.drawable.prop_tpaper));
-		textureID.put("prop_warrior", loadTexture(R.drawable.prop_warrior));
-		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob));
-		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring));
+		textureID.put("bathroom_floor_tile", loadTexture(R.drawable.bathroom_floor_tile,false,false));
+		textureID.put("bathroom_wall_tile", loadTexture(R.drawable.bathroom_wall_tile,false,false));
+		textureID.put("floor_hardwood", loadTexture(R.drawable.floor_hardwood,false,false));
+		textureID.put("wall_board", loadTexture(R.drawable.wall_board,false,false));
+		textureID.put("wall_plaster",loadTexture(R.drawable.wall_plaster,false,false));
+		textureID.put("prop_barrel", loadTexture(R.drawable.prop_barrel,false,false));
+		textureID.put("prop_bed", loadTexture(R.drawable.prop_bed,false,false));
+		textureID.put("prop_body", loadTexture(R.drawable.prop_body,false,false));
+		textureID.put("prop_drawer", loadTexture(R.drawable.prop_drawer,false,false));
+		textureID.put("prop_pharoah", loadTexture(R.drawable.prop_pharoah,false,false));
+		textureID.put("prop_sink", loadTexture(R.drawable.prop_sink,false,false));
+		textureID.put("prop_soldier", loadTexture(R.drawable.prop_soldier,false,false));
+		textureID.put("prop_toilet", loadTexture(R.drawable.prop_toilet,false,false));
+		textureID.put("prop_tpaper", loadTexture(R.drawable.prop_tpaper,false,false));
+		textureID.put("prop_warrior", loadTexture(R.drawable.prop_warrior,false,false));
+		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob,false,false));
+		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring,false,false));
+		textureID.put("decal_wall_day2", loadTexture(R.drawable.decal_wall_day2,false,true));
+		textureID.put("decal_wall_day3", loadTexture(R.drawable.decal_wall_day3,false,true));
+		textureID.put("decal_wall_day4", loadTexture(R.drawable.decal_wall_day4,false,true));
+		textureID.put("decal_wall_day5", loadTexture(R.drawable.decal_wall_day5,false,true));
 	}
 	
 	public int getTextureID(String textureName)
 	{
+		if(textureName == null)
+			return invalidTextureID;
+		
 		Integer id = textureID.get(textureName);
 		
 		if(id == null)
@@ -58,7 +65,7 @@ public class RTextureLoader
 		return id;
 	}
 	
-	private int loadTexture(int resourceID)
+	private int loadTexture(int resourceID, boolean clampU, boolean clampV)
 	{
 		Bitmap img = null;
 		int texture[] = new int[1];
@@ -76,8 +83,15 @@ public class RTextureLoader
 			GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
 			
 			//set its wrapping settings
-			GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
-        	GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
+			if(clampU)
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+			else
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+			
+			if(clampV)
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+			else
+				GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
 
         	//determine texture format automatically
 			GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);

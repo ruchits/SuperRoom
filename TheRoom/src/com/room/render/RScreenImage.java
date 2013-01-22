@@ -78,9 +78,7 @@ public class RScreenImage
 		
 		//enable blending, and disable depth testing
 		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-		
-		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		GLES20.glDisable(GLES20.GL_DEPTH_TEST);				
 		
         // Draw the indices
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, indexBuffer);

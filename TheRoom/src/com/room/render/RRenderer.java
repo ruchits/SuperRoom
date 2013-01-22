@@ -29,7 +29,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 	public static final float FLASHLIGHT_MAX_PITCH = 85;
 	public static final float FLASHLIGHT_MIN_PITCH = -70;
 	public static final float PLAYER_WALK_SPEED = 15; //units per second
-	public static final float PLAYER_PITCH_SPEED = 40; //degrees per second
+	public static final float PLAYER_PITCH_SPEED = 50; //degrees per second
 	public static final float PLAYER_YAW_SPEED = 90; //degrees per second
 	
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
@@ -39,7 +39,11 @@ public class RRenderer implements GLSurfaceView.Renderer
         
         //turn on depth test
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glDepthFunc(GLES20.GL_LEQUAL);        
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);  
+        
+        //set blend function, but disable it until its needed
+        GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);        
         
         //turn on culling
 		GLES20.glFrontFace(GLES20.GL_CCW);
@@ -122,7 +126,8 @@ public class RRenderer implements GLSurfaceView.Renderer
         Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);          
         Matrix.multiplyMV(spotLightVec, 0, axisRot, 0, spotLightVec, 0);
         
-        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);        
+        RDecalSystem.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec);
         RTouchController.getInstance().draw();
     }
 

@@ -23,4 +23,24 @@ public class Game extends Activity {
         
         setContentView(mGLView);	
     }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+    	//TEMPORARY! Use the volume keys to change days
+    	
+    	switch(keyCode)
+    	{
+	    	case KeyEvent.KEYCODE_VOLUME_DOWN:
+	    		if(Global.CURRENT_DAY > Global.FIRST_DAY)
+	    			Global.CURRENT_DAY --;
+	    	break;
+	    	
+	    	case KeyEvent.KEYCODE_VOLUME_UP:
+	    		if(Global.CURRENT_DAY < Global.LAST_DAY)
+	    			Global.CURRENT_DAY ++;	    		
+	    	break;    	
+    	}
+    	return true;
+    }    
 }
