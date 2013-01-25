@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import com.room.Game;
+import com.room.Global;
 
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -32,12 +33,25 @@ public class RModelLoader
 		
 	public RModel modelRoom;
 	public RModel decalWall;
+	public RModel decalBoard;
+	public RModel decalCeilingMinor;
+	public RModel decalCeilingMajor;
 	
 	public void init()
 	{
 		modelRoom = loadModel("room_empty.obj");
+		
 		decalWall = loadModel("decal_wall.obj");
 		decalWall.enableAlpha(true);
+		
+		decalBoard = loadModel("decal_board.obj");
+		decalBoard.enableAlpha(true);
+		
+		decalCeilingMajor = loadModel("decal_ceiling_major.obj");
+		decalCeilingMajor.enableAlpha(true);
+
+		decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
+		decalCeilingMinor.enableAlpha(true);		
 	}
 
 	private class OBJFace
@@ -131,7 +145,7 @@ public class RModelLoader
 		
 		boolean groupStart = false;
 				
-		AssetManager assetManager = Game.instance.getAssets();
+		AssetManager assetManager = Global.mainActivity.getAssets();
 		
 		try
 		{

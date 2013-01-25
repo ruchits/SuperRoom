@@ -4,6 +4,7 @@ package com.room;
 import android.os.*;
 import android.app.*;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.view.*;
 import android.view.View.OnClickListener;
 
@@ -14,10 +15,17 @@ public class MainActivity extends Activity implements OnClickListener
 	{
         super.onCreate(savedInstanceState);
         
-//        instance = this;
+        //store reference to first activity for any asset loaders
+        Global.mainActivity = this;
+        
+        //determine the width and height here
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		Global.SCREEN_WIDTH = displaymetrics.widthPixels;
+		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;
 
         startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
-/*        
+		/*        
         setContentView(R.layout.activity_main);
 
         // new game, continue, credits, exit, options

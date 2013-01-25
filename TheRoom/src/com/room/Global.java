@@ -1,7 +1,9 @@
 package com.room;
 
+import android.app.Activity;
 public class Global
 {
+	public static Activity mainActivity;
 	public static int SCREEN_WIDTH = 0;
 	public static int SCREEN_HEIGHT = 0;
 	public static int CURRENT_DAY = 1;

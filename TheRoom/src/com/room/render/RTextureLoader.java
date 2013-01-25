@@ -50,6 +50,11 @@ public class RTextureLoader
 		textureID.put("decal_wall_day3", loadTexture(R.drawable.decal_wall_day3,false,true));
 		textureID.put("decal_wall_day4", loadTexture(R.drawable.decal_wall_day4,false,true));
 		textureID.put("decal_wall_day5", loadTexture(R.drawable.decal_wall_day5,false,true));
+		textureID.put("decal_board_day3", loadTexture(R.drawable.decal_board_day3,false,true));
+		textureID.put("decal_board_day4", loadTexture(R.drawable.decal_board_day4,false,true));
+		textureID.put("decal_board_day5", loadTexture(R.drawable.decal_board_day5,false,true));		
+		textureID.put("decal_small_crack", loadTexture(R.drawable.decal_small_crack,true,true));
+		textureID.put("decal_big_crack", loadTexture(R.drawable.decal_big_crack,true,true));				
 	}
 	
 	public int getTextureID(String textureName)

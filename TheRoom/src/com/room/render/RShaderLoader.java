@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.room.Game;
+import com.room.Global;
 
 import android.content.res.AssetManager;
 import android.opengl.GLES20;
@@ -149,7 +150,7 @@ public class RShaderLoader
 	{
 		String file="";
 
-		AssetManager assetManager = Game.instance.getAssets();
+		AssetManager assetManager = Global.mainActivity.getAssets();
 		
 		try
 		{

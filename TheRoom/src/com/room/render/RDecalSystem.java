@@ -27,14 +27,19 @@ public class RDecalSystem
 			
 			case 3:
 				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec);
 			break;
 			
 			case 4:
 				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalCeilingMinor.draw(viewProjMatrix,spotLightPos,spotLightVec);
 			break;
 			
 			case 5:
 				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalCeilingMajor.draw(viewProjMatrix,spotLightPos,spotLightVec);
 			break;
 		}
 	}
