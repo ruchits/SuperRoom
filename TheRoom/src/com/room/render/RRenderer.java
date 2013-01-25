@@ -6,7 +6,6 @@ import javax.microedition.khronos.opengles.GL10;
 import com.room.Global;
 
 import android.opengl.*;
-import android.util.Log;
 
 public class RRenderer implements GLSurfaceView.Renderer
 {
@@ -19,8 +18,6 @@ public class RRenderer implements GLSurfaceView.Renderer
 		}		
 		return instance;
 	}	
-	
-	public RSurfaceView glSurfaceView;
 	
 	public static final float PLAYER_HEIGHT = 15;
 	public static final float PLAYER_MAX_PITCH = 85;
@@ -50,11 +47,9 @@ public class RRenderer implements GLSurfaceView.Renderer
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		GLES20.glCullFace(GLES20.GL_BACK);     
         		
-		//trigger init shaders + resources 
 		// TBD - make it so that the resources DONT have to be reinitialized everytime surface changes!!
 		RShaderLoader.getInstance().init();
 		RTextureLoader.getInstance().init();
-        RModelLoader.getInstance().init();
 		
 		camPos[0] = 0;
 		camPos[1] = 15;

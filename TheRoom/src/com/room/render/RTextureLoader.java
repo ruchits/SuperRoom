@@ -2,6 +2,7 @@ package com.room.render;
 
 import java.util.HashMap;
 
+import com.room.Global;
 import com.room.R;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,7 +77,7 @@ public class RTextureLoader
 		int texture[] = new int[1];
 		try
 		{
-			img = BitmapFactory.decodeResource(RRenderer.getInstance().glSurfaceView.getResources(), resourceID);
+			img = BitmapFactory.decodeResource(Global.mainActivity.getResources(), resourceID);						
 			
 			GLES20.glGenTextures(1, texture, 0);	
 			

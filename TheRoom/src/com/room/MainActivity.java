@@ -1,5 +1,9 @@
 package com.room;
 
+import com.room.puzzles.PExample;
+import com.room.render.RModelLoader;
+import com.room.render.RRenderActivity;
+import com.room.scene.SLayoutLoader;
 
 import android.os.*;
 import android.app.*;
@@ -10,6 +14,7 @@ import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements OnClickListener
 {
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -23,6 +28,15 @@ public class MainActivity extends Activity implements OnClickListener
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		Global.SCREEN_WIDTH = displaymetrics.widthPixels;
 		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;
+		
+        //ALL loaders should initialize here
+        SLayoutLoader.getInstance().init();		
+        RModelLoader.getInstance().init();
+        
+        //TBD - Right now these two loaders are initialized in RRenderer,
+        //      We should remove that dependency and init them here as well.
+		//RShaderLoader.getInstance().init();
+		//RTextureLoader.getInstance().init();
 
         startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
 		/*        
@@ -40,7 +54,7 @@ public class MainActivity extends Activity implements OnClickListener
         creditsButton.setOnClickListener(this);
         View exitButton = findViewById(R.id.exit_button);
         exitButton.setOnClickListener(this);
-*/        
+		 */        
 	}
 
 	@Override
@@ -68,8 +82,9 @@ public class MainActivity extends Activity implements OnClickListener
 	      }
 	}
 	
-	private void startGame() {
-	      Intent intent = new Intent(this, Game.class);
+	private void startGame()
+	{
+	      Intent intent = new Intent(this, RRenderActivity.class);
 	      startActivity(intent);
 	}
 }

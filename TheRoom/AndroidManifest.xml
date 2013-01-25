@@ -25,10 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.room.Game"
-            android:screenOrientation="landscape"
-            android:label="@string/game_title" />
+        <activity android:name=".render.RRenderActivity" android:label="@string/game_title" android:screenOrientation="landscape"></activity><activity android:name=".puzzles.PExample" android:label="@string/game_title" android:screenOrientation="landscape"></activity>
+        
     </application>
 
 </manifest>

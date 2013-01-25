@@ -9,7 +9,6 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import com.room.Game;
 import com.room.Global;
 
 import android.content.res.AssetManager;
