@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".render.RRenderActivity" android:label="@string/game_title" android:screenOrientation="landscape"></activity><activity android:name=".puzzles.PExample" android:label="@string/game_title" android:screenOrientation="landscape"></activity>
-        
+        <activity android:label="@string/credits" android:screenOrientation="landscape" android:name="com.room.Credits"/>
     </application>
 
 </manifest>

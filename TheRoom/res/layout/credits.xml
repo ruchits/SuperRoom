@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent" android:layout_height="fill_parent"
+     android:focusable="true" android:id="@+id/credits_screen">
+
+  <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:src="@drawable/credits3" android:scaleType="fitXY" />
+
+</FrameLayout>

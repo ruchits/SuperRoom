@@ -1,6 +1,8 @@
 package com.room.render;
 
 import com.room.Global;
+import com.room.R;
+import com.room.media.Music;
 
 import android.content.*;
 import android.opengl.*;
@@ -59,10 +61,31 @@ public class RRenderActivity extends Activity
 	    	case KeyEvent.KEYCODE_VOLUME_UP:
 	    		if(Global.CURRENT_DAY < Global.LAST_DAY)
 	    			Global.CURRENT_DAY ++;	    		
-	    	break;    	
+	    	break;
     	}
     	return true;
     }    
+    
+	@Override
+	protected void onResume() {
+	      super.onResume();
+	      Music.loadAll(this);
+	      Music.playBGmusic(this, R.raw.wind);
+	      Music.playTimedSound(this);
+	}
+    
+	@Override
+	protected void onPause() {
+	      super.onPause();
+	      Music.stopSound(this);
+	}
+	
+	@Override
+	protected void onStop() {
+	      super.onStop();
+	      Music.stopSound(this);
+	}
+	
 }
 
 

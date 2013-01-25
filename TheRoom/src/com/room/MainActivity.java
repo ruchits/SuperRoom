@@ -1,5 +1,6 @@
 package com.room;
 
+import com.room.media.Music;
 import com.room.puzzles.PExample;
 import com.room.render.RModelLoader;
 import com.room.render.RRenderActivity;
@@ -38,12 +39,12 @@ public class MainActivity extends Activity implements OnClickListener
 		//RShaderLoader.getInstance().init();
 		//RTextureLoader.getInstance().init();
 
-        startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
-		/*        
+        Music.loadSound(this, R.raw.swords);
+		 Music.playBGmusic(this, R.raw.haunting);
+        //startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
+		        
         setContentView(R.layout.activity_main);
 
-        // new game, continue, credits, exit, options
-        
         View continueButton = findViewById(R.id.continue_button);
         continueButton.setOnClickListener(this);
         View newButton = findViewById(R.id.new_button);
@@ -52,14 +53,16 @@ public class MainActivity extends Activity implements OnClickListener
         aboutButton.setOnClickListener(this);
         View creditsButton = findViewById(R.id.credits_button);
         creditsButton.setOnClickListener(this);
+        View helpButton = findViewById(R.id.help_button);
+        helpButton.setOnClickListener(this);
         View exitButton = findViewById(R.id.exit_button);
         exitButton.setOnClickListener(this);
-		 */        
+		        
 	}
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		Music.playSound(this, R.raw.swords);
 	      switch (v.getId()) {
 	      case R.id.continue_button:
 	         startGame(); //TODO: Save some state
@@ -71,7 +74,7 @@ public class MainActivity extends Activity implements OnClickListener
 
 	         break;
 	      case R.id.credits_button:
-	    	 
+	    	 showCredits();
 	    	 break;
 	      case R.id.help_button:
 	    	  
@@ -86,5 +89,10 @@ public class MainActivity extends Activity implements OnClickListener
 	{
 	      Intent intent = new Intent(this, RRenderActivity.class);
 	      startActivity(intent);
+	}
+	
+	private void showCredits() {
+		  Intent intent = new Intent(this, Credits.class);
+		  startActivity(intent);
 	}
 }
