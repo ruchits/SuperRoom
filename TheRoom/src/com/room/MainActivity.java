@@ -15,7 +15,7 @@ import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements OnClickListener
 {
-
+	private boolean musicOn = true;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -30,7 +30,7 @@ public class MainActivity extends Activity implements OnClickListener
 		Global.SCREEN_WIDTH = displaymetrics.widthPixels;
 		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;
 		
-        //ALL loaders should initialize here
+        //ALL loaders should initialise here
         SLayoutLoader.getInstance().init();		
         RModelLoader.getInstance().init();
         
@@ -40,7 +40,7 @@ public class MainActivity extends Activity implements OnClickListener
 		//RTextureLoader.getInstance().init();
 
         Music.loadSound(this, R.raw.swords);
-		 Music.playBGmusic(this, R.raw.haunting);
+		Music.playBGmusic(this, R.raw.haunting);
         //startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
 		        
         setContentView(R.layout.activity_main);
@@ -49,8 +49,8 @@ public class MainActivity extends Activity implements OnClickListener
         continueButton.setOnClickListener(this);
         View newButton = findViewById(R.id.new_button);
         newButton.setOnClickListener(this);
-        View aboutButton = findViewById(R.id.options_button);
-        aboutButton.setOnClickListener(this);
+        View optionsButton = findViewById(R.id.options_button);
+        optionsButton.setOnClickListener(this);
         View creditsButton = findViewById(R.id.credits_button);
         creditsButton.setOnClickListener(this);
         View helpButton = findViewById(R.id.help_button);
@@ -71,13 +71,13 @@ public class MainActivity extends Activity implements OnClickListener
 	         startGame();
 	         break;
 	      case R.id.options_button:
-
+	    	 showOptions(); 
 	         break;
 	      case R.id.credits_button:
 	    	 showCredits();
 	    	 break;
 	      case R.id.help_button:
-	    	  
+	    	 
 	    	 break;
 	      case R.id.exit_button:
 	         finish();
@@ -94,5 +94,25 @@ public class MainActivity extends Activity implements OnClickListener
 	private void showCredits() {
 		  Intent intent = new Intent(this, Credits.class);
 		  startActivity(intent);
+	}
+	
+	private void showOptions() {
+		  Intent intent = new Intent(this, Options.class);
+		  startActivity(intent);
+	}
+	
+	@Override
+	protected void onResume() {
+	      super.onResume();
+          if ( Options.getBGMusic(this) == false ) {
+        	  Music.stopSound(this);
+        	  musicOn = false;
+          }
+          else if ( musicOn == false && Options.getBGMusic(this) == true )
+          {
+        	  musicOn = true;
+              Music.loadSound(this, R.raw.swords);
+      		  Music.playBGmusic(this, R.raw.haunting);
+          }
 	}
 }

@@ -69,9 +69,9 @@ public class RRenderActivity extends Activity
 	@Override
 	protected void onResume() {
 	      super.onResume();
-	      Music.loadAll(this);
 	      Music.playBGmusic(this, R.raw.wind);
 	      Music.playTimedSound(this);
+	      Music.playSEmusic(this);
 	}
     
 	@Override

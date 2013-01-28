@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".render.RRenderActivity" android:label="@string/game_title" android:screenOrientation="landscape"></activity><activity android:name=".puzzles.PExample" android:label="@string/game_title" android:screenOrientation="landscape"></activity>
         <activity android:label="@string/credits" android:screenOrientation="landscape" android:name="com.room.Credits"/>
+        <activity android:name="com.room.Options" android:label="@string/options" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

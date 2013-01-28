@@ -25,13 +25,8 @@ public class Credits extends Activity implements OnTouchListener
 
 	@Override
 	protected void onResume() {
-          Music.loadSound(this, R.raw.swords);
 	      super.onResume();
-	}
-	
-	@Override
-	protected void onPause() {
-	      super.onPause();
+          Music.loadSound(this, R.raw.swords);
 	}
 
 	@Override
