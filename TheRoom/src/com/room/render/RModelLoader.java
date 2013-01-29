@@ -19,6 +19,8 @@ import android.util.Log;
 
 public class RModelLoader
 {
+        private static final String TAG = "com.render.RModelLoader";
+
 	//SINGLETON!
 	public static RModelLoader getInstance()
 	{
@@ -35,10 +37,11 @@ public class RModelLoader
 	public RModel decalBoard;
 	public RModel decalCeilingMinor;
 	public RModel decalCeilingMajor;
-	
+	public static ArrayList<RMath.Line> Walls = new ArrayList<RMath.Line>();
+
 	public void init()
 	{
-		modelRoom = loadModel("room_empty.obj");
+		modelRoom = loadModel("collision_stage1.obj");
 		
 		decalWall = loadModel("decal_wall.obj");
 		decalWall.enableAlpha(true);
@@ -50,7 +53,9 @@ public class RModelLoader
 		decalCeilingMajor.enableAlpha(true);
 
 		decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
-		decalCeilingMinor.enableAlpha(true);		
+		decalCeilingMinor.enableAlpha(true);
+
+        loadBoundaries("collision_stage1.boundary");
 	}
 
 	private class OBJFace
@@ -241,6 +246,40 @@ public class RModelLoader
 		}
 	
 		return model;
+	}
+
+	/* loads Boundaries from *.boundary file.
+	 * Minimal error checking, make sure items in boundary file is valid.
+     */
+	private void loadBoundaries(String assetName)
+	{
+		// Before trying to load any boundary, make wall arryalist empty.
+		if (!Walls.isEmpty()) Walls.clear();
+		
+		AssetManager assetManager = Global.mainActivity.getAssets();
+        try
+        {
+        	InputStream is = assetManager.open(assetName);
+            BufferedReader in = new BufferedReader(new InputStreamReader(is));
+            while(true)
+            {
+            	String line = in.readLine();
+                if(line==null) break;
+
+                StringTokenizer st = new StringTokenizer(line, " /\t");
+                if(st.countTokens()==0) continue;
+
+                RMath.Line l = new RMath.Line(new RMath.V2(Float.parseFloat(st.nextToken()), Float.parseFloat(st.nextToken())),
+                                                                                        new RMath.V2(Float.parseFloat(st.nextToken()), Float.parseFloat(st.nextToken())));
+                Walls.add(l);
+            }
+            in.close();
+            is.close();
+            }
+            catch(Exception e)
+            {
+            	Log.e(TAG, "Boudary Loader: " + assetName + " failed to load!");
+            }      
 	}
 	
 	private static RModelLoader instance;

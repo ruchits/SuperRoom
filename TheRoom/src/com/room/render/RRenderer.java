@@ -1,5 +1,7 @@
 package com.room.render;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -22,7 +24,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 	public static final float PLAYER_HEIGHT = 15;
 	public static final float PLAYER_MAX_PITCH = 85;
 	public static final float PLAYER_MIN_PITCH = -85;	
-	public static final float FLASHLIGHT_HEIGHT = 8;
+	public static final float FLASHLIGHT_HEIGHT = PLAYER_HEIGHT; //TODO- Ruchit: make flashlight height dynamic.
 	public static final float FLASHLIGHT_MAX_PITCH = 85;
 	public static final float FLASHLIGHT_MIN_PITCH = -70;
 	public static final float PLAYER_WALK_SPEED = 15; //units per second
@@ -163,11 +165,24 @@ public class RRenderer implements GLSurfaceView.Renderer
     	camLookAtXZ[0] *= distance;
     	camLookAtXZ[1] *= distance;
     	camLookAtXZ[2] *= distance;
-    	
-    	camPos[0] += camLookAtXZ[0];
-    	camPos[1] += camLookAtXZ[1];
-    	camPos[2] += camLookAtXZ[2];
-    	
+
+        // Do I collide with the line camPos and camPos+CamLookAtXZ?
+        // If yes, then project the vector and figure out new coordinates for camPos.
+        RMath.Line current = new RMath.Line(new RMath.V2(camPos[0], camPos[2]), new RMath.V2((camPos[0] + camLookAtXZ[0]), (camPos[2] + camLookAtXZ[2])));
+        //Log.d(TAG, current.toString());
+
+        // get the Intersecting point with one of the test walls.
+        RMath.V2 newPosition = checkBounds(current);
+        if (newPosition == null) {
+        	camPos[0] += camLookAtXZ[0];
+            camPos[1] += camLookAtXZ[1];
+            camPos[2] += camLookAtXZ[2];
+        }
+        else {
+            camPos[0] = newPosition.x;
+            camPos[1] += camLookAtXZ[1];
+            camPos[2] = newPosition.y;
+        }
     }
     
     public void cameraPitch(float degrees)
@@ -231,7 +246,77 @@ public class RRenderer implements GLSurfaceView.Renderer
 
     	camCurrentYaw += degrees;
     }    
-    
+
+
+    /* Check if the new position lies within the bounds of the game.
+     * If yes, then return null. If no, then return a projection along the wall
+     * it intersects with.
+     */
+    public RMath.V2 checkBounds(RMath.Line current) {
+        float result = 0;
+        RMath.V2 intersection = null;
+        boolean corner = false;
+        ArrayList<RMath.Line> crossWalls = new ArrayList<RMath.Line>();
+
+        // Get the cross-product first. If negative, only then check for intersection and block the cam.
+        // If positive, then that means that we are trying to stay inside the room. So don't block!
+        for(RMath.Line Wall: RModelLoader.Walls) {
+                if(RMath.crossProduct(Wall.toVector(), current.toVector()) < 0) {
+                        crossWalls.add(Wall);
+                }
+        }
+
+        RMath.V2 projectPosition = null;
+        RMath.Line projectLine = null;
+
+        // Check for intersection with every wall in the room.
+        for (RMath.Line Wall: crossWalls) {
+        	if(intersection == null) {
+        		intersection = current.getLineIntersectionP(Wall);
+                if (intersection != null) {
+                	result = RMath.projectVector(current.toVector(), Wall.toVector());
+                    //Log.e(TAG, "INTERSECT Wall: " + Wall.toString());
+
+                    // Get the projected point/line. We need to check this against other walls.
+                    RMath.V2 wallVector = Wall.toVector();
+                    RMath.normalize(wallVector);
+                    float new_x = result*wallVector.x + intersection.x;
+                    float new_y = result*wallVector.y + intersection.y;
+                    projectPosition = new RMath.V2(new_x, new_y);
+                    projectLine = new RMath.Line(current.begin, projectPosition);
+
+                    // check the intersection of the newPosition with every other wall in the arraylist.
+                    for (RMath.Line cornerWall: crossWalls) {
+                    	if (cornerWall != Wall) {
+                    		RMath.V2 temp = projectLine.getLineIntersectionP(cornerWall);
+                            if (temp != null) {
+                            	// this is the corner case. Intersect with two wall segments at the same time.
+                            	// 1. Position the view at the intersection of the wall instead? => Rounding issues
+                                // 2. for now keep the intersection the same as the camPos to avoid round issues.
+                                corner = true;
+                                intersection.x = camPos[0];
+                                intersection.y = camPos[2];
+                                //Log.e(TAG, "CORNER Wall: " + cornerWall.toString());
+                                break;
+                            }
+                    	}
+                    }
+                    break;
+                }
+        	}
+        }
+
+        if (intersection != null && corner) {
+                return intersection;
+        }
+        else if(intersection != null) {
+                return projectPosition;
+        }
+        else
+                return null;
+    }
+
+
     public float[] camPos = new float[3];		//position
     public float[] camForward = new float[3];	//vector
     public float[] camUp = new float[3];		//vector
@@ -253,6 +338,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 	private float[] projMatrix = new float[16];
 	private float[] viewMatrix = new float[16];
 	private float[] viewProjMatrix = new float[16]; 
-    
+   
+    private static final String TAG = "com.render.RRenderer"; 
     private static RRenderer instance;
 }
