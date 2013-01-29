@@ -41,7 +41,7 @@ public class RModelLoader
 
 	public void init()
 	{
-		modelRoom = loadModel("collision_stage1.obj");
+		modelRoom = loadModel("room_empty.obj");
 		
 		decalWall = loadModel("decal_wall.obj");
 		decalWall.enableAlpha(true);
@@ -55,7 +55,7 @@ public class RModelLoader
 		decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
 		decalCeilingMinor.enableAlpha(true);
 
-        loadBoundaries("collision_stage1.boundary");
+        loadBoundaries("collision_stage2.boundary");
 	}
 
 	private class OBJFace

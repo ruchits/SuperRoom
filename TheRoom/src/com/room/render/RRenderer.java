@@ -280,8 +280,16 @@ public class RRenderer implements GLSurfaceView.Renderer
                     // Get the projected point/line. We need to check this against other walls.
                     RMath.V2 wallVector = Wall.toVector();
                     RMath.normalize(wallVector);
+                    
+                    // Instead of sliding along the wall, we will slide along the line passing through
+                    // our current position(parallel to the wall). That way, we can avoid issues related
+                    // to non-orthogonal walls.
+                    float new_x = result*wallVector.x + current.begin.x;
+                    float new_y = result*wallVector.y + current.begin.y;
+                    /*
                     float new_x = result*wallVector.x + intersection.x;
                     float new_y = result*wallVector.y + intersection.y;
+                    */
                     projectPosition = new RMath.V2(new_x, new_y);
                     projectLine = new RMath.Line(current.begin, projectPosition);
 
