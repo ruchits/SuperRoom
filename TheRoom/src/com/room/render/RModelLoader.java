@@ -41,19 +41,29 @@ public class RModelLoader
 
 	public void init()
 	{
-		modelRoom = loadModel("room_empty.obj");
+		if(Global.DEBUG_NO_PROPS)
+		{
+			modelRoom = loadModel("room_empty.obj");	
+		}
+		else
+		{		
+			modelRoom = loadModel("room_with_props.obj");
+		}
 		
-		decalWall = loadModel("decal_wall.obj");
-		decalWall.enableAlpha(true);
-		
-		decalBoard = loadModel("decal_board.obj");
-		decalBoard.enableAlpha(true);
-		
-		decalCeilingMajor = loadModel("decal_ceiling_major.obj");
-		decalCeilingMajor.enableAlpha(true);
-
-		decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
-		decalCeilingMinor.enableAlpha(true);
+		if(!Global.DEBUG_NO_DECALS)
+		{
+			decalWall = loadModel("decal_wall.obj");
+			decalWall.enableAlpha(true);
+			
+			decalBoard = loadModel("decal_board.obj");
+			decalBoard.enableAlpha(true);
+			
+			decalCeilingMajor = loadModel("decal_ceiling_major.obj");
+			decalCeilingMajor.enableAlpha(true);
+	
+			decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
+			decalCeilingMinor.enableAlpha(true);			
+		}
 
         loadBoundaries("collision_stage2.boundary");
 	}

@@ -10,4 +10,8 @@ public class Global
 	public static int CURRENT_DAY = 1;
 	public static int FIRST_DAY = 1;
 	public static int LAST_DAY = 5;
+	
+	public static boolean DEBUG_SKIP_MENU = true;
+	public static boolean DEBUG_NO_DECALS = true;
+	public static boolean DEBUG_NO_PROPS = true;
 }

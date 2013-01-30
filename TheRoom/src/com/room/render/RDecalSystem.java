@@ -16,6 +16,9 @@ public class RDecalSystem
 	
 	public void draw(float[] viewProjMatrix, float[] spotLightPos, float[] spotLightVec)
 	{
+		if(Global.DEBUG_NO_DECALS)
+			return;
+		
 		switch(Global.CURRENT_DAY)
 		{
 			case 1:

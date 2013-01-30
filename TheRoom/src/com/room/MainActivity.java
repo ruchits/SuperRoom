@@ -20,6 +20,8 @@ public class MainActivity extends Activity implements OnClickListener
 	protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);        
         
         //store reference to first activity for any asset loaders
         Global.mainActivity = this;
@@ -57,6 +59,9 @@ public class MainActivity extends Activity implements OnClickListener
         helpButton.setOnClickListener(this);
         View exitButton = findViewById(R.id.exit_button);
         exitButton.setOnClickListener(this);
+        
+        if(Global.DEBUG_SKIP_MENU)
+        	startGame();
 		        
 	}
 
