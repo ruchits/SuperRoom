@@ -118,6 +118,7 @@ public class SceneView extends JDialog
 		backBufferGraphics = backBuffer.createGraphics();
 		setLocation(new Point(200,0));
 		setSize(400,300);
+		setUndecorated(true);
 		setVisible(true);
 		setResizable(false);
 		

@@ -54,7 +54,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 		RTextureLoader.getInstance().init();
 		
 		camPos[0] = 0;
-		camPos[1] = 15;
+		camPos[1] = PLAYER_HEIGHT;
 		camPos[2] = 0;
 		camForward[0] = -1;
 		camForward[1] = 0;

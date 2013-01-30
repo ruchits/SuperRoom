@@ -40,5 +40,5 @@ public class SLayout
 		return null;
 	}	
 	
-	private static ArrayList<Box> boxes = new ArrayList<Box>();
+	private ArrayList<Box> boxes = new ArrayList<Box>();
 }
