@@ -14,7 +14,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.util.Log;
 
-public class Music {
+public class MMusic {
    private static MediaPlayer mMainSound = null;
    private static SoundPool mSoundPool_BG = null;
    private static SoundPool mSoundPool_SE = null; //sound effects
@@ -25,33 +25,13 @@ public class Music {
    private static Timer mTimer = null;
    private static TimerTask mTimerTask = null;
    static Iterator it = null;
-   
-   public static void loadSound(Context context, int resource)
-   {
-	   if ( mSoundPool_BG == null ) mSoundPool_BG = new SoundPool( 20, AudioManager.STREAM_MUSIC, 0);
-	   if ( mSoundHashMap_BG == null ) mSoundHashMap_BG = new HashMap<Integer, Integer>();
-	   mSoundHashMap_BG.put(resource, mSoundPool_BG.load(context, resource, 1));
 
-	   /*
-	   mSoundPool_BG.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-          @Override
-           public void onLoadComplete(SoundPool soundPool, int sampleId,
-                   int status) {
-               loaded = true;
-           }
-       });
-*/       
-   }
-   
-   // You have to call loadSound before
-   // It uses mSoundPool_BG, which name could be misleading. 
-   // All the sounds loaded on mSoundPool_BG are just those who are not "hinting" sounds
    public static void playSound(Context context, int resource)
    {
-	   if ( Options.getBGMusic(context) && mSoundHashMap_BG != null && mSoundHashMap_BG.containsKey(resource) )
+	   if ( Options.getSoundEffect(context) && mSoundHashMap_SE != null && mSoundHashMap_SE.containsKey(resource) )
 	   {
-           mSoundPool_BG.play(mSoundHashMap_BG.get(resource), 0.3f, 0.3f, 1, 0, 1f);
-           Log.e("Test", "Played sound");
+           mSoundPool_SE.play(mSoundHashMap_SE.get(resource), 0.3f, 0.3f, 1, 0, 1f);
+           Log.e("MMusic", "Played sound");
        }
    }
    
@@ -76,14 +56,25 @@ public class Music {
    public static void playBGmusic(Context context, int resource)
    {
 	   if (Options.getBGMusic(context)){
+		   Log.e("MMusic", "Play background music");
+		   if ( mMainSound != null ) mMainSound.release();
 		   mMainSound = MediaPlayer.create(context, resource);
 		   mMainSound.setLooping(true);
 		   mMainSound.start();
 	   }
    }
    
+   public static boolean isPlaying(Context context)
+   {
+	   if ( mMainSound != null )
+	   {
+	       return mMainSound.isPlaying();
+	   }
+	   return false;
+   }
+   
    //The title is bit misleading but it was made that way to be consistent with playBGmusic
-   public static void playSEmusic(Context context)
+   public static void loadSEmusic(Context context)
    {
 	   if (Options.getSoundEffect(context)) loadAll_SE(context);
    }
@@ -96,46 +87,12 @@ public class Music {
 	   }
    }
    
-   //stopSound: stop every sound and release resources
-   public static void stopSound(Context context) { 
-      if (mMainSound != null) {
-    	  mMainSound.stop();
-    	  mMainSound.release();
-    	  mMainSound = null;
-      }
-      unloadAll(context);
-   }
-   
-   private static void unloadAll(Context context)
-   {
-	    if ( mSoundHashMap_BG != null ) {
-	    	it = mSoundHashMap_BG.entrySet().iterator();
-	    	while (it.hasNext()) {
-	    		if ( mSoundPool_BG != null ) {
-	    			HashMap.Entry pairs = (HashMap.Entry)it.next();
-	    			mSoundPool_BG.unload((Integer) pairs.getValue());
-	    		}
-	    		it.remove();
-	    	}
-		    mSoundHashMap_BG = null;
-		    mSoundPool_BG = null;
-	    }
-	    if ( mSoundHashMap_SE != null ) {
-	    	it = mSoundHashMap_SE.entrySet().iterator();
-	    	while (it.hasNext()) {
-	    		if ( mSoundPool_SE != null ) {
-	    			HashMap.Entry pairs = (HashMap.Entry)it.next();
-	    			mSoundPool_SE.unload((Integer) pairs.getValue());
-	    		}
-	    		it.remove();
-	    	}
-		    mSoundHashMap_SE = null;
-		    mSoundPool_SE = null;
-	    }
-		if ( mTimer != null ){
-		   mTimer.cancel();
-		   mTimer = null;
-		}
+   public static void stopBGmusic(Context context) {
+	   if (mMainSound != null) {
+ 	 	   mMainSound.stop();
+   	       mMainSound.release();
+	       mMainSound = null;
+	   }
    }
    
    private static void loadAll_BG(Context context)
@@ -154,6 +111,7 @@ public class Music {
 	   mSoundPool_SE = new SoundPool( 20, AudioManager.STREAM_MUSIC, 0);
 	   if ( mSoundHashMap_SE == null ) mSoundHashMap_SE = new HashMap<Integer, Integer>();
 	   mSoundHashMap_SE.put(R.raw.water_drop,mSoundPool_SE.load(context, R.raw.water_drop, 1));
+	   mSoundHashMap_SE.put(R.raw.swords,mSoundPool_SE.load(context, R.raw.swords, 1));
    }
    
 }

@@ -1,6 +1,6 @@
 package com.room;
 
-import com.room.media.Music;
+import com.room.media.MMusic;
 import com.room.puzzles.PExample;
 import com.room.render.RModelLoader;
 import com.room.render.RRenderActivity;
@@ -10,12 +10,12 @@ import android.os.*;
 import android.app.*;
 import android.content.Intent;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements OnClickListener
 {
-	private boolean musicOn = true;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -41,8 +41,8 @@ public class MainActivity extends Activity implements OnClickListener
 		//RShaderLoader.getInstance().init();
 		//RTextureLoader.getInstance().init();
 
-        Music.loadSound(this, R.raw.swords);
-		Music.playBGmusic(this, R.raw.haunting);
+        MMusic.loadSEmusic(this);
+		MMusic.playBGmusic(this, R.raw.haunting);
         //startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
 		        
         setContentView(R.layout.activity_main);
@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
-		Music.playSound(this, R.raw.swords);
+		  MMusic.playSound(this, R.raw.swords);
 	      switch (v.getId()) {
 	      case R.id.continue_button:
 	         startGame(); //TODO: Save some state
@@ -110,14 +110,17 @@ public class MainActivity extends Activity implements OnClickListener
 	protected void onResume() {
 	      super.onResume();
           if ( Options.getBGMusic(this) == false ) {
-        	  Music.stopSound(this);
-        	  musicOn = false;
+        	  MMusic.stopBGmusic(this);
           }
-          else if ( musicOn == false && Options.getBGMusic(this) == true )
+          if ( ! MMusic.isPlaying(this) && Options.getBGMusic(this) == true )
           {
-        	  musicOn = true;
-              Music.loadSound(this, R.raw.swords);
-      		  Music.playBGmusic(this, R.raw.haunting);
+        	  Log.e("MainActivity","onResume() - Resume music");
+      		  MMusic.playBGmusic(this, R.raw.haunting);
+          }
+          else if ( Global.RESUME_MUSIC == true )
+          {
+        	  MMusic.playBGmusic(this, R.raw.haunting);
+        	  Global.RESUME_MUSIC = false;
           }
 	}
 }

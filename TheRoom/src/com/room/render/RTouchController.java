@@ -173,7 +173,7 @@ public class RTouchController
 	    	if(event.getPointerId(i) == pid)
 	    		index = i;
 	    }		
-	    
+	    if (index == -1) return;
 		float x = RMath.pixelToGLX(event.getX(index));
 		float y = RMath.pixelToGLY(event.getY(index));	    
 	    

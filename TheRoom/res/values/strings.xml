@@ -14,7 +14,9 @@
     <string name="bg_music">Background Music</string>
     <string name="bg_music_msg">Play background music</string>
     <string name="sound_effect">Sound Effects</string>
-    <string name="sound_effect_msg">Play hinting sound effects (This helps you recognize special objects)</string>
+    <string name="sound_effect_msg">Play sound effects (this may help you recognize special objects)</string>
     <string name="game_title">Game</string>
-    
+    <string name="return_home">Are you sure to go back?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

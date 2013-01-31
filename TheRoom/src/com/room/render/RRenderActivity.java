@@ -1,8 +1,9 @@
 package com.room.render;
 
 import com.room.Global;
+import com.room.MainActivity;
 import com.room.R;
-import com.room.media.Music;
+import com.room.media.MMusic;
 
 import android.content.*;
 import android.opengl.*;
@@ -62,30 +63,37 @@ public class RRenderActivity extends Activity
 	    		if(Global.CURRENT_DAY < Global.LAST_DAY)
 	    			Global.CURRENT_DAY ++;	    		
 	    	break;
+	    	case KeyEvent.KEYCODE_BACK:
+	    		showDialog(1); //we're hard coding the id since there will be only one dialog
+	    	break;
     	}
     	return true;
     }    
+
+    @Override
+    protected Dialog onCreateDialog(int id) { //id is ignored
+        Dialog dialog = null;
+        AlertDialog.Builder builder;
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.return_home)
+               .setCancelable(true)
+               .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                	   Global.RESUME_MUSIC = true;
+                	   finish();
+                   }
+               })
+               .setNegativeButton(R.string.cancel, null);
+        dialog = builder.create();
+        return dialog;
+    }
     
 	@Override
 	protected void onResume() {
 	      super.onResume();
-	      Music.playBGmusic(this, R.raw.wind);
-	      Music.playTimedSound(this);
-	      Music.playSEmusic(this);
+	      MMusic.playBGmusic(Global.mainActivity, R.raw.wind);
+	      MMusic.playTimedSound(Global.mainActivity);
 	}
-    
-	@Override
-	protected void onPause() {
-	      super.onPause();
-	      Music.stopSound(this);
-	}
-	
-	@Override
-	protected void onStop() {
-	      super.onStop();
-	      Music.stopSound(this);
-	}
-	
 }
 
 
