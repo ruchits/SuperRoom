@@ -1,7 +1,6 @@
 package com.room.render;
 
-import android.util.Log;
-
+import java.util.Random;
 import com.room.Global;
 
 public class RMath
@@ -169,7 +168,23 @@ public class RMath
 		return -((y/Global.SCREEN_HEIGHT)*2 -1);
 	}	
 	
+	public static int getRandInt(int inclusiveMin, int inclusiveMax)
+	{
+		return rand.nextInt(inclusiveMax-inclusiveMin+1) + inclusiveMin;
+	}
+	
 	public static float RAD_TO_DEG = 57.295779513082320876798154814105f;
 	public static float DEG_TO_RAD = 0.01745329251994329576923690768489f;
+	public static float PI_TIMES_4 = 12.566370614359172953850573533118f;
+	public static float PI_TIMES_2 = 6.283185307179586476925286766559f;
+	public static float PI = 3.1415926535897932384626433832795f;
+	private static Random rand;
 	private static final String TAG = "com.render.RRenderer";
+	
+	
+	static
+	{
+		rand = new Random();
+	}
+	
 }

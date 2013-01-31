@@ -1,6 +1,5 @@
 package com.room.render;
 
-
 import android.view.MotionEvent;
 
 public class RTouchController
@@ -202,6 +201,16 @@ public class RTouchController
 			}
 		}
 		
+	}
+	
+	public boolean isLeftStickActive()
+	{
+		return leftKnob.isVisible();
+	}
+	
+	public boolean isRightStickActive()
+	{
+		return rightKnob.isVisible();
 	}
 	
 	private void activateLeftStick(int pid, float glx, float gly)

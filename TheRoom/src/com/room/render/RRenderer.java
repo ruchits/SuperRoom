@@ -6,6 +6,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.room.Global;
+import com.room.media.MFootstepSound;
 
 import android.opengl.*;
 
@@ -30,7 +31,10 @@ public class RRenderer implements GLSurfaceView.Renderer
 	public static final float PLAYER_WALK_SPEED = 15; //units per second
 	public static final float PLAYER_PITCH_SPEED = 50; //degrees per second
 	public static final float PLAYER_YAW_SPEED = 90; //degrees per second
-	
+	public static final float PLAYER_HEADBOB_SPEED = 11f;
+	public static final float PLAYER_HEADBOB_VERTICAL_MAGNITUDE = 0.02f;
+	public static final float PLAYER_HEADBOB_HORIZONTAL_MAGNITUDE = 0.02f;
+		
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Set the background frame color
@@ -65,6 +69,8 @@ public class RRenderer implements GLSurfaceView.Renderer
 		camCurrentYaw = 0;
 		camCurrentPitch = 0;
 		lastDrawTime = System.currentTimeMillis();
+		headbobCtr = 0;
+		lastStep = 0;
     }
 
     public void onDrawFrame(GL10 unused)
@@ -73,25 +79,64 @@ public class RRenderer implements GLSurfaceView.Renderer
     	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;    	
     	lastDrawTime = currentTime;
     	
-    	//get controller state:
-    	cameraMove(RTouchController.getInstance().getLeftValue()*deltaTimeSeconds*PLAYER_WALK_SPEED,
-				RTouchController.getInstance().getLeftAngle());
-		cameraYaw(-RTouchController.getInstance().getRightVX()*deltaTimeSeconds*PLAYER_YAW_SPEED);
-		cameraPitch(RTouchController.getInstance().getRightVY()*deltaTimeSeconds*PLAYER_PITCH_SPEED);    	
+    	//get left controller state:
+    	if(RTouchController.getInstance().isLeftStickActive())
+    	{    		
+	    	cameraMove(RTouchController.getInstance().getLeftValue()*deltaTimeSeconds*PLAYER_WALK_SPEED,
+					RTouchController.getInstance().getLeftAngle());
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*RTouchController.getInstance().getLeftValue()*deltaTimeSeconds;	    	
+    	}
+    	else
+    	{
+    		float periods = headbobCtr/RMath.PI_TIMES_2;
+    		float periodsRem = 1 - (periods - (float)Math.floor(periods));
+    		
+    		if(periodsRem != 1 && periodsRem > 0.05f)
+    			headbobCtr += Math.min(PLAYER_HEADBOB_SPEED*deltaTimeSeconds, periodsRem*RMath.PI_TIMES_2);
+    	}    	 	
     	
-        // Redraw background color
+    	//get right controller state:
+    	if(RTouchController.getInstance().isRightStickActive())
+    	{
+			cameraYaw(-RTouchController.getInstance().getRightVX()*deltaTimeSeconds*PLAYER_YAW_SPEED);
+			cameraPitch(RTouchController.getInstance().getRightVY()*deltaTimeSeconds*PLAYER_PITCH_SPEED);
+    	}
+    	
+        // Redraw background color, clear depth buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-              
-        //float[] lightDir = {camPos[0]-camLookAt[0],camPos[1]-camLookAt[1],camPos[2]-camLookAt[2]};
-        //float[] camVec = {camLookAt[0]-camPos[0],camLookAt[1]-camPos[1],camLookAt[2]-camPos[2]};
         
+        //Calculate the point the camera is currently looking at
         float[] camLookAt = {camPos[0]+camForward[0],camPos[1]+camForward[1],camPos[2]+camForward[2]};
         
+        //Calculate the headbob to offset the camPos
+        float headBobVerticalValue = PLAYER_HEADBOB_VERTICAL_MAGNITUDE * (float)Math.cos(headbobCtr);
+        float headBobHorizontalValue = (float)Math.sin(headbobCtr/2);
+        
+    	//check if we should play a footstep sound
+    	if(headBobHorizontalValue > 0.8 && lastStep != 1)
+    	{
+    		MFootstepSound.playRandomStep();
+    		lastStep = 1;
+    	}
+    	else if(headBobHorizontalValue < -0.8 && lastStep != -1)
+    	{
+    		MFootstepSound.playRandomStep();
+    		lastStep = -1;
+    	}
+        
+    	headBobHorizontalValue *= PLAYER_HEADBOB_HORIZONTAL_MAGNITUDE;
+    	
+    	//get the left vector by taking the negative recip of the forward XZ components
+    	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
+    	RMath.normalize(camLeft);
+ 
         // Set the camera position (View matrix)
         Matrix.setLookAtM
         	(
         		viewMatrix, 0,		//result, offset
-        		camPos[0], camPos[1], camPos[2],			//eye point
+        		camPos[0]+(camLeft[0]*headBobHorizontalValue),	//eye point x
+        		camPos[1]+headBobVerticalValue,					//eye point y
+        		camPos[2]+(camLeft[2]*headBobHorizontalValue),	//eye point z
         		camLookAt[0], camLookAt[1], camLookAt[2],	//center of view
         		camUp[0], camUp[1], camUp[2]				//up vector
         	);
@@ -99,18 +144,16 @@ public class RRenderer implements GLSurfaceView.Renderer
         // Calculate the projection and view transformation
         Matrix.multiplyMM(viewProjMatrix, 0, projMatrix, 0, viewMatrix, 0);   
        
-        
+        //This is the position of the flashlight
         float[] spotLightPos = {
         		camPos[0],
         		FLASHLIGHT_HEIGHT,
         		camPos[2]
         		};
         
+        //This is the direction of the flashlight
         //first take the XZ component of camForward
         float[] spotLightVec = { camForward[0], 0, camForward[2], 0 };
-        
-    	//get the left vector by taking the negative recip of the forward XZ components
-    	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
     	    	
     	//flashlight_min_pitch + flashlight_range * %_of_current_player_pitch 
     	float degrees =  FLASHLIGHT_MIN_PITCH
@@ -118,11 +161,13 @@ public class RRenderer implements GLSurfaceView.Renderer
     			* ((getCamCurrentPitch() - PLAYER_MIN_PITCH)/(PLAYER_MAX_PITCH - PLAYER_MIN_PITCH))
     			;
     	
+    	//pitch the flashlight
     	float[] axisRot = new float[16];
         Matrix.setIdentityM(axisRot, 0);
         Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);          
         Matrix.multiplyMV(spotLightVec, 0, axisRot, 0, spotLightVec, 0);
         
+        //Draw objects        
         RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);        
         RDecalSystem.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec);
         RTouchController.getInstance().draw();
@@ -342,6 +387,9 @@ public class RRenderer implements GLSurfaceView.Renderer
     private float camCurrentYaw;
     private float camCurrentPitch;
     private long lastDrawTime; //in millis
+    public float headbobCtr;
+    public int lastStep; 	//used to time footstep sound with headbob
+    							//store -1 or 1 if last step was a left or right step
     
 	private float[] projMatrix = new float[16];
 	private float[] viewMatrix = new float[16];

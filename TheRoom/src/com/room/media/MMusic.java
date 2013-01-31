@@ -112,6 +112,10 @@ public class MMusic {
 	   if ( mSoundHashMap_SE == null ) mSoundHashMap_SE = new HashMap<Integer, Integer>();
 	   mSoundHashMap_SE.put(R.raw.water_drop,mSoundPool_SE.load(context, R.raw.water_drop, 1));
 	   mSoundHashMap_SE.put(R.raw.swords,mSoundPool_SE.load(context, R.raw.swords, 1));
+	   mSoundHashMap_SE.put(R.raw.footstep01,mSoundPool_SE.load(context, R.raw.footstep01, 1));
+	   mSoundHashMap_SE.put(R.raw.footstep02,mSoundPool_SE.load(context, R.raw.footstep02, 1));
+	   mSoundHashMap_SE.put(R.raw.footstep03,mSoundPool_SE.load(context, R.raw.footstep03, 1));
+	   mSoundHashMap_SE.put(R.raw.footstep04,mSoundPool_SE.load(context, R.raw.footstep04, 1));	   
    }
    
 }
