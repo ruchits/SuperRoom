@@ -110,6 +110,25 @@ public class RMath
 			}
 		}
 		
+		public V2 getDistance(Line l) {
+            float d, n, s, t;
+
+            V2 Vthis = this.toVector();
+            V2 Vl = l.toVector();
+
+            d = (Vthis.x*Vl.y) - (Vthis.y*Vl.x);
+            if (d == 0) // if parallel
+                    return null;
+
+            n = (this.begin.y - l.begin.y) * (Vl.x) - (this.begin.x - l.begin.x) * (Vl.y);
+            s = n/d;
+
+            n = (l.begin.x - this.begin.x) * (Vthis.y) - (l.begin.y - this.begin.y) * (Vthis.x);
+			t = n/d;
+			
+            return new V2(s, t);
+		}
+
 		// direction: begin -> end
 		public V2 toVector() {
 			return new V2(end.x-begin.x, end.y-begin.y);

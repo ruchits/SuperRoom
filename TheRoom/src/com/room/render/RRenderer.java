@@ -25,7 +25,6 @@ public class RRenderer implements GLSurfaceView.Renderer
 	public static final float PLAYER_HEIGHT = 15;
 	public static final float PLAYER_MAX_PITCH = 85;
 	public static final float PLAYER_MIN_PITCH = -85;	
-	public static final float FLASHLIGHT_HEIGHT = PLAYER_HEIGHT; //TODO- Ruchit: make flashlight height dynamic.
 	public static final float FLASHLIGHT_MAX_PITCH = 85;
 	public static final float FLASHLIGHT_MIN_PITCH = -70;
 	public static final float PLAYER_WALK_SPEED = 15; //units per second
@@ -34,7 +33,16 @@ public class RRenderer implements GLSurfaceView.Renderer
 	public static final float PLAYER_HEADBOB_SPEED = 11f;
 	public static final float PLAYER_HEADBOB_VERTICAL_MAGNITUDE = 0.02f;
 	public static final float PLAYER_HEADBOB_HORIZONTAL_MAGNITUDE = 0.02f;
-		
+
+	public static final float FLASHLIGHT_HEIGHT_MIN = 8;
+	public static final float FLASHLIGHT_HEIGHT_MAX = PLAYER_HEIGHT-2;
+    public static final float FLASHLIGHT_VERTICAL_SPEED = FLASHLIGHT_HEIGHT_MAX-FLASHLIGHT_HEIGHT_MIN;
+    private static final RMath.V2 FlASHLIGHT_P1= new RMath.V2(1, FLASHLIGHT_HEIGHT_MAX);
+    private static final RMath.V2 FlASHLIGHT_P2= new RMath.V2(25, FLASHLIGHT_HEIGHT_MIN);
+    private float currentFLHeight = FLASHLIGHT_HEIGHT_MIN;
+    private float targetFLHeight = 0;
+    private int flashlightSkipCtr = 0;
+    
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Set the background frame color
@@ -73,12 +81,31 @@ public class RRenderer implements GLSurfaceView.Renderer
 		lastStep = 0;
     }
 
+    
     public void onDrawFrame(GL10 unused)
     {
     	long currentTime = System.currentTimeMillis();
     	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;    	
     	lastDrawTime = currentTime;
     	
+    	//calc height every 3 frames
+        if(flashlightSkipCtr %1 == 0) {
+        	/* Assumption: targetFLHeight always lies between FLASHLIGHT_HEIGHT_MIN and FLASHLIGHT_HEIGHT_MAX
+        	 * getFlashLightHeight will take care of this and make sure the value returned is valid.
+        	 */
+        	targetFLHeight = getFlashLightHeight();
+        	float jump = FLASHLIGHT_VERTICAL_SPEED*deltaTimeSeconds;
+        	
+        	if(currentFLHeight < (targetFLHeight - jump))
+        		currentFLHeight +=  jump;
+        	else if (currentFLHeight > (targetFLHeight + jump))
+        		currentFLHeight -=  jump;
+        	else 
+        		currentFLHeight = targetFLHeight;
+        }
+        //Log.e(TAG, "targetFLHeight= " + targetFLHeight + " currentHeight= " + currentFLHeight);
+        flashlightSkipCtr++;
+
     	//get left controller state:
     	if(RTouchController.getInstance().isLeftStickActive())
     	{    		
@@ -147,7 +174,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         //This is the position of the flashlight
         float[] spotLightPos = {
         		camPos[0],
-        		FLASHLIGHT_HEIGHT,
+        		currentFLHeight,
         		camPos[2]
         		};
         
@@ -369,6 +396,53 @@ public class RRenderer implements GLSurfaceView.Renderer
                 return null;
     }
 
+    /*
+     * Consider the two points as: (1, FLASHLIGHT_HEIGHT_MAX) and (15, FLASHLIGHT_HEIGHT_MIN)
+     */
+    private float getFlashLightHeight() {
+        RMath.V2 distanceVector;
+        /* Get the distance with the crossWalls. Get the smallest distance
+         * and based on the distance obtained decide the flashlight height.
+         */
+        RMath.V2 forward = new RMath.V2(camForward[0], camForward[2]);
+        RMath.normalize(forward);
+        RMath.Line current = new RMath.Line(new RMath.V2(camPos[0], camPos[2]), new RMath.V2((camPos[0] + forward.x), (camPos[2] + forward.y)));
+        RMath.V2 currentVector = current.toVector();
+        // Get the cross-product first. If negative, only then check for intersection and block the cam.
+        ArrayList<RMath.Line> crossWalls = new ArrayList<RMath.Line>();
+        for(RMath.Line Wall: RModelLoader.Walls) {
+                if(RMath.crossProduct(Wall.toVector(), currentVector) < 0) {
+                        crossWalls.add(Wall);
+                }
+        }
+
+        float minDistance = Float.POSITIVE_INFINITY;
+        for (RMath.Line Wall: crossWalls) {
+                distanceVector = current.getDistance(Wall);
+                if ( (distanceVector.x >= 0 && distanceVector.x < minDistance) && (distanceVector.y <=1 && distanceVector.y >= 0)) minDistance = distanceVector.x;
+        }
+        
+        float magnitude = 1;
+        if (minDistance != Float.POSITIVE_INFINITY && minDistance >= 0) {
+                magnitude = currentVector.x * currentVector.x +
+                                        currentVector.y * currentVector.y;
+                magnitude = (float)Math.sqrt(magnitude);
+        }
+
+        float distance = minDistance*magnitude;
+        //Log.e(TAG, "distance= " + distance);
+        
+        if (distance == Float.POSITIVE_INFINITY) {
+                return FLASHLIGHT_HEIGHT_MIN;
+        }
+
+        float scale = (distance -  FlASHLIGHT_P1.x)/(FlASHLIGHT_P2.x -  FlASHLIGHT_P1.x);
+        float height = FlASHLIGHT_P1.y + (scale * (FlASHLIGHT_P2.y -  FlASHLIGHT_P1.y));
+
+        if (height < FLASHLIGHT_HEIGHT_MIN) return FLASHLIGHT_HEIGHT_MIN;
+        else if (height > FLASHLIGHT_HEIGHT_MAX) return FLASHLIGHT_HEIGHT_MAX;
+        else return height;
+    }
 
     public float[] camPos = new float[3];		//position
     public float[] camForward = new float[3];	//vector
@@ -393,7 +467,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     
 	private float[] projMatrix = new float[16];
 	private float[] viewMatrix = new float[16];
-	private float[] viewProjMatrix = new float[16]; 
+	private float[] viewProjMatrix = new float[16];
    
     private static final String TAG = "com.render.RRenderer"; 
     private static RRenderer instance;
