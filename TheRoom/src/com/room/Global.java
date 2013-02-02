@@ -12,7 +12,7 @@ public class Global
 	public static int LAST_DAY = 5;
 	public static boolean RESUME_MUSIC = false;
 	
-	public static boolean DEBUG_SKIP_MENU = true;
+	public static boolean DEBUG_SKIP_MENU = false;
 	public static boolean DEBUG_NO_DECALS = true;
 	public static boolean DEBUG_NO_PROPS = true;
 }

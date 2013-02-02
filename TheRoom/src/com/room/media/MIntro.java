@@ -37,7 +37,7 @@ public class MIntro extends Activity implements OnTouchListener{
 	    });
 		
 		video.canPause();
-		video.setVideoPath("android.resource://com.room/raw/hyuna");
+		video.setVideoPath("android.resource://com.room/raw/sample");
 		video.start();
 	}
 
