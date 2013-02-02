@@ -35,7 +35,7 @@ void main (void)
 	vec3 normal = normalize(vNormal);
 	float diffuseWeight = max(dot(normal,-lightDir), 0.0);
 
-	float shadowValue = diffuseWeight * 0.05;
+	float shadowValue = diffuseWeight * 0.1;
 
 
 	float distanceToPointSquared = (vPosition.x - uSpotLightPos.x) * (vPosition.x - uSpotLightPos.x)

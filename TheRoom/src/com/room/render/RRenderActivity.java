@@ -23,7 +23,7 @@ public class RRenderActivity extends Activity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);           
         
         view = new RRenderView(this);
-        setContentView(view);        
+        setContentView(view);
     }
     
     private class RRenderView extends GLSurfaceView
@@ -50,24 +50,19 @@ public class RRenderActivity extends Activity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-    	//TEMPORARY! Use the volume keys to change days
-    	
     	switch(keyCode)
     	{
-	    	case KeyEvent.KEYCODE_VOLUME_DOWN:
-	    		if(Global.CURRENT_DAY > Global.FIRST_DAY)
-	    			Global.CURRENT_DAY --;
-	    	break;
-	    	
-	    	case KeyEvent.KEYCODE_VOLUME_UP:
-	    		if(Global.CURRENT_DAY < Global.LAST_DAY)
-	    			Global.CURRENT_DAY ++;	    		
-	    	break;
 	    	case KeyEvent.KEYCODE_BACK:
 	    		showDialog(1); //we're hard coding the id since there will be only one dialog
-	    	break;
+	    	return true;
     	}
-    	return true;
+    	return RKeyController.getInstance().onKeyDown(keyCode, event);
+    }    
+    
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+    	return RKeyController.getInstance().onKeyUp(keyCode, event);
     }    
 
     @Override

@@ -7,6 +7,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.room.Global;
 import com.room.media.MFootstepSound;
+import com.room.render.RMath.V2;
 
 import android.opengl.*;
 
@@ -60,10 +61,10 @@ public class RRenderer implements GLSurfaceView.Renderer
 		GLES20.glFrontFace(GLES20.GL_CCW);
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		GLES20.glCullFace(GLES20.GL_BACK);     
-        		
+		
 		// TBD - make it so that the resources DONT have to be reinitialized everytime surface changes!!
 		RShaderLoader.getInstance().init();
-		RTextureLoader.getInstance().init();
+		RTextureLoader.getInstance().init();   
 		
 		camPos[0] = 0;
 		camPos[1] = PLAYER_HEIGHT;
@@ -80,78 +81,48 @@ public class RRenderer implements GLSurfaceView.Renderer
 		headbobCtr = 0;
 		lastStep = 0;
     }
-
     
+    public void onSurfaceChanged(GL10 unused, int width, int height)
+    {
+        GLES20.glViewport(0, 0, width, height);
+        
+        Global.SCREEN_WIDTH = width;
+        Global.SCREEN_HEIGHT = height;
+        
+        float ratio = 1;
+        
+        if(width > height)
+        {
+        	ratio = (float) height / width; 
+        	Matrix.frustumM(projMatrix, 0, -1, 1, -ratio, ratio, 1f, 100f);
+        }
+        else
+        {
+        	ratio = (float) width / height;
+        	Matrix.frustumM(projMatrix, 0, -ratio, ratio, -1, 1, 1f, 100f);
+        }
+    }      
+
     public void onDrawFrame(GL10 unused)
     {
     	long currentTime = System.currentTimeMillis();
     	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;    	
     	lastDrawTime = currentTime;
-    	
-    	//calc height every 3 frames
-        if(flashlightSkipCtr %1 == 0) {
-        	/* Assumption: targetFLHeight always lies between FLASHLIGHT_HEIGHT_MIN and FLASHLIGHT_HEIGHT_MAX
-        	 * getFlashLightHeight will take care of this and make sure the value returned is valid.
-        	 */
-        	targetFLHeight = getFlashLightHeight();
-        	float jump = FLASHLIGHT_VERTICAL_SPEED*deltaTimeSeconds;
-        	
-        	if(currentFLHeight < (targetFLHeight - jump))
-        		currentFLHeight +=  jump;
-        	else if (currentFLHeight > (targetFLHeight + jump))
-        		currentFLHeight -=  jump;
-        	else 
-        		currentFLHeight = targetFLHeight;
-        }
-        //Log.e(TAG, "targetFLHeight= " + targetFLHeight + " currentHeight= " + currentFLHeight);
-        flashlightSkipCtr++;
 
-    	//get left controller state:
-    	if(RTouchController.getInstance().isLeftStickActive())
-    	{    		
-	    	cameraMove(RTouchController.getInstance().getLeftValue()*deltaTimeSeconds*PLAYER_WALK_SPEED,
-					RTouchController.getInstance().getLeftAngle());
-	    	headbobCtr+=PLAYER_HEADBOB_SPEED*RTouchController.getInstance().getLeftValue()*deltaTimeSeconds;	    	
-    	}
-    	else
-    	{
-    		float periods = headbobCtr/RMath.PI_TIMES_2;
-    		float periodsRem = 1 - (periods - (float)Math.floor(periods));
-    		
-    		if(periodsRem != 1 && periodsRem > 0.05f)
-    			headbobCtr += Math.min(PLAYER_HEADBOB_SPEED*deltaTimeSeconds, periodsRem*RMath.PI_TIMES_2);
-    	}    	 	
-    	
-    	//get right controller state:
-    	if(RTouchController.getInstance().isRightStickActive())
-    	{
-			cameraYaw(-RTouchController.getInstance().getRightVX()*deltaTimeSeconds*PLAYER_YAW_SPEED);
-			cameraPitch(RTouchController.getInstance().getRightVY()*deltaTimeSeconds*PLAYER_PITCH_SPEED);
-    	}
-    	
-        // Redraw background color, clear depth buffer
+    	//process all controller inputs
+    	processControllerInput(deltaTimeSeconds);
+
+        // Redraw background color, and clear depth buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        
+        //update the flashlight height
+        updateFlashlightHeight(deltaTimeSeconds);
         
         //Calculate the point the camera is currently looking at
         float[] camLookAt = {camPos[0]+camForward[0],camPos[1]+camForward[1],camPos[2]+camForward[2]};
         
-        //Calculate the headbob to offset the camPos
-        float headBobVerticalValue = PLAYER_HEADBOB_VERTICAL_MAGNITUDE * (float)Math.cos(headbobCtr);
-        float headBobHorizontalValue = (float)Math.sin(headbobCtr/2);
-        
-    	//check if we should play a footstep sound
-    	if(headBobHorizontalValue > 0.8 && lastStep != 1)
-    	{
-    		MFootstepSound.playRandomStep();
-    		lastStep = 1;
-    	}
-    	else if(headBobHorizontalValue < -0.8 && lastStep != -1)
-    	{
-    		MFootstepSound.playRandomStep();
-    		lastStep = -1;
-    	}
-        
-    	headBobHorizontalValue *= PLAYER_HEADBOB_HORIZONTAL_MAGNITUDE;
+        //calculate the headbob offsets
+        RMath.V2 headBobOffsets = updateHeadbobOffsets();
     	
     	//get the left vector by taking the negative recip of the forward XZ components
     	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
@@ -161,9 +132,9 @@ public class RRenderer implements GLSurfaceView.Renderer
         Matrix.setLookAtM
         	(
         		viewMatrix, 0,		//result, offset
-        		camPos[0]+(camLeft[0]*headBobHorizontalValue),	//eye point x
-        		camPos[1]+headBobVerticalValue,					//eye point y
-        		camPos[2]+(camLeft[2]*headBobHorizontalValue),	//eye point z
+        		camPos[0]+(camLeft[0]*headBobOffsets.x),	//eye point x
+        		camPos[1]+headBobOffsets.y,					//eye point y
+        		camPos[2]+(camLeft[2]*headBobOffsets.x),	//eye point z
         		camLookAt[0], camLookAt[1], camLookAt[2],	//center of view
         		camUp[0], camUp[1], camUp[2]				//up vector
         	);
@@ -200,27 +171,105 @@ public class RRenderer implements GLSurfaceView.Renderer
         RTouchController.getInstance().draw();
     }
 
-    public void onSurfaceChanged(GL10 unused, int width, int height)
+    private void processControllerInput(float deltaTimeSeconds)
     {
-        GLES20.glViewport(0, 0, width, height);
-        
-        Global.SCREEN_WIDTH = width;
-        Global.SCREEN_HEIGHT = height;
-        
-        float ratio = 1;
-        
-        if(width > height)
-        {
-        	ratio = (float) height / width; 
-        	Matrix.frustumM(projMatrix, 0, -1, 1, -ratio, ratio, 1f, 100f);
+    	//get left controller state:
+    	if(RTouchController.getInstance().isLeftStickActive())
+    	{    		
+	    	cameraMove(RTouchController.getInstance().getLeftValue()*deltaTimeSeconds*PLAYER_WALK_SPEED,
+					RTouchController.getInstance().getLeftAngle());
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*RTouchController.getInstance().getLeftValue()*deltaTimeSeconds;	    	
+    	}
+    	//get keyboard state
+    	else if(RKeyController.WKeyDown)
+    	{
+	    	cameraMove(deltaTimeSeconds*PLAYER_WALK_SPEED,0);
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*deltaTimeSeconds;
+    	}    	
+    	else if(RKeyController.SKeyDown)
+    	{
+	    	cameraMove(deltaTimeSeconds*PLAYER_WALK_SPEED,180);
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*deltaTimeSeconds;
+    	}
+    	else if(RKeyController.AKeyDown)
+    	{
+	    	cameraMove(deltaTimeSeconds*PLAYER_WALK_SPEED,90);
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*deltaTimeSeconds;
+    	}
+    	else if(RKeyController.DKeyDown)
+    	{
+	    	cameraMove(deltaTimeSeconds*PLAYER_WALK_SPEED,270);
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*deltaTimeSeconds;
+    	}
+    	//is no movement, then land the current step (headbob)
+    	else
+    	{
+    		float periods = headbobCtr/RMath.PI_TIMES_2;
+    		float periodsRem = 1 - (periods - (float)Math.floor(periods));
+    		
+    		if(periodsRem != 1 && periodsRem > 0.05f)
+    			headbobCtr += Math.min(PLAYER_HEADBOB_SPEED*deltaTimeSeconds, periodsRem*RMath.PI_TIMES_2);
+    	}    	 	
+    	
+    	//get right controller state:
+    	if(RTouchController.getInstance().isRightStickActive())
+    	{
+			cameraYaw(-RTouchController.getInstance().getRightVX()*deltaTimeSeconds*PLAYER_YAW_SPEED);
+			cameraPitch(RTouchController.getInstance().getRightVY()*deltaTimeSeconds*PLAYER_PITCH_SPEED);
+    	}
+    	else if(RKeyController.QKeyDown)
+    	{
+    		cameraYaw(deltaTimeSeconds*PLAYER_YAW_SPEED);
+    	}
+    }
+    
+    private void updateFlashlightHeight(float deltaTimeSeconds)
+    {
+    	//calc height every 5 frames
+        if(flashlightSkipCtr %5 == 0) {
+        	/* Assumption: targetFLHeight always lies between FLASHLIGHT_HEIGHT_MIN and FLASHLIGHT_HEIGHT_MAX
+        	 * getFlashLightHeight will take care of this and make sure the value returned is valid.
+        	 */
+        	targetFLHeight = getFlashLightHeight();
+        	
         }
-        else
-        {
-        	ratio = (float) width / height;
-        	Matrix.frustumM(projMatrix, 0, -ratio, ratio, -1, 1, 1f, 100f);
-        }
-    }    
-	   
+    
+    	float jump = FLASHLIGHT_VERTICAL_SPEED*deltaTimeSeconds;
+    	
+    	if(currentFLHeight < (targetFLHeight - jump))
+    		currentFLHeight +=  jump;
+    	else if (currentFLHeight > (targetFLHeight + jump))
+    		currentFLHeight -=  jump;
+    	else 
+    		currentFLHeight = targetFLHeight;
+
+        //Log.e(TAG, "targetFLHeight= " + targetFLHeight + " currentHeight= " + currentFLHeight);
+        flashlightSkipCtr++;
+    }
+    
+    private RMath.V2 updateHeadbobOffsets()
+    {
+        //Calculate the headbob to offset the camPos
+    	RMath.V2 offset = new RMath.V2();
+    	offset.y = PLAYER_HEADBOB_VERTICAL_MAGNITUDE * (float)Math.cos(headbobCtr);
+        offset.x = (float)Math.sin(headbobCtr/2);
+        
+    	//check if we should play a footstep sound
+    	if(offset.x > 0.8 && lastStep != 1)
+    	{
+    		MFootstepSound.playRandomStep();
+    		lastStep = 1;
+    	}
+    	else if(offset.x < -0.8 && lastStep != -1)
+    	{
+    		MFootstepSound.playRandomStep();
+    		lastStep = -1;
+    	}
+        
+    	offset.x *= PLAYER_HEADBOB_HORIZONTAL_MAGNITUDE;
+    	
+    	return offset;
+    }
     
     public void cameraMove(float distance, float degrees)
     {
@@ -467,7 +516,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     
 	private float[] projMatrix = new float[16];
 	private float[] viewMatrix = new float[16];
-	private float[] viewProjMatrix = new float[16];
+	private float[] viewProjMatrix = new float[16]; 
    
     private static final String TAG = "com.render.RRenderer"; 
     private static RRenderer instance;
