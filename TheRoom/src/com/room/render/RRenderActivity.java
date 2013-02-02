@@ -75,7 +75,7 @@ public class RRenderActivity extends Activity
                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                 	   Global.RESUME_MUSIC = true;
-                	   finish();
+                	   startActivity (new Intent(Global.mainActivity, MainActivity.class));
                    }
                })
                .setNegativeButton(R.string.cancel, null);

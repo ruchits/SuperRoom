@@ -1,5 +1,6 @@
 package com.room;
 
+import com.room.media.MIntro;
 import com.room.media.MMusic;
 import com.room.puzzles.PExample;
 import com.room.render.RModelLoader;
@@ -43,7 +44,6 @@ public class MainActivity extends Activity implements OnClickListener
 
         MMusic.loadSEmusic(this);
 		MMusic.playBGmusic(this, R.raw.haunting);
-        //startGame(); // TODO: DELETE this when the opening screen is needed and uncomment the below
 		        
         setContentView(R.layout.activity_main);
 
@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements OnClickListener
 	         startGame(); //TODO: Save some state
 	         break;
 	      case R.id.new_button:
-	         startGame();
+	         startGameWithIntro();
 	         break;
 	      case R.id.options_button:
 	    	 showOptions(); 
@@ -82,7 +82,6 @@ public class MainActivity extends Activity implements OnClickListener
 	    	 showCredits();
 	    	 break;
 	      case R.id.help_button:
-	    	 
 	    	 break;
 	      case R.id.exit_button:
 	         finish();
@@ -103,6 +102,11 @@ public class MainActivity extends Activity implements OnClickListener
 	
 	private void showOptions() {
 		  Intent intent = new Intent(this, Options.class);
+		  startActivity(intent);
+	}
+	
+	private void startGameWithIntro() {
+		  Intent intent = new Intent(this, MIntro.class);
 		  startActivity(intent);
 	}
 	
