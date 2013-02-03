@@ -15,4 +15,5 @@ public class Global
 	public static boolean DEBUG_SKIP_MENU = false;
 	public static boolean DEBUG_NO_DECALS = true;
 	public static boolean DEBUG_NO_PROPS = true;
+	public static boolean DEBUG_SHOW_POI_BOXES = false;
 }

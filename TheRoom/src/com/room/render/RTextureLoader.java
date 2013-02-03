@@ -45,8 +45,10 @@ public class RTextureLoader
 		textureID.put("prop_toilet", loadTexture(R.drawable.prop_toilet,false,false));
 		textureID.put("prop_tpaper", loadTexture(R.drawable.prop_tpaper,false,false));
 		textureID.put("prop_warrior", loadTexture(R.drawable.prop_warrior,false,false));
-		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob,false,false));
-		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring,false,false));
+		textureID.put("door_bathroom", loadTexture(R.drawable.door_bathroom,false,false));
+		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob,true,true));
+		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring,true,true));
+		textureID.put("ui_poi", loadTexture(R.drawable.ui_poi,true,true));
 		textureID.put("decal_wall_day2", loadTexture(R.drawable.decal_wall_day2,false,true));
 		textureID.put("decal_wall_day3", loadTexture(R.drawable.decal_wall_day3,false,true));
 		textureID.put("decal_wall_day4", loadTexture(R.drawable.decal_wall_day4,false,true));
@@ -55,7 +57,8 @@ public class RTextureLoader
 		textureID.put("decal_board_day4", loadTexture(R.drawable.decal_board_day4,false,true));
 		textureID.put("decal_board_day5", loadTexture(R.drawable.decal_board_day5,false,true));		
 		textureID.put("decal_small_crack", loadTexture(R.drawable.decal_small_crack,true,true));
-		textureID.put("decal_big_crack", loadTexture(R.drawable.decal_big_crack,true,true));				
+		textureID.put("decal_big_crack", loadTexture(R.drawable.decal_big_crack,true,true));
+		textureID.put("decal_number", loadTexture(R.drawable.decal_number,true,true));
 	}
 	
 	public int getTextureID(String textureName)

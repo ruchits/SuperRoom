@@ -5,6 +5,7 @@ import com.room.utils.*;
 import com.room.media.MMusic;
 import com.room.puzzles.PExample;
 import com.room.render.RModelLoader;
+import com.room.render.RPOIManager;
 import com.room.render.RRenderActivity;
 import com.room.scene.SLayoutLoader;
 
@@ -37,6 +38,7 @@ public class MainActivity extends Activity implements OnClickListener
         //ALL loaders should initialise here
         SLayoutLoader.getInstance().init();		
         RModelLoader.getInstance().init();
+        RPOIManager.getInstance().init();
         
         //TBD - Right now these two loaders are initialized in RRenderer,
         //      We should remove that dependency and init them here as well.

@@ -10,6 +10,7 @@ import com.room.media.MFootstepSound;
 import com.room.render.RMath.V2;
 
 import android.opengl.*;
+import android.util.Log;
 
 public class RRenderer implements GLSurfaceView.Renderer
 {
@@ -24,6 +25,8 @@ public class RRenderer implements GLSurfaceView.Renderer
 	}	
 	
 	public static final float PLAYER_HEIGHT = 15;
+	public static final float PLAYER_START_X = 8.69329f;
+	public static final float PLAYER_START_Y = -16.43272f; //this is really the z axis
 	public static final float PLAYER_MAX_PITCH = 85;
 	public static final float PLAYER_MIN_PITCH = -85;	
 	public static final float FLASHLIGHT_MAX_PITCH = 85;
@@ -42,7 +45,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     private static final RMath.V2 FlASHLIGHT_P2= new RMath.V2(25, FLASHLIGHT_HEIGHT_MIN);
     private float currentFLHeight = FLASHLIGHT_HEIGHT_MIN;
     private float targetFLHeight = 0;
-    private int flashlightSkipCtr = 0;
+    private int frameCtr = 0;
     
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
@@ -66,10 +69,11 @@ public class RRenderer implements GLSurfaceView.Renderer
 		RShaderLoader.getInstance().init();
 		RTextureLoader.getInstance().init();   
 		
-		camPos[0] = 0;
+		//starting location:
+		camPos[0] = PLAYER_START_X;
 		camPos[1] = PLAYER_HEIGHT;
-		camPos[2] = 0;
-		camForward[0] = -1;
+		camPos[2] = PLAYER_START_Y;
+		camForward[0] = 1;
 		camForward[1] = 0;
 		camForward[2] = -1;	
 		camUp[0] = 0;
@@ -80,6 +84,10 @@ public class RRenderer implements GLSurfaceView.Renderer
 		lastDrawTime = System.currentTimeMillis();
 		headbobCtr = 0;
 		lastStep = 0;
+		
+		//set starting camera angle
+		cameraPitch(-23.71069f);
+		cameraYaw(16.102112f);
     }
     
     public void onSurfaceChanged(GL10 unused, int width, int height)
@@ -117,6 +125,9 @@ public class RRenderer implements GLSurfaceView.Renderer
         
         //update the flashlight height
         updateFlashlightHeight(deltaTimeSeconds);
+        
+        //check if we are in a poi
+        checkPOI();
         
         //Calculate the point the camera is currently looking at
         float[] camLookAt = {camPos[0]+camForward[0],camPos[1]+camForward[1],camPos[2]+camForward[2]};
@@ -166,9 +177,21 @@ public class RRenderer implements GLSurfaceView.Renderer
         Matrix.multiplyMV(spotLightVec, 0, axisRot, 0, spotLightVec, 0);
         
         //Draw objects        
-        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);        
+        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        
+        if(Global.CURRENT_DAY < 3)
+        	RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        else
+        	RModelLoader.getInstance().modelDoorBathroomStage2.draw(viewProjMatrix,spotLightPos,spotLightVec);
+
+        if(Global.DEBUG_SHOW_POI_BOXES)
+        	RModelLoader.getInstance().modelPOI.draw(viewProjMatrix, spotLightPos, spotLightVec);
+        
         RDecalSystem.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec);
         RTouchController.getInstance().draw();
+        RTopButtons.getInstance().draw();
+        
+        ++frameCtr;
     }
 
     private void processControllerInput(float deltaTimeSeconds)
@@ -221,12 +244,16 @@ public class RRenderer implements GLSurfaceView.Renderer
     	{
     		cameraYaw(deltaTimeSeconds*PLAYER_YAW_SPEED);
     	}
+    	else if(RKeyController.EKeyDown)
+    	{
+    		cameraYaw(-deltaTimeSeconds*PLAYER_YAW_SPEED);
+    	}    	
     }
     
     private void updateFlashlightHeight(float deltaTimeSeconds)
     {
     	//calc height every 5 frames
-        if(flashlightSkipCtr %5 == 0) {
+        if(frameCtr %5 == 0) {
         	/* Assumption: targetFLHeight always lies between FLASHLIGHT_HEIGHT_MIN and FLASHLIGHT_HEIGHT_MAX
         	 * getFlashLightHeight will take care of this and make sure the value returned is valid.
         	 */
@@ -244,7 +271,15 @@ public class RRenderer implements GLSurfaceView.Renderer
     		currentFLHeight = targetFLHeight;
 
         //Log.e(TAG, "targetFLHeight= " + targetFLHeight + " currentHeight= " + currentFLHeight);
-        flashlightSkipCtr++;
+    }
+    
+    private void checkPOI()
+    {
+    	if(frameCtr %5 == 1)
+    	{
+    		String poiName = RPOIManager.getInstance().checkPOI(camPos[0], camPos[2], camForward[0], camForward[2]);
+    		RTopButtons.getInstance().setPOI(poiName);
+    	}
     }
     
     private RMath.V2 updateHeadbobOffsets()

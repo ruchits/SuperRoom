@@ -32,13 +32,19 @@ public class RKeyController
     		case KeyEvent.KEYCODE_PAGE_DOWN:
 	    	case KeyEvent.KEYCODE_VOLUME_DOWN:
 	    		if(Global.CURRENT_DAY > Global.FIRST_DAY)
+	    		{
 	    			Global.CURRENT_DAY --;
+	    			RModelLoader.getInstance().updateBoundaries();
+	    		}
 	    	return true;
 	    	
 	    	case KeyEvent.KEYCODE_PAGE_UP:
 	    	case KeyEvent.KEYCODE_VOLUME_UP:
 	    		if(Global.CURRENT_DAY < Global.LAST_DAY)
-	    			Global.CURRENT_DAY ++;	    		
+	    		{
+	    			Global.CURRENT_DAY ++;
+	    			RModelLoader.getInstance().updateBoundaries();
+	    		}
 	    	return true;
 	    	
 			case KeyEvent.KEYCODE_W:

@@ -22,6 +22,7 @@ public class RDecalSystem
 		switch(Global.CURRENT_DAY)
 		{
 			case 1:
+				RModelLoader.getInstance().decalNumber.draw(viewProjMatrix,spotLightPos,spotLightVec);
 			break;
 			
 			case 2:

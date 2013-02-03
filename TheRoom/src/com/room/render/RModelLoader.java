@@ -33,11 +33,20 @@ public class RModelLoader
 	}
 		
 	public RModel modelRoom;
+	public RModel modelDoorBathroomStage1;
+	public RModel modelDoorBathroomStage2;
 	public RModel decalWall;
 	public RModel decalBoard;
 	public RModel decalCeilingMinor;
 	public RModel decalCeilingMajor;
-	public static ArrayList<RMath.Line> Walls = new ArrayList<RMath.Line>();
+	public RModel decalNumber;
+	public RModel modelPOI;
+	
+	public static ArrayList<RMath.Line> Walls;
+	
+	private ArrayList<RMath.Line> boundaryStage1;
+	private ArrayList<RMath.Line> boundaryStage2;
+	private ArrayList<RMath.Line> boundaryProps;
 
 	public void init()
 	{
@@ -49,6 +58,12 @@ public class RModelLoader
 		{		
 			modelRoom = loadModel("room_with_props.obj");
 		}
+		
+		modelDoorBathroomStage1 = loadModel("door_bathroom_stage1.obj");
+		modelDoorBathroomStage2 = loadModel("door_bathroom_stage2.obj");
+		
+		if(Global.DEBUG_SHOW_POI_BOXES)
+			modelPOI = loadModel("points_of_interest.obj");
 		
 		if(!Global.DEBUG_NO_DECALS)
 		{
@@ -62,10 +77,29 @@ public class RModelLoader
 			decalCeilingMajor.enableAlpha(true);
 	
 			decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
-			decalCeilingMinor.enableAlpha(true);			
+			decalCeilingMinor.enableAlpha(true);	
+			
+			decalNumber = loadModel("decal_number.obj");
+			decalNumber.enableAlpha(true);
 		}
 
-        loadBoundaries("collision_stage2.boundary");
+		boundaryStage1 = loadBoundaries("collision_stage1.boundary");
+		boundaryStage2 = loadBoundaries("collision_stage2.boundary");				
+		
+		updateBoundaries();
+		
+	}
+	
+	public void updateBoundaries()
+	{
+		if(Global.CURRENT_DAY < 3)
+		{
+			Walls = boundaryStage1;
+		}
+		else
+		{
+			Walls = boundaryStage2;
+		}
 	}
 
 	private class OBJFace
@@ -261,10 +295,9 @@ public class RModelLoader
 	/* loads Boundaries from *.boundary file.
 	 * Minimal error checking, make sure items in boundary file is valid.
      */
-	private void loadBoundaries(String assetName)
+	private ArrayList<RMath.Line> loadBoundaries(String assetName)
 	{
-		// Before trying to load any boundary, make wall arryalist empty.
-		if (!Walls.isEmpty()) Walls.clear();
+		ArrayList<RMath.Line> boundary = new ArrayList<RMath.Line>();
 		
 		AssetManager assetManager = Global.mainActivity.getAssets();
         try
@@ -279,17 +312,20 @@ public class RModelLoader
                 StringTokenizer st = new StringTokenizer(line, " /\t");
                 if(st.countTokens()==0) continue;
 
-                RMath.Line l = new RMath.Line(new RMath.V2(Float.parseFloat(st.nextToken()), Float.parseFloat(st.nextToken())),
-                                                                                        new RMath.V2(Float.parseFloat(st.nextToken()), Float.parseFloat(st.nextToken())));
-                Walls.add(l);
+                RMath.Line l = new RMath.Line(
+                		new RMath.V2(Float.parseFloat(st.nextToken()),Float.parseFloat(st.nextToken())),
+                        new RMath.V2(Float.parseFloat(st.nextToken()), Float.parseFloat(st.nextToken())));
+                boundary.add(l);
             }
             in.close();
-            is.close();
-            }
-            catch(Exception e)
-            {
-            	Log.e(TAG, "Boudary Loader: " + assetName + " failed to load!");
-            }      
+        	is.close();
+        }
+        catch(Exception e)
+        {
+        	Log.e(TAG, "Boudary Loader: " + assetName + " failed to load!");
+        }
+        
+        return boundary;
 	}
 	
 	private static RModelLoader instance;
