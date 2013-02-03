@@ -84,7 +84,7 @@ public class MainActivity extends Activity implements OnClickListener
 	      case R.id.help_button:
 	    	 break;
 	      case R.id.exit_button:
-	         finish();
+	    	 finish();
 	         break;
 	      }
 	}
@@ -109,6 +109,7 @@ public class MainActivity extends Activity implements OnClickListener
 		  Intent intent = new Intent(this, MIntro.class);
 		  startActivity(intent);
 	}
+
 	
 	@Override
 	protected void onResume() {
