@@ -1,8 +1,10 @@
 package com.room.media;
 
 import com.room.Global;
+import com.room.utils.*;
 import com.room.R;
 import com.room.render.RRenderActivity;
+import com.room.utils.UTransitionUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +35,7 @@ public class MIntro extends Activity implements OnTouchListener{
 	        @Override
 	        public void onCompletion(MediaPlayer mp) {
 	        	startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
+	        	UTransitionUtil.overridePendingTransition(MIntro.this, R.anim.fade_in, R.anim.fade_out);
 	        }
 	    });
 		

@@ -1,6 +1,7 @@
 package com.room;
 
 import com.room.media.MIntro;
+import com.room.utils.*;
 import com.room.media.MMusic;
 import com.room.puzzles.PExample;
 import com.room.render.RModelLoader;
@@ -107,7 +108,8 @@ public class MainActivity extends Activity implements OnClickListener
 	
 	private void startGameWithIntro() {
 		  Intent intent = new Intent(this, MIntro.class);
-		  startActivity(intent);
+		  startActivityForResult(intent, 1);
+		  UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
 	}
 
 	
@@ -127,5 +129,10 @@ public class MainActivity extends Activity implements OnClickListener
         	  MMusic.playBGmusic(this, R.raw.haunting);
         	  Global.RESUME_MUSIC = false;
           }
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
 	}
 }
