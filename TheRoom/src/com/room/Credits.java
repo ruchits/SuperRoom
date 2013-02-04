@@ -1,6 +1,6 @@
 package com.room;
 
-import com.room.media.MMusic;
+import com.room.media.MSoundManager;
 
 import android.os.*;
 import android.util.Log;
@@ -32,7 +32,7 @@ public class Credits extends Activity implements OnTouchListener
 		    int y = (int)event.getY();
 		    Log.e("Credits", "x: " + x + ", y: " + y + " | where screen_width = " + screen_width + ", screen_height = " + screen_height);
 		    if ( x < screen_width * 1 / 8 && y > screen_height * 5 / 6 ) {
-				MMusic.playSound(this,R.raw.swords);
+				MSoundManager.getInstance().playSound(R.raw.swords);
 		    	super.onBackPressed();
 		    }
 		}

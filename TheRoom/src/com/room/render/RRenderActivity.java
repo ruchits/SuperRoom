@@ -3,7 +3,7 @@ package com.room.render;
 import com.room.Global;
 import com.room.MainActivity;
 import com.room.R;
-import com.room.media.MMusic;
+import com.room.media.MSoundManager;
 
 import android.content.*;
 import android.opengl.*;
@@ -75,9 +75,7 @@ public class RRenderActivity extends Activity
                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                 	   Global.RESUME_MUSIC = true;
-                	   Intent intent = new Intent(Global.mainActivity, MainActivity.class);
-                	   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                	   startActivity (intent);
+                	   finish();
                    }
                })
                .setNegativeButton(R.string.cancel, null);
@@ -88,8 +86,8 @@ public class RRenderActivity extends Activity
 	@Override
 	protected void onResume() {
 	      super.onResume();
-	      MMusic.playBGmusic(Global.mainActivity, R.raw.wind);
-	      MMusic.playTimedSound(Global.mainActivity);
+	      MSoundManager.getInstance().playBGmusic(R.raw.wind);
+	      MSoundManager.getInstance().playTimedSound();
 	}
 }
 

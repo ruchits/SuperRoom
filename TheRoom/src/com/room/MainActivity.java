@@ -1,8 +1,8 @@
 package com.room;
 
-import com.room.media.MIntro;
+import com.room.media.MVideoActivity;
 import com.room.utils.*;
-import com.room.media.MMusic;
+import com.room.media.MSoundManager;
 import com.room.puzzles.PExample;
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
@@ -35,18 +35,16 @@ public class MainActivity extends Activity implements OnClickListener
 		Global.SCREEN_WIDTH = displaymetrics.widthPixels;
 		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;
 		
-        //ALL loaders should initialise here
+        //ALL loaders should initialize here
         SLayoutLoader.getInstance().init();		
         RModelLoader.getInstance().init();
         RPOIManager.getInstance().init();
+        MSoundManager.getInstance().init();
         
         //TBD - Right now these two loaders are initialized in RRenderer,
         //      We should remove that dependency and init them here as well.
 		//RShaderLoader.getInstance().init();
-		//RTextureLoader.getInstance().init();
-
-        MMusic.loadSEmusic(this);
-		MMusic.playBGmusic(this, R.raw.haunting);
+		//RTextureLoader.getInstance().init();        
 		        
         setContentView(R.layout.activity_main);
 
@@ -70,7 +68,7 @@ public class MainActivity extends Activity implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
-		  MMusic.playSound(this, R.raw.swords);
+		  MSoundManager.getInstance().playSound(R.raw.swords);
 	      switch (v.getId()) {
 	      case R.id.continue_button:
 	         startGame(); //TODO: Save some state
@@ -94,7 +92,7 @@ public class MainActivity extends Activity implements OnClickListener
 	
 	private void startGame()
 	{
-	      Intent intent = new Intent(this, RRenderActivity.class);
+	      Intent intent = new Intent(this, MVideoActivity.class);
 	      startActivity(intent);
 	}
 	
@@ -108,27 +106,29 @@ public class MainActivity extends Activity implements OnClickListener
 		  startActivity(intent);
 	}
 	
-	private void startGameWithIntro() {
-		  Intent intent = new Intent(this, MIntro.class);
-		  startActivityForResult(intent, 1);
-		  UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
+	private void startGameWithIntro()
+	{
+		MVideoActivity.videoToPlay = MVideoActivity.DAY1_VIDEO;
+		Intent intent = new Intent(this, MVideoActivity.class);
+		startActivityForResult(intent, 1);
+		UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
 	}
 
 	
 	@Override
 	protected void onResume() {
 	      super.onResume();
-          if ( Options.getBGMusic(this) == false ) {
-        	  MMusic.stopBGmusic(this);
+          if ( Options.isMusicEnabled() == false ) {
+        	  MSoundManager.getInstance().stopBGmusic();
           }
-          if ( ! MMusic.isPlaying(this) && Options.getBGMusic(this) == true )
+          if ( ! MSoundManager.getInstance().isPlaying() && Options.isMusicEnabled() == true )
           {
         	  Log.e("MainActivity","onResume() - Resume music");
-      		  MMusic.playBGmusic(this, R.raw.haunting);
+      		  MSoundManager.getInstance().playBGmusic(R.raw.haunting);
           }
           else if ( Global.RESUME_MUSIC == true )
           {
-        	  MMusic.playBGmusic(this, R.raw.haunting);
+        	  MSoundManager.getInstance().playBGmusic(R.raw.haunting);
         	  Global.RESUME_MUSIC = false;
           }
 	}

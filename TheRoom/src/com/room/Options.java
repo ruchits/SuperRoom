@@ -20,13 +20,13 @@ public class Options extends PreferenceActivity {
 	      addPreferencesFromResource(R.xml.options);
 	   }
 
-	   public static boolean getBGMusic(Context context) {
-	      return PreferenceManager.getDefaultSharedPreferences(context)
+	   public static boolean isMusicEnabled() {
+	      return PreferenceManager.getDefaultSharedPreferences(Global.mainActivity)
 	            .getBoolean(OPT_MUSIC, OPT_MUSIC_DEF);
 	   }
 	   
-	   public static boolean getSoundEffect(Context context) {
-	      return PreferenceManager.getDefaultSharedPreferences(context)
+	   public static boolean isSoundEffectsEnabled() {
+	      return PreferenceManager.getDefaultSharedPreferences(Global.mainActivity)
 	            .getBoolean(OPT_SOUNDS, OPT_SOUNDS_DEF);
 	   }
 }
