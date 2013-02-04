@@ -12,16 +12,16 @@ public class MFootstepSound
 		switch(soundNum)
 		{
 		case 1:
-			MMusic.playSound(Global.mainActivity, R.raw.footstep01);
+			MSoundManager.getInstance().playSound(R.raw.footstep01);
 			break;
 		case 2:
-			MMusic.playSound(Global.mainActivity, R.raw.footstep02);
+			MSoundManager.getInstance().playSound(R.raw.footstep02);
 			break;
 		case 3:
-			MMusic.playSound(Global.mainActivity, R.raw.footstep03);
+			MSoundManager.getInstance().playSound(R.raw.footstep03);
 			break;
 		case 4:
-			MMusic.playSound(Global.mainActivity, R.raw.footstep04);
+			MSoundManager.getInstance().playSound(R.raw.footstep04);
 			break;			
 		}
 	}

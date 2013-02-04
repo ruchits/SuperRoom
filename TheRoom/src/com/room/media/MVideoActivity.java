@@ -19,14 +19,23 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.VideoView;
 
-public class MIntro extends Activity implements OnTouchListener{
+public class MVideoActivity extends Activity implements OnTouchListener{
 	VideoView video = null;
 	int stopPosition = 0;
+	
+	public static final String DAY1_VIDEO = "android.resource://com.room/raw/sample";
+	public static final String DAY2_VIDEO = "android.resource://com.room/raw/sample";
+	public static final String DAY3_VIDEO = "android.resource://com.room/raw/sample";
+	public static final String DAY4_VIDEO = "android.resource://com.room/raw/sample";
+	public static final String DAY5_VIDEO = "android.resource://com.room/raw/sample";
+	public static final String ENDING_VIDEO = "android.resource://com.room/raw/sample";
+	public static String videoToPlay = null;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		MMusic.stopBGmusic(Global.mainActivity);
+		MSoundManager.getInstance().stopBGmusic();
 		setContentView(R.layout.video);
 		video = (VideoView) findViewById(R.id.video);
 		video.setOnTouchListener(this);
@@ -34,14 +43,40 @@ public class MIntro extends Activity implements OnTouchListener{
 
 	        @Override
 	        public void onCompletion(MediaPlayer mp) {
+	        	videoToPlay = null;
 	        	startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
-	        	UTransitionUtil.overridePendingTransition(MIntro.this, R.anim.fade_in, R.anim.fade_out);
+	        	UTransitionUtil.overridePendingTransition(MVideoActivity.this, R.anim.fade_in, R.anim.fade_out);
 	        }
 	    });
 		
 		video.canPause();
-		video.setVideoPath("android.resource://com.room/raw/sample");
-		video.start();
+		
+		if(videoToPlay!=null)
+		{
+			video.setVideoPath(videoToPlay);
+			video.start();
+		}
+		else
+		{
+			startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
+		}
+	}
+	
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		
+		if(videoToPlay!=null)
+		{
+			video.setVideoPath(videoToPlay);
+			video.start();
+		}
+		else
+		{
+			finish();
+		}
 	}
 
 	@Override
@@ -59,12 +94,13 @@ public class MIntro extends Activity implements OnTouchListener{
         Dialog dialog = null;
         AlertDialog.Builder builder;
         builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.skip_intro)
+        builder.setMessage(R.string.skip_video)
                .setCancelable(true)
                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                 	   Global.RESUME_MUSIC = true;
-                	   startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
+                	   videoToPlay = null;
+                	   startActivity (new Intent(Global.mainActivity, RRenderActivity.class));                	   
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
