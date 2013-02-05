@@ -43,9 +43,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     public static final float FLASHLIGHT_VERTICAL_SPEED = FLASHLIGHT_HEIGHT_MAX-FLASHLIGHT_HEIGHT_MIN;
     private static final RMath.V2 FlASHLIGHT_P1= new RMath.V2(1, FLASHLIGHT_HEIGHT_MAX);
     private static final RMath.V2 FlASHLIGHT_P2= new RMath.V2(25, FLASHLIGHT_HEIGHT_MIN);
-    private float currentFLHeight = FLASHLIGHT_HEIGHT_MIN;
-    private float targetFLHeight = 0;
-    private int frameCtr = 0;
+
     
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
@@ -85,6 +83,10 @@ public class RRenderer implements GLSurfaceView.Renderer
 		headbobCtr = 0;
 		lastStep = 0;
 		
+	    fpsCtrBaseFrame = 0;
+	    fpsCtrBaseTime = lastDrawTime;
+	    fpsCtrDisplay = 0;		
+		
 		//set starting camera angle
 		cameraPitch(-23.71069f);
 		cameraYaw(16.102112f);
@@ -94,8 +96,15 @@ public class RRenderer implements GLSurfaceView.Renderer
     {
         GLES20.glViewport(0, 0, width, height);
         
-        Global.SCREEN_WIDTH = width;
-        Global.SCREEN_HEIGHT = height;
+        Global.GL_WIDTH = width;
+        Global.GL_HEIGHT = height;
+        
+        //temp speed hack for BB10:
+		if(Global.GL_WIDTH >= 960)
+		{
+			Global.GL_WIDTH/=2;
+			Global.GL_HEIGHT/=2;
+		}
         
         float ratio = 1;
         
@@ -116,7 +125,16 @@ public class RRenderer implements GLSurfaceView.Renderer
     	long currentTime = System.currentTimeMillis();
     	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;    	
     	lastDrawTime = currentTime;
-
+    	
+    	//update FPS counter
+    	if ((currentTime - fpsCtrBaseTime) > 1000)
+    	{
+    		fpsCtrDisplay = (frameCtr-fpsCtrBaseFrame)*1000.0f/(currentTime - fpsCtrBaseTime);
+    		fpsCtrBaseTime = currentTime;
+    		fpsCtrBaseFrame=frameCtr;
+    		//Log.d("FPS", fpsCtrDisplay+"");
+    	}    	
+    	
     	//process all controller inputs
     	processControllerInput(deltaTimeSeconds);
 
@@ -542,11 +560,20 @@ public class RRenderer implements GLSurfaceView.Renderer
     	return camCurrentPitch;
     }    
     
+    private float currentFLHeight = FLASHLIGHT_HEIGHT_MIN;
+    private float targetFLHeight = 0;
+    
+    public int frameCtr = 0;
+    
+    private int fpsCtrBaseFrame;
+    private long fpsCtrBaseTime;
+    public float fpsCtrDisplay;
+    
     private float camCurrentYaw;
     private float camCurrentPitch;
     private long lastDrawTime; //in millis
     public float headbobCtr;
-    public int lastStep; 	//used to time footstep sound with headbob
+    private int lastStep; 	//used to time footstep sound with headbob
     							//store -1 or 1 if last step was a left or right step
     
 	private float[] projMatrix = new float[16];

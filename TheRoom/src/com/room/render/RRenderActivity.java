@@ -31,10 +31,13 @@ public class RRenderActivity extends Activity
         public RRenderView(Context context)
         {
             super(context);
-
+            
+            //set GL resolution
+            getHolder().setFixedSize(Global.GL_WIDTH, Global.GL_HEIGHT);
+            
             // Create an OpenGL ES 2.0 context
-            setEGLContextClientVersion(2);
-
+            setEGLContextClientVersion(2);            
+            
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(RRenderer.getInstance());
         }    

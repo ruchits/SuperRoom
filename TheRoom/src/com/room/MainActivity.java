@@ -35,6 +35,16 @@ public class MainActivity extends Activity implements OnClickListener
 		Global.SCREEN_WIDTH = displaymetrics.widthPixels;
 		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;
 		
+		Global.GL_WIDTH = Global.SCREEN_WIDTH;
+		Global.GL_HEIGHT = Global.SCREEN_HEIGHT;
+		
+		//temporary - to speed up BB10, cut down the render resolution
+		if(Global.GL_WIDTH >= 960)
+		{
+			Global.GL_WIDTH/=2;
+			Global.GL_HEIGHT/=2;
+		}
+		
         //ALL loaders should initialize here
         SLayoutLoader.getInstance().init();		
         RModelLoader.getInstance().init();
