@@ -9,6 +9,7 @@ import com.room.Global;
 import com.room.media.MFootstepSound;
 import com.room.render.RMath.V2;
 
+import android.app.ProgressDialog;
 import android.opengl.*;
 import android.util.Log;
 
@@ -90,6 +91,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 		//set starting camera angle
 		cameraPitch(-23.71069f);
 		cameraYaw(16.102112f);
+        Global.progDailog.dismiss();
     }
     
     public void onSurfaceChanged(GL10 unused, int width, int height)
@@ -102,8 +104,8 @@ public class RRenderer implements GLSurfaceView.Renderer
         //temp speed hack for BB10:
 		if(Global.GL_WIDTH >= 960)
 		{
-			Global.GL_WIDTH/=2;
-			Global.GL_HEIGHT/=2;
+			Global.GL_WIDTH*=0.50f;
+			Global.GL_HEIGHT*=0.50f;
 		}
         
         float ratio = 1;

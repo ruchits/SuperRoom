@@ -45,7 +45,7 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 	        public void onCompletion(MediaPlayer mp) {
 	        	videoToPlay = null;
 	        	startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
-	        	UTransitionUtil.overridePendingTransition(MVideoActivity.this, R.anim.fade_in, R.anim.fade_out);
+	        	UTransitionUtil.overridePendingTransition(MVideoActivity.this,R.anim.fade_in, R.anim.fade_out);
 	        }
 	    });
 		
@@ -76,6 +76,7 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 		else
 		{
 			finish();
+			UTransitionUtil.overridePendingTransition(this,R.anim.fade_in, R.anim.fade_out);
 		}
 	}
 
@@ -100,7 +101,8 @@ public class MVideoActivity extends Activity implements OnTouchListener{
                    public void onClick(DialogInterface dialog, int id) {
                 	   Global.RESUME_MUSIC = true;
                 	   videoToPlay = null;
-                	   startActivity (new Intent(Global.mainActivity, RRenderActivity.class));                	   
+                	   startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
+                	   //UTransitionUtil.overridePendingTransition(MVideoActivity.this,R.anim.fade_in, R.anim.fade_out);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -115,4 +117,5 @@ public class MVideoActivity extends Activity implements OnTouchListener{
         dialog = builder.create();
         return dialog;
     }
+    
 }

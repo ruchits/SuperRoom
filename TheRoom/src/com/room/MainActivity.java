@@ -38,8 +38,8 @@ public class MainActivity extends Activity implements OnClickListener
 		//temporary - to speed up BB10, cut down the render resolution
 		if(Global.GL_WIDTH >= 960)
 		{
-			Global.GL_WIDTH/=2;
-			Global.GL_HEIGHT/=2;
+			Global.GL_WIDTH*=0.5f;
+			Global.GL_HEIGHT*=0.5f;
 		}
 		
         //ALL loaders should initialize here
@@ -101,6 +101,8 @@ public class MainActivity extends Activity implements OnClickListener
 	{
 	      Intent intent = new Intent(this, MVideoActivity.class);
 	      startActivity(intent);
+		  UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
+
 	}
 	
 	private void showCredits() {
@@ -118,7 +120,7 @@ public class MainActivity extends Activity implements OnClickListener
 		MVideoActivity.videoToPlay = MVideoActivity.DAY1_VIDEO;
 		Intent intent = new Intent(this, MVideoActivity.class);
 		startActivityForResult(intent, 1);
-		UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
+		//UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
 	}
 
 	
@@ -142,6 +144,6 @@ public class MainActivity extends Activity implements OnClickListener
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		UTransitionUtil.overridePendingTransition(this, R.anim.fade_in, R.anim.fade_out);
+		UTransitionUtil.overridePendingTransition(this,R.anim.fade_in, R.anim.fade_out);
 	}
 }

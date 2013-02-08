@@ -1,9 +1,10 @@
 package com.room.render;
 
 import com.room.Global;
-import com.room.MainActivity;
 import com.room.R;
 import com.room.media.MSoundManager;
+import com.room.media.MVideoActivity;
+import com.room.utils.UTransitionUtil;
 
 import android.content.*;
 import android.opengl.*;
@@ -21,6 +22,7 @@ public class RRenderActivity extends Activity
     	super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);           
+        Global.progDailog = ProgressDialog.show(this, "Please wait", "Loading game ...", true);
         
         view = new RRenderView(this);
         setContentView(view);
@@ -79,6 +81,7 @@ public class RRenderActivity extends Activity
                    public void onClick(DialogInterface dialog, int id) {
                 	   Global.RESUME_MUSIC = true;
                 	   finish();
+                	   UTransitionUtil.overridePendingTransition(RRenderActivity.this,R.anim.fade_in, R.anim.fade_out);
                    }
                })
                .setNegativeButton(R.string.cancel, null);
