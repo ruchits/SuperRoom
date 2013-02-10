@@ -31,11 +31,13 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 	public static final String ENDING_VIDEO = "android.resource://com.room/raw/sample";
 	public static String videoToPlay = null;
 	
+	private boolean isTransitionedFromMenu = false;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		MSoundManager.getInstance().stopBGmusic();
+		MSoundManager.getInstance().stopAndReleaseMusic();
 		setContentView(R.layout.video);
 		video = (VideoView) findViewById(R.id.video);
 		video.setOnTouchListener(this);
@@ -43,7 +45,6 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 
 	        @Override
 	        public void onCompletion(MediaPlayer mp) {
-	        	videoToPlay = null;
 	        	startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
 	        	UTransitionUtil.overridePendingTransition(MVideoActivity.this,R.anim.fade_in, R.anim.fade_out);
 	        }
@@ -53,13 +54,16 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 		
 		if(videoToPlay!=null)
 		{
-			video.setVideoPath(videoToPlay);
+			video.setVideoPath(videoToPlay+"");
+			videoToPlay = null;
 			video.start();
 		}
 		else
 		{
 			startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
 		}
+		
+		isTransitionedFromMenu = true;
 	}
 	
 	
@@ -68,16 +72,22 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 	{
 		super.onResume();
 		
-		if(videoToPlay!=null)
-		{
-			video.setVideoPath(videoToPlay);
-			video.start();
+		if(!isTransitionedFromMenu)
+		{			
+			if(videoToPlay!=null)
+			{
+				video.setVideoPath(videoToPlay+"");
+	        	videoToPlay = null;
+				video.start();
+			}
+			else
+			{
+				finish();
+				UTransitionUtil.overridePendingTransition(this,R.anim.fade_in, R.anim.fade_out);
+			}
 		}
-		else
-		{
-			finish();
-			UTransitionUtil.overridePendingTransition(this,R.anim.fade_in, R.anim.fade_out);
-		}
+		
+		isTransitionedFromMenu = false;
 	}
 
 	@Override
@@ -99,9 +109,7 @@ public class MVideoActivity extends Activity implements OnTouchListener{
                .setCancelable(true)
                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                	   Global.RESUME_MUSIC = true;
-                	   videoToPlay = null;
-                	   startActivity (new Intent(Global.mainActivity, RRenderActivity.class));
+                	   startActivity (new Intent(Global.mainActivity, RRenderActivity.class));                	   
                 	   //UTransitionUtil.overridePendingTransition(MVideoActivity.this,R.anim.fade_in, R.anim.fade_out);
                    }
                })

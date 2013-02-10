@@ -12,16 +12,16 @@ public class MFootstepSound
 		switch(soundNum)
 		{
 		case 1:
-			MSoundManager.getInstance().playSound(R.raw.footstep01);
+			MSoundManager.getInstance().playSoundEffect(R.raw.footstep01);
 			break;
 		case 2:
-			MSoundManager.getInstance().playSound(R.raw.footstep02);
+			MSoundManager.getInstance().playSoundEffect(R.raw.footstep02);
 			break;
 		case 3:
-			MSoundManager.getInstance().playSound(R.raw.footstep03);
+			MSoundManager.getInstance().playSoundEffect(R.raw.footstep03);
 			break;
 		case 4:
-			MSoundManager.getInstance().playSound(R.raw.footstep04);
+			MSoundManager.getInstance().playSoundEffect(R.raw.footstep04);
 			break;			
 		}
 	}

@@ -27,7 +27,7 @@ public class UTransitionUtil {
 			try {
 				overridePendingTransition.invoke(activity, animEnter, animExit);
 			} catch (Exception e) {
-				// do nothing
+				e.printStackTrace();
 			}
 		}
 	}

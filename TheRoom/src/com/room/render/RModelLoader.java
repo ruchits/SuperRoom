@@ -33,6 +33,7 @@ public class RModelLoader
 	}
 		
 	public RModel modelRoom;
+	public RModel modelProps;
 	public RModel modelDoorBathroomStage1;
 	public RModel modelDoorBathroomStage2;
 	public RModel decalWall;
@@ -50,15 +51,10 @@ public class RModelLoader
 
 	public void init()
 	{
-		if(Global.DEBUG_NO_PROPS)
-		{
-			modelRoom = loadModel("room_empty.obj");	
-		}
-		else
-		{		
-			modelRoom = loadModel("room_with_props.obj");
-		}
+		if(!Global.DEBUG_NO_PROPS)	
+			modelProps = loadModel("model_props.obj");
 		
+		modelRoom = loadModel("model_room.obj");
 		modelDoorBathroomStage1 = loadModel("door_bathroom_stage1.obj");
 		modelDoorBathroomStage2 = loadModel("door_bathroom_stage2.obj");
 		

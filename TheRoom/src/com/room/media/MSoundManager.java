@@ -4,7 +4,9 @@ import com.room.Global;
 import com.room.Options;
 import com.room.R;
 import com.room.render.RDecalSystem;
+import com.room.render.RRenderer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -19,6 +21,11 @@ import android.util.Log;
 
 public class MSoundManager
 {
+	//TBD - put these in the options
+	public static final float MASTER_VOLUME = 1.0f;
+	public static final float MUSIC_VOLUME = 1.0f;
+	public static final float SOUNDEFFCTS_VOLUME = 1.0f;
+	
 	//SINGLETON!!
 	public static MSoundManager getInstance()
 	{
@@ -29,38 +36,126 @@ public class MSoundManager
 		return instance;
 	}
 	
+	static class LocationSensitiveSound
+	{
+		int resourceID;
+		float x,y;
+		float innerRadiusSquared;
+		float outerRadiusSquared;
+		MediaPlayer mediaPlayer;
+		
+		LocationSensitiveSound(int resourceID, float x, float y, float innerRadius, float outerRadius)
+		{
+			this.resourceID = resourceID;
+			this.x = x;
+			this.y = y;
+			this.innerRadiusSquared = innerRadius * innerRadius;
+			this.outerRadiusSquared = outerRadius * outerRadius;
+			this.mediaPlayer = MediaPlayer.create(Global.mainActivity, resourceID);
+			this.mediaPlayer.setLooping(true);
+			mediaPlayer.setVolume(0, 0);
+			mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
+			{				
+				@Override
+				public void onPrepared(MediaPlayer player)
+				{
+					player.start();
+				}
+			});
+		}
+		
+		public float getVolumeAt(float px, float py)
+		{
+			float dx = px-x;
+			float dy = py-y;
+			float distSquared = dx*dx+dy*dy;
+			float volume = 0.0f;
+			if(distSquared <= innerRadiusSquared)
+			{
+				volume = 1.0f;
+			}
+			else if(distSquared <= outerRadiusSquared)
+			{
+				volume = (outerRadiusSquared - distSquared) / (outerRadiusSquared - innerRadiusSquared);
+			}
+			else
+			{
+				volume = 0;
+			}			
+			
+			return volume * MASTER_VOLUME * SOUNDEFFCTS_VOLUME;
+		}
+		
+		public void setVolume(float leftVolume, float rightVolume)
+		{
+			mediaPlayer.setVolume(leftVolume, rightVolume);
+		}
+		
+		public void mute()
+		{
+			mediaPlayer.setVolume(0,0);
+		}
+		
+		public void stopAndRelease()
+		{
+			mediaPlayer.stop();
+			mediaPlayer.release();
+		}		
+	}
+	
    public void init()
    {
-	   mSoundPool_BG = new SoundPool( 20, AudioManager.STREAM_MUSIC, 0);
-	   if ( mSoundHashMap_BG == null ) mSoundHashMap_BG = new HashMap<Integer, Integer>();
-	   mSoundHashMap_BG.put(R.raw.dark_laugh,mSoundPool_BG.load(Global.mainActivity, R.raw.dark_laugh, 1));
-	   mSoundHashMap_BG.put(R.raw.mummy,mSoundPool_BG.load(Global.mainActivity, R.raw.mummy, 1));
-	   mSoundHashMap_BG.put(R.raw.pterodactyl_scream,mSoundPool_BG.load(Global.mainActivity, R.raw.pterodactyl_scream, 1));
-	   mSoundHashMap_BG.put(R.raw.scary,mSoundPool_BG.load(Global.mainActivity, R.raw.scary, 1));
-	   mSoundHashMap_BG.put(R.raw.elevator,mSoundPool_BG.load(Global.mainActivity, R.raw.elevator, 1));
-
-	   mSoundPool_SE = new SoundPool( 20, AudioManager.STREAM_MUSIC, 0);
-	   if ( mSoundHashMap_SE == null ) mSoundHashMap_SE = new HashMap<Integer, Integer>();
-	   mSoundHashMap_SE.put(R.raw.water_drop,mSoundPool_SE.load(Global.mainActivity, R.raw.water_drop, 1));
-	   mSoundHashMap_SE.put(R.raw.swords,mSoundPool_SE.load(Global.mainActivity, R.raw.swords, 1));
-	   mSoundHashMap_SE.put(R.raw.footstep01,mSoundPool_SE.load(Global.mainActivity, R.raw.footstep01, 1));
-	   mSoundHashMap_SE.put(R.raw.footstep02,mSoundPool_SE.load(Global.mainActivity, R.raw.footstep02, 1));
-	   mSoundHashMap_SE.put(R.raw.footstep03,mSoundPool_SE.load(Global.mainActivity, R.raw.footstep03, 1));
-	   mSoundHashMap_SE.put(R.raw.footstep04,mSoundPool_SE.load(Global.mainActivity, R.raw.footstep04, 1));	   
+	   soundEffectsPool = new SoundPool( 20, AudioManager.STREAM_MUSIC, 0);
+	   if ( soundEffectsMap == null ) soundEffectsMap = new HashMap<Integer, Integer>();	   
+	   soundEffectsMap.put(R.raw.swords,soundEffectsPool.load(Global.mainActivity, R.raw.swords, 1));
+	   soundEffectsMap.put(R.raw.footstep01,soundEffectsPool.load(Global.mainActivity, R.raw.footstep01, 1));
+	   soundEffectsMap.put(R.raw.footstep02,soundEffectsPool.load(Global.mainActivity, R.raw.footstep02, 1));
+	   soundEffectsMap.put(R.raw.footstep03,soundEffectsPool.load(Global.mainActivity, R.raw.footstep03, 1));
+	   soundEffectsMap.put(R.raw.footstep04,soundEffectsPool.load(Global.mainActivity, R.raw.footstep04, 1));
+	   
+	   if ( locationSensitiveSounds == null ) locationSensitiveSounds = new ArrayList<LocationSensitiveSound>();
+	   
+	   locationSensitiveSounds.add(
+			   new LocationSensitiveSound
+			   (
+					   R.raw.water_drop,
+					   -18.6f,-56.6f,		//x,y
+					   10,40)	//inner, outer
+			   );
+	   
+	   locationSensitiveSounds.add(
+			   new LocationSensitiveSound
+			   (
+					   R.raw.doorknock,
+					   -20,40,		//x,y
+					   0,20)	//inner, outer
+			   );
+	   
+	   locationSensitiveSounds.add(
+			   new LocationSensitiveSound
+			   (
+					   R.raw.deadman,
+					   12,23,		//x,y
+					   0,15)	//inner, outer
+			   );	   
    }	
 	
-   public void playSound(int resource)
+   public void playSoundEffect(int resource)
    {
-	   if ( Options.isSoundEffectsEnabled() && mSoundHashMap_SE != null && mSoundHashMap_SE.containsKey(resource) )
+	   if ( Options.isSoundEffectsEnabled() && soundEffectsMap != null && soundEffectsMap.containsKey(resource) )
 	   {
-           mSoundPool_SE.play(mSoundHashMap_SE.get(resource), 0.3f, 0.3f, 1, 0, 1f);
-           Log.e("MMusic", "Played sound");
+		   float volume = MASTER_VOLUME * SOUNDEFFCTS_VOLUME;
+           soundEffectsPool.play(soundEffectsMap.get(resource), volume, volume, 1, 0, 1f);           
        }
    }
    
    public void playTimedSound()
    {
-	   if (Options.isMusicEnabled()) {
+	   //tbd temporary disable,
+	   // 1) SoundPools are too small to work with this
+	   // 2) may have to sync with random events
+	   
+	   /*if (Options.isMusicEnabled()) {
 		   mTimer = new Timer();
 		   it = (Iterator) mSoundHashMap_BG.entrySet().iterator();
 		   mTimerTask = new TimerTask() {
@@ -72,56 +167,127 @@ public class MSoundManager
 			   }
 		   };
 		   mTimer.schedule(mTimerTask, 15000, 15000);
-	  }
+	  }*/
    }
 
-   public void playBGmusic(int resource)
-   {
-	   if (Options.isMusicEnabled()){
-		   Log.e("MMusic", "Play background music");
-		   if ( mMainSound != null ) mMainSound.release();
-		   mMainSound = MediaPlayer.create(Global.mainActivity, resource);
-		   mMainSound.setLooping(true);
-		   mMainSound.start();
-	   }
-   }
+	public void playMusic(int resource)
+	{				
+		//stop the music if music is disabled
+		if (!Options.isMusicEnabled())
+		{
+			if ( musicMediaPlayer != null )
+			{
+				stopAndReleaseMusic();
+			}	
+		}
+		
+		//dont play again if playing already
+		if(resource == currentMusicResourceID)
+			return;		
+		
+		//play the music if it is enabled
+		if (Options.isMusicEnabled())
+		{
+			if ( musicMediaPlayer != null )
+			{
+				stopAndReleaseMusic();
+			}
+			
+			musicMediaPlayer = MediaPlayer.create(Global.mainActivity, resource);
+			float volume = MASTER_VOLUME * MUSIC_VOLUME;
+			musicMediaPlayer.setVolume(volume, volume);
+			musicMediaPlayer.setLooping(true);
+					   
+			musicMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
+			{				
+				@Override
+				public void onPrepared(MediaPlayer player)
+				{
+					player.start();
+				}
+			});		
+			
+			currentMusicResourceID = resource;
+		}
+	}
    
-   public boolean isPlaying()
+   public void stopAndReleaseMusic()
    {
-	   if ( mMainSound != null )
+	   if (musicMediaPlayer != null) {
+ 	 	   musicMediaPlayer.stop();
+   	       musicMediaPlayer.release();
+	       musicMediaPlayer = null;
+	       currentMusicResourceID = -1;
+	   }
+   }   
+   
+   public boolean isMusicPlaying()
+   {
+	   if ( musicMediaPlayer != null )
 	   {
-	       return mMainSound.isPlaying();
+	       return musicMediaPlayer.isPlaying();
 	   }
 	   return false;
    }
    
-   public void updateSE(int x, int y)
+   public void updateLocation(float x, float y)
    {
 	   if ( Options.isSoundEffectsEnabled() )
 	   {
-		   //TODO
+		   for(LocationSensitiveSound sound:locationSensitiveSounds)
+		   {
+			   float volume = sound.getVolumeAt(x, y);
+			   sound.setVolume(volume, volume);
+		   }
 	   }
    }
    
-   public void stopBGmusic()
+
+   public void muteLocationSensitiveSounds()
    {
-	   if (mMainSound != null) {
- 	 	   mMainSound.stop();
-   	       mMainSound.release();
-	       mMainSound = null;
-	   }
+	   if ( Options.isSoundEffectsEnabled() )
+	   {
+		   for(LocationSensitiveSound sound:locationSensitiveSounds)
+		   {
+			   sound.mute();
+		   }		   
+	   }	
    }
    
-   private MediaPlayer mMainSound = null;
-   private SoundPool mSoundPool_BG = null;
-   private SoundPool mSoundPool_SE = null; //sound effects
-   private HashMap<Integer, Integer> mSoundHashMap_BG = null;
-   private HashMap<Integer, Integer> mSoundHashMap_SE = null;
-   private Random mRandom;
+   public void stopAllSounds()
+   {
+	   stopAndReleaseMusic();	   
+	   
+	   for(LocationSensitiveSound sound:locationSensitiveSounds)
+	   {
+		   sound.stopAndRelease();
+	   }	
+	   
+	   Iterator effectsIterator = (Iterator) soundEffectsMap.entrySet().iterator();
+	   
+	   while (effectsIterator.hasNext())
+	   {   
+		   soundEffectsPool.stop((Integer)((HashMap.Entry)effectsIterator.next()).getKey());
+	   }
+	   	   
+   }
    
-   private Timer mTimer = null;
-   private TimerTask mTimerTask = null;
-   private Iterator it = null;
+   
+	private MSoundManager()   
+	{
+		musicMediaPlayer = null;
+		soundEffectsPool = null;
+		soundEffectsMap = null;
+		locationSensitiveSounds = null;
+	}
+   
+   private MediaPlayer musicMediaPlayer = null;
+   private int currentMusicResourceID;
+
+   private SoundPool soundEffectsPool = null; //sound effects
+   private HashMap<Integer, Integer> soundEffectsMap = null;
+
+   private ArrayList<LocationSensitiveSound> locationSensitiveSounds = null;
    
    private static MSoundManager instance;   
 }

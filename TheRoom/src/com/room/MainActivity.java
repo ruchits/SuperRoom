@@ -75,7 +75,7 @@ public class MainActivity extends Activity implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
-		  MSoundManager.getInstance().playSound(R.raw.swords);
+		  MSoundManager.getInstance().playSoundEffect(R.raw.swords);
 	      switch (v.getId()) {
 	      case R.id.continue_button:
 	         startGame(); //TODO: Save some state
@@ -125,22 +125,18 @@ public class MainActivity extends Activity implements OnClickListener
 
 	
 	@Override
-	protected void onResume() {
-	      super.onResume();
-          if ( Options.isMusicEnabled() == false ) {
-        	  MSoundManager.getInstance().stopBGmusic();
-          }
-          if ( ! MSoundManager.getInstance().isPlaying() && Options.isMusicEnabled() == true )
-          {
-        	  Log.e("MainActivity","onResume() - Resume music");
-      		  MSoundManager.getInstance().playBGmusic(R.raw.haunting);
-          }
-          else if ( Global.RESUME_MUSIC == true )
-          {
-        	  MSoundManager.getInstance().playBGmusic(R.raw.haunting);
-        	  Global.RESUME_MUSIC = false;
-          }
+	protected void onResume()
+	{
+		super.onResume();
+		MSoundManager.getInstance().playMusic(R.raw.music_menu);
 	}
+	
+	@Override
+	protected void onDestroy()
+	{		
+		super.onDestroy();
+		MSoundManager.getInstance().stopAllSounds();
+	}	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

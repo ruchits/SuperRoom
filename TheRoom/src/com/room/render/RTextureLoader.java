@@ -35,7 +35,9 @@ public class RTextureLoader
 		textureID.put("floor_hardwood", loadTexture(R.drawable.floor_hardwood,false,false));
 		textureID.put("wall_board", loadTexture(R.drawable.wall_board,false,false));
 		textureID.put("wall_plaster",loadTexture(R.drawable.wall_plaster,false,false));
-		textureID.put("prop_barrel", loadTexture(R.drawable.prop_barrel,false,false));
+		textureID.put("prop_urn_body", loadTexture(R.drawable.prop_urn_body,false,false));
+		textureID.put("prop_urn_ash", loadTexture(R.drawable.prop_urn_ash,false,false));
+		textureID.put("prop_urn_sticks", loadTexture(R.drawable.prop_urn_sticks,false,false));
 		textureID.put("prop_bed", loadTexture(R.drawable.prop_bed,false,false));
 		textureID.put("prop_body", loadTexture(R.drawable.prop_body,false,false));
 		textureID.put("prop_drawer", loadTexture(R.drawable.prop_drawer,false,false));
@@ -45,6 +47,8 @@ public class RTextureLoader
 		textureID.put("prop_toilet", loadTexture(R.drawable.prop_toilet,false,false));
 		textureID.put("prop_tpaper", loadTexture(R.drawable.prop_tpaper,false,false));
 		textureID.put("prop_warrior", loadTexture(R.drawable.prop_warrior,false,false));
+		textureID.put("prop_phone_receiver", loadTexture(R.drawable.prop_phone_receiver,false,false));
+		textureID.put("prop_phone_base", loadTexture(R.drawable.prop_phone_base,false,false));
 		textureID.put("door_bathroom", loadTexture(R.drawable.door_bathroom,false,false));
 		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob,true,true));
 		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring,true,true));
@@ -59,6 +63,7 @@ public class RTextureLoader
 		textureID.put("decal_small_crack", loadTexture(R.drawable.decal_small_crack,true,true));
 		textureID.put("decal_big_crack", loadTexture(R.drawable.decal_big_crack,true,true));
 		textureID.put("decal_number", loadTexture(R.drawable.decal_number,true,true));
+		textureID.put("portrait_girl", loadTexture(R.drawable.portrait_girl,true,true));
 	}
 	
 	public int getTextureID(String textureName)

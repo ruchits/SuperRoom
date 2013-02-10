@@ -32,7 +32,7 @@ public class Credits extends Activity implements OnTouchListener
 		    int y = (int)event.getY();
 		    Log.e("Credits", "x: " + x + ", y: " + y + " | where screen_width = " + screen_width + ", screen_height = " + screen_height);
 		    if ( x < screen_width * 1 / 8 && y > screen_height * 5 / 6 ) {
-				MSoundManager.getInstance().playSound(R.raw.swords);
+				MSoundManager.getInstance().playSoundEffect(R.raw.swords);
 		    	super.onBackPressed();
 		    }
 		}

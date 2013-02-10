@@ -1,6 +1,7 @@
 package com.room.render;
 
 import com.room.Global;
+import com.room.MainActivity;
 import com.room.R;
 import com.room.media.MSoundManager;
 import com.room.media.MVideoActivity;
@@ -79,7 +80,6 @@ public class RRenderActivity extends Activity
                .setCancelable(true)
                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                	   Global.RESUME_MUSIC = true;
                 	   finish();
                 	   UTransitionUtil.overridePendingTransition(RRenderActivity.this,R.anim.fade_in, R.anim.fade_out);
                    }
@@ -90,11 +90,20 @@ public class RRenderActivity extends Activity
     }
     
 	@Override
-	protected void onResume() {
-	      super.onResume();
-	      MSoundManager.getInstance().playBGmusic(R.raw.wind);
-	      MSoundManager.getInstance().playTimedSound();
+	protected void onResume()
+	{
+		super.onResume();
+		
+		//tbd - replace with real bg music here:
+		MSoundManager.getInstance().playMusic(R.raw.music_game);
 	}
+	
+	@Override
+	protected void onDestroy()
+	{		
+		super.onDestroy();
+		MSoundManager.getInstance().muteLocationSensitiveSounds();
+	}		
 }
 
 

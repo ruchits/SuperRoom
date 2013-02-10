@@ -35,7 +35,7 @@ void main (void)
 	vec3 normal = normalize(vNormal);
 	float diffuseWeight = max(dot(normal,-lightDir), 0.0);
 
-	float shadowValue = diffuseWeight * 0.1;
+	float shadowValue = diffuseWeight * 0.07;
 
 
 	float distanceToPointSquared = (vPosition.x - uSpotLightPos.x) * (vPosition.x - uSpotLightPos.x)
@@ -53,7 +53,7 @@ void main (void)
 		final_color = vec4(texColor.rgb * diffuseWeight * spotWeight * diffuseFalloff, texColor.a);
 
 		//temp yellowing-effect hack:
-		final_color.xyz *= vec3(1.0,0.9,0.7);
+		final_color.xyz *= vec3(1.4,1.2,0.8);
 
 		float finalShadowValue = shadowValue * (1.0-(spotWeight*diffuseFalloff));
 		final_color += vec4(finalShadowValue,finalShadowValue,finalShadowValue,0.0);

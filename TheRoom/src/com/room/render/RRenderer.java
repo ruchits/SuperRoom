@@ -7,6 +7,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.room.Global;
 import com.room.media.MFootstepSound;
+import com.room.media.MSoundManager;
 import com.room.render.RMath.V2;
 
 import android.app.ProgressDialog;
@@ -149,6 +150,9 @@ public class RRenderer implements GLSurfaceView.Renderer
         //check if we are in a poi
         checkPOI();
         
+        //update location sensitive sounds
+        updateLocationSensitiveSounds();
+        
         //Calculate the point the camera is currently looking at
         float[] camLookAt = {camPos[0]+camForward[0],camPos[1]+camForward[1],camPos[2]+camForward[2]};
         
@@ -198,6 +202,9 @@ public class RRenderer implements GLSurfaceView.Renderer
         
         //Draw objects        
         RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        
+        if(!Global.DEBUG_NO_PROPS)
+        	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec);
         
         if(Global.CURRENT_DAY < 3)
         	RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec);
@@ -299,6 +306,14 @@ public class RRenderer implements GLSurfaceView.Renderer
     	{
     		String poiName = RPOIManager.getInstance().checkPOI(camPos[0], camPos[2], camForward[0], camForward[2]);
     		RTopButtons.getInstance().setPOI(poiName);
+    	}
+    }
+    
+    private void updateLocationSensitiveSounds()
+    {
+    	if(frameCtr %5 == 2)
+    	{
+    		MSoundManager.getInstance().updateLocation(camPos[0], camPos[2]);
     	}
     }
     
