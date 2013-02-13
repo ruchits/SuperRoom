@@ -20,7 +20,7 @@ public class RModel
 		texBuffer = new ArrayList<FloatBuffer>();
 	}
 	
-    public void draw(float[] projViewMatrix, float[] spotLightPos, float[] spotLightVec)
+    public void draw(float[] projViewMatrix, float[] spotLightPos, float[] spotLightVec, float spotLightVariation)
     {    	
     	//Loops through all model groups and draws them:
     	for(int i=0; i<numGroups; ++i)
@@ -30,6 +30,7 @@ public class RModel
 	
 	        GLES20.glUniform3fv(RShaderLoader.getInstance().main_uSpotLightPos, 1, spotLightPos, 0);
 	        GLES20.glUniform3fv(RShaderLoader.getInstance().main_uSpotLightVec, 1, spotLightVec, 0);
+	        GLES20.glUniform1f(RShaderLoader.getInstance().main_uSpotLightVariation, spotLightVariation);
 	        
 	        vertexBuffer.get(i).position(0);
 			GLES20.glVertexAttribPointer(RShaderLoader.getInstance().main_aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer.get(i));

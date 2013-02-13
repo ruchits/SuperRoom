@@ -103,7 +103,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         Global.GL_HEIGHT = height;
         
         //temp speed hack for BB10:
-		if(Global.GL_WIDTH >= 960)
+		if(Global.GL_WIDTH >= 1000)
 		{
 			Global.GL_WIDTH*=0.50f;
 			Global.GL_HEIGHT*=0.50f;
@@ -200,21 +200,24 @@ public class RRenderer implements GLSurfaceView.Renderer
         Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);          
         Matrix.multiplyMV(spotLightVec, 0, axisRot, 0, spotLightVec, 0);
         
+        //generate a random number flicker the flashlight
+        float spotLightVariation = RMath.getRandFlashlightFlicker();
+        
         //Draw objects        
-        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         
         if(!Global.DEBUG_NO_PROPS)
-        	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         
         if(Global.CURRENT_DAY < 3)
-        	RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        	RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         else
-        	RModelLoader.getInstance().modelDoorBathroomStage2.draw(viewProjMatrix,spotLightPos,spotLightVec);
+        	RModelLoader.getInstance().modelDoorBathroomStage2.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 
         if(Global.DEBUG_SHOW_POI_BOXES)
-        	RModelLoader.getInstance().modelPOI.draw(viewProjMatrix, spotLightPos, spotLightVec);
+        	RModelLoader.getInstance().modelPOI.draw(viewProjMatrix, spotLightPos, spotLightVec,spotLightVariation);
         
-        RDecalSystem.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec);
+        RDecalSystem.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         RTouchController.getInstance().draw();
         RTopButtons.getInstance().draw();
         

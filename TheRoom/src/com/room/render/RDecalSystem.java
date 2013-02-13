@@ -14,7 +14,7 @@ public class RDecalSystem
 		return instance;
 	}
 	
-	public void draw(float[] viewProjMatrix, float[] spotLightPos, float[] spotLightVec)
+	public void draw(float[] viewProjMatrix, float[] spotLightPos, float[] spotLightVec, float spotLightVariation)
 	{
 		if(Global.DEBUG_NO_DECALS)
 			return;
@@ -22,28 +22,28 @@ public class RDecalSystem
 		switch(Global.CURRENT_DAY)
 		{
 			case 1:
-				RModelLoader.getInstance().decalNumber.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalNumber.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 			break;
 			
 			case 2:
-				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 			break;
 			
 			case 3:
-				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
-				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 			break;
 			
 			case 4:
-				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
-				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec);
-				RModelLoader.getInstance().decalCeilingMinor.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalCeilingMinor.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 			break;
 			
 			case 5:
-				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec);
-				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec);
-				RModelLoader.getInstance().decalCeilingMajor.draw(viewProjMatrix,spotLightPos,spotLightVec);
+				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalCeilingMajor.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 			break;
 		}
 	}

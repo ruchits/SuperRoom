@@ -2,6 +2,7 @@ precision mediump float;
 
 uniform vec3 uSpotLightVec;
 uniform vec3 uSpotLightPos;
+uniform float uSpotLightVariation;
 
 uniform sampler2D uTexId;
 
@@ -54,6 +55,9 @@ void main (void)
 
 		//temp yellowing-effect hack:
 		final_color.xyz *= vec3(1.4,1.2,0.8);
+
+		//flicker effect:
+		final_color.xyz *= uSpotLightVariation;
 
 		float finalShadowValue = shadowValue * (1.0-(spotWeight*diffuseFalloff));
 		final_color += vec4(finalShadowValue,finalShadowValue,finalShadowValue,0.0);

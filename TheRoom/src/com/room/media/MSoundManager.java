@@ -128,7 +128,7 @@ public class MSoundManager
 			   (
 					   R.raw.doorknock,
 					   -20,40,		//x,y
-					   0,20)	//inner, outer
+					   10,20)	//inner, outer
 			   );
 	   
 	   locationSensitiveSounds.add(

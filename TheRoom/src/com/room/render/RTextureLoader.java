@@ -49,7 +49,9 @@ public class RTextureLoader
 		textureID.put("prop_warrior", loadTexture(R.drawable.prop_warrior,false,false));
 		textureID.put("prop_phone_receiver", loadTexture(R.drawable.prop_phone_receiver,false,false));
 		textureID.put("prop_phone_base", loadTexture(R.drawable.prop_phone_base,false,false));
+		textureID.put("prop_frame1", loadTexture(R.drawable.prop_frame1,false,false));
 		textureID.put("door_bathroom", loadTexture(R.drawable.door_bathroom,false,false));
+		textureID.put("door_fake", loadTexture(R.drawable.door_fake,false,false));
 		textureID.put("joystick_knob", loadTexture(R.drawable.joystick_knob,true,true));
 		textureID.put("joystick_ring", loadTexture(R.drawable.joystick_ring,true,true));
 		textureID.put("ui_poi", loadTexture(R.drawable.ui_poi,true,true));

@@ -40,6 +40,7 @@ public class RShaderLoader
 	public int main_uTexId;
 	public int main_uSpotLightVec;
 	public int main_uSpotLightPos;
+	public int main_uSpotLightVariation;
 	
 	//screenImage variable maps
 	//==========================
@@ -69,6 +70,7 @@ public class RShaderLoader
 		main_uTexId = GLES20.glGetUniformLocation(main_progId, "uTexId");
 		main_uSpotLightVec = GLES20.glGetUniformLocation(main_progId, "uSpotLightVec");
 		main_uSpotLightPos = GLES20.glGetUniformLocation(main_progId, "uSpotLightPos");
+		main_uSpotLightVariation = GLES20.glGetUniformLocation(main_progId, "uSpotLightVariation");
 		
 		//bind screenImage attributes
 		screenImage_aPosition = GLES20.glGetAttribLocation(screenImage_progId, "aPosition");

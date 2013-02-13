@@ -192,6 +192,15 @@ public class RMath
 		return rand.nextInt(inclusiveMax-inclusiveMin+1) + inclusiveMin;
 	}
 	
+	public static float getRandFlashlightFlicker()
+	{
+		float num = (float) Math.abs(rand.nextGaussian()*0.5);
+		if(num > 1) num = 0;
+		num*=0.05f;
+		num = 1-num;
+		return num;
+	}
+	
 	public static float RAD_TO_DEG = 57.295779513082320876798154814105f;
 	public static float DEG_TO_RAD = 0.01745329251994329576923690768489f;
 	public static float PI_TIMES_4 = 12.566370614359172953850573533118f;
