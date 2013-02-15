@@ -30,7 +30,17 @@ public class MainActivity extends Activity implements OnClickListener
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		Global.SCREEN_WIDTH = displaymetrics.widthPixels;
-		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;				
+		Global.SCREEN_HEIGHT = displaymetrics.heightPixels;		
+		
+        Global.GL_WIDTH = Global.SCREEN_WIDTH;
+        Global.GL_HEIGHT = Global.SCREEN_HEIGHT;		
+		
+        //temp speed hack for BB10:
+		if(Global.GL_WIDTH >= 960)
+		{
+			Global.GL_WIDTH*=0.50f;
+			Global.GL_HEIGHT*=0.50f;
+		}		
 		
         //ALL loaders should initialize here
         SLayoutLoader.getInstance().init();		

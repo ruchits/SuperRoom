@@ -53,7 +53,10 @@ public class MSoundManager
 			this.outerRadiusSquared = outerRadius * outerRadius;
 			this.mediaPlayer = MediaPlayer.create(Global.mainActivity, resourceID);
 			this.mediaPlayer.setLooping(true);
-			mediaPlayer.setVolume(0, 0);
+			
+			try{mediaPlayer.setVolume(0, 0);}
+			catch(Exception e){}
+			
 			mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
 			{				
 				@Override
@@ -88,12 +91,14 @@ public class MSoundManager
 		
 		public void setVolume(float leftVolume, float rightVolume)
 		{
-			mediaPlayer.setVolume(leftVolume, rightVolume);
+			try{mediaPlayer.setVolume(leftVolume, rightVolume);}
+			catch(Exception e){}
 		}
 		
 		public void mute()
 		{
-			mediaPlayer.setVolume(0,0);
+			try{mediaPlayer.setVolume(0,0);}
+			catch(Exception e){}
 		}
 		
 		public void stopAndRelease()
@@ -195,7 +200,10 @@ public class MSoundManager
 			
 			musicMediaPlayer = MediaPlayer.create(Global.mainActivity, resource);
 			float volume = MASTER_VOLUME * MUSIC_VOLUME;
-			musicMediaPlayer.setVolume(volume, volume);
+			
+			try{musicMediaPlayer.setVolume(volume, volume);}
+			catch(Exception e){}
+			
 			musicMediaPlayer.setLooping(true);
 					   
 			musicMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
