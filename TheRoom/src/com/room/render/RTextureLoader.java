@@ -24,6 +24,7 @@ public class RTextureLoader
 	}	
 	
 	public int invalidTextureID;
+	private static final String TAG = "com.render.RTextureLoader";
 	
 	public void init()
 	{
@@ -87,7 +88,10 @@ public class RTextureLoader
 		int texture[] = new int[1];
 		try
 		{
-			img = BitmapFactory.decodeResource(Global.mainActivity.getResources(), resourceID);						
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inScaled = false;
+			img = BitmapFactory.decodeResource(Global.mainActivity.getResources(), resourceID, options);
+			//Log.e(TAG, "bitmap: resourceID= " + resourceID + "  width | height= " + img.getWidth() + " | " + img.getHeight());
 			
 			GLES20.glGenTextures(1, texture, 0);	
 			
