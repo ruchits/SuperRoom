@@ -135,7 +135,8 @@ public class RRenderer implements GLSurfaceView.Renderer
     		fpsCtrDisplay = (frameCtr-fpsCtrBaseFrame)*1000.0f/(currentTime - fpsCtrBaseTime);
     		fpsCtrBaseTime = currentTime;
     		fpsCtrBaseFrame=frameCtr;
-    		//Log.d("FPS", fpsCtrDisplay+"");
+    		if(Global.DEBUG_SHOW_FPS)
+    			Log.d("FPS", fpsCtrDisplay+"");
     	}    	
     	
     	//process all controller inputs
@@ -210,9 +211,9 @@ public class RRenderer implements GLSurfaceView.Renderer
         {
         	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         	RModelLoader.getInstance().modelPropsDeadman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	RModelLoader.getInstance().modelPropsDeadwoman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	//RModelLoader.getInstance().modelPropsDeadwoman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         	RModelLoader.getInstance().modelPropsStatues.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	RModelLoader.getInstance().modelPropsNoCull.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	//RModelLoader.getInstance().modelPropsNoCull.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         }
         
         if(Global.CURRENT_DAY < 3)

@@ -59,10 +59,10 @@ public class RModelLoader
 		{
 			modelProps = loadModel("model_props.obj");
 			modelPropsDeadman = loadModel("model_props_deadman.obj");
-			modelPropsDeadwoman = loadModel("model_props_deadwoman.obj");
+			//modelPropsDeadwoman = loadModel("model_props_deadwoman.obj");
 			modelPropsStatues = loadModel("model_props_statues.obj");
-			modelPropsNoCull = loadModel("model_props_nocull.obj");
-			modelPropsNoCull.enableCull(false);
+			//modelPropsNoCull = loadModel("model_props_nocull.obj");
+			//modelPropsNoCull.enableCull(false);
 		}
 		
 		modelRoom = loadModel("model_room.obj");

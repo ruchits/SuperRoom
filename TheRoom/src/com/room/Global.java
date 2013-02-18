@@ -18,6 +18,7 @@ public class Global
 	public static boolean DEBUG_NO_DECALS = false;
 	public static boolean DEBUG_NO_PROPS = false;
 	public static boolean DEBUG_SHOW_POI_BOXES = false;
+	public static boolean DEBUG_SHOW_FPS = true;
 	
 	public static ProgressDialog progDailog;
 }

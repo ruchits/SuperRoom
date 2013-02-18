@@ -5,6 +5,7 @@ uniform vec3 uSpotLightPos;
 uniform float uSpotLightVariation;
 
 uniform sampler2D uTexId;
+uniform sampler2D uTexAlphaId;
 
 varying vec4 vPosition;
 varying vec3 vNormal;
@@ -47,7 +48,8 @@ void main (void)
 	float diffuseFalloff = 1.0-clamp((distanceToPointSquared/max_light_distance_squared),0.0,1.0);
 
 	vec4 texColor = texture2D(uTexId, vTexCoords);
-		
+	texColor.a = texture2D(uTexAlphaId, vTexCoords).r;		
+
 	final_color = vec4(texColor.rgb * diffuseWeight * spotWeight * diffuseFalloff, texColor.a);
 
 	//temp yellowing-effect hack:
@@ -58,7 +60,6 @@ void main (void)
 
 	float finalShadowValue = shadowValue * (1.0-(spotWeight*diffuseFalloff));
 	final_color += vec4(finalShadowValue,finalShadowValue,finalShadowValue,0.0);
-
 
 	gl_FragColor = final_color;
 }
