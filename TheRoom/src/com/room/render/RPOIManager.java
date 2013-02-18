@@ -71,7 +71,7 @@ public class RPOIManager
 		
 		try
 		{
-			InputStream is = assetManager.open(assetName);			
+			InputStream is = assetManager.open("poi/"+assetName);			
 			BufferedReader in = new BufferedReader(new InputStreamReader(is));
 			
 			while(true)

@@ -207,7 +207,13 @@ public class RRenderer implements GLSurfaceView.Renderer
         RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         
         if(!Global.DEBUG_NO_PROPS)
+        {
         	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	RModelLoader.getInstance().modelPropsDeadman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	RModelLoader.getInstance().modelPropsDeadwoman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	RModelLoader.getInstance().modelPropsStatues.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	RModelLoader.getInstance().modelPropsNoCull.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        }
         
         if(Global.CURRENT_DAY < 3)
         	RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);

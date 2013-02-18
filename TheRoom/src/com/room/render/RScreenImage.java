@@ -34,7 +34,7 @@ public class RScreenImage
     };
     
 	
-	public RScreenImage(int textureID)
+	public RScreenImage(RTextureLoader.TextureID textureID)
 	{
 		this.textureID = textureID;
 		
@@ -69,9 +69,16 @@ public class RScreenImage
 		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().screenImage_aTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuffer);
 		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().screenImage_aTexCoords);
 		
-		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID);
-		GLES20.glUniform1i(RShaderLoader.getInstance().screenImage_uTexId, 0);		
+		//bind rgb texture
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);		
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID.rgb);	
+		GLES20.glUniform1i(RShaderLoader.getInstance().screenImage_uTexId, 0);
+
+		//bind alpha texture
+		//NOTE - Screen images must have an alpha channel mapped to GLTEXTURE1
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureID.alpha);				
+		GLES20.glUniform1i(RShaderLoader.getInstance().screenImage_uTexAlphaId, 1);
 
 		GLES20.glUniform2fv(RShaderLoader.getInstance().screenImage_uPosition, 1, position, 0);
 		GLES20.glUniform2fv(RShaderLoader.getInstance().screenImage_uSize, 1, size, 0);
@@ -117,5 +124,5 @@ public class RScreenImage
 	private boolean visible = true;
 	private float[] position = {0,0};
 	private float[] size = {1,1};
-	private int textureID;
+	private RTextureLoader.TextureID textureID;
 }

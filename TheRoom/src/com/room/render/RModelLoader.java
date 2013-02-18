@@ -34,6 +34,10 @@ public class RModelLoader
 		
 	public RModel modelRoom;
 	public RModel modelProps;
+	public RModel modelPropsDeadman;
+	public RModel modelPropsDeadwoman;
+	public RModel modelPropsStatues;
+	public RModel modelPropsNoCull;
 	public RModel modelDoorBathroomStage1;
 	public RModel modelDoorBathroomStage2;
 	public RModel decalWall;
@@ -52,7 +56,14 @@ public class RModelLoader
 	public void init()
 	{
 		if(!Global.DEBUG_NO_PROPS)	
+		{
 			modelProps = loadModel("model_props.obj");
+			modelPropsDeadman = loadModel("model_props_deadman.obj");
+			modelPropsDeadwoman = loadModel("model_props_deadwoman.obj");
+			modelPropsStatues = loadModel("model_props_statues.obj");
+			modelPropsNoCull = loadModel("model_props_nocull.obj");
+			modelPropsNoCull.enableCull(false);
+		}
 		
 		modelRoom = loadModel("model_room.obj");
 		modelDoorBathroomStage1 = loadModel("door_bathroom_stage1.obj");
@@ -193,7 +204,7 @@ public class RModelLoader
 		
 		try
 		{
-			InputStream is = assetManager.open(assetName);			
+			InputStream is = assetManager.open("geometry/"+assetName);			
 			BufferedReader in = new BufferedReader(new InputStreamReader(is));
 			
 			while(true)
@@ -298,7 +309,7 @@ public class RModelLoader
 		AssetManager assetManager = Global.mainActivity.getAssets();
         try
         {
-        	InputStream is = assetManager.open(assetName);
+        	InputStream is = assetManager.open("collision/"+assetName);
             BufferedReader in = new BufferedReader(new InputStreamReader(is));
             while(true)
             {

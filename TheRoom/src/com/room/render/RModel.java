@@ -44,8 +44,7 @@ public class RModel
 			GLES20.glVertexAttribPointer(RShaderLoader.getInstance().main_aTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuffer.get(i));
 			GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().main_aTexCoords);
 						
-			//load dynamic textures!
-			GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+
 			
 			StringTokenizer st = new StringTokenizer(textureID.get(i),"X");			
 			String textureName = st.nextToken();
@@ -60,10 +59,27 @@ public class RModel
 				}
 			}
 			
-			int textID = RTextureLoader.getInstance().getTextureID(textureName);
+			RTextureLoader.TextureID textID = RTextureLoader.getInstance().getTextureID(textureName);
 			
-			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textID);
+			//activate texture 0
+			GLES20.glActiveTexture(GLES20.GL_TEXTURE0);		
+			GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textID.rgb);			
 			GLES20.glUniform1i(RShaderLoader.getInstance().main_uTexId, 0);
+							
+			if(alphaEnabled)
+			{
+				GLES20.glUniform1i(RShaderLoader.getInstance().main_uUseAlpha, 1);
+				
+				//activate texture 1
+				GLES20.glActiveTexture(GLES20.GL_TEXTURE1);				
+				GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textID.alpha);
+				GLES20.glUniform1i(RShaderLoader.getInstance().main_uTexAlphaId, 1);				
+
+			}
+			else
+			{
+				GLES20.glUniform1i(RShaderLoader.getInstance().main_uUseAlpha, 0);
+			}
 			
 	        // Apply the projection and view transformation
 	        GLES20.glUniformMatrix4fv(RShaderLoader.getInstance().main_uProjViewMatrix, 1, false, projViewMatrix, 0);        
@@ -71,11 +87,17 @@ public class RModel
 	        if(alphaEnabled)
 	    		GLES20.glEnable(GLES20.GL_BLEND);
 	        
+	        if(!cullEnabled)
+	        	GLES20.glDisable(GLES20.GL_CULL_FACE);
+	        
 	        // Draw the triangles        
 	        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, numTriangles.get(i)*3);
 	        
 	        if(alphaEnabled)
-	    		GLES20.glDisable(GLES20.GL_BLEND);	        
+	    		GLES20.glDisable(GLES20.GL_BLEND);
+	        
+	        if(!cullEnabled)
+	        	GLES20.glEnable(GLES20.GL_CULL_FACE);	        
     	}
     }  
 	
@@ -84,7 +106,13 @@ public class RModel
     	alphaEnabled = b;
     }
     
+    public void enableCull(boolean b)
+    {
+    	cullEnabled = b;
+    }    
+    
     private boolean alphaEnabled = false;
+    private boolean cullEnabled = true;
     
 	//these are only to be filled by the ModelLoader:
     public int numGroups;

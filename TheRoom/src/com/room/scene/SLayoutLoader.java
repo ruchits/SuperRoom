@@ -38,7 +38,7 @@ public class SLayoutLoader
 		
 		try
 		{
-			InputStream is = assetManager.open(assetName);			
+			InputStream is = assetManager.open("layouts/"+assetName);			
 			BufferedReader in = new BufferedReader(new InputStreamReader(is));
 			
 			while(true)

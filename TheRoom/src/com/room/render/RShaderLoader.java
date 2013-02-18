@@ -38,6 +38,8 @@ public class RShaderLoader
 	//mapped uniforms
 	public int main_uProjViewMatrix;
 	public int main_uTexId;
+	public int main_uTexAlphaId;
+	public int main_uUseAlpha;
 	public int main_uSpotLightVec;
 	public int main_uSpotLightPos;
 	public int main_uSpotLightVariation;
@@ -51,6 +53,7 @@ public class RShaderLoader
 	
 	//mapped uniforms
 	public int screenImage_uTexId;
+	public int screenImage_uTexAlphaId;
 	public int screenImage_uPosition;
 	public int screenImage_uSize;
 	
@@ -68,6 +71,8 @@ public class RShaderLoader
 		//bind main uniforms
 		main_uProjViewMatrix = GLES20.glGetUniformLocation(main_progId, "uProjViewMatrix");
 		main_uTexId = GLES20.glGetUniformLocation(main_progId, "uTexId");
+		main_uTexAlphaId = GLES20.glGetUniformLocation(main_progId, "uTexAlphaId");
+		main_uUseAlpha = GLES20.glGetUniformLocation(main_progId, "uUseAlpha");
 		main_uSpotLightVec = GLES20.glGetUniformLocation(main_progId, "uSpotLightVec");
 		main_uSpotLightPos = GLES20.glGetUniformLocation(main_progId, "uSpotLightPos");
 		main_uSpotLightVariation = GLES20.glGetUniformLocation(main_progId, "uSpotLightVariation");
@@ -78,6 +83,7 @@ public class RShaderLoader
 		
 		//bind screenImage uniforms
 		screenImage_uTexId = GLES20.glGetUniformLocation(screenImage_progId, "uTexId");
+		screenImage_uTexAlphaId = GLES20.glGetUniformLocation(screenImage_progId, "uTexAlphaId");
 		screenImage_uPosition = GLES20.glGetUniformLocation(screenImage_progId, "uPosition");
 		screenImage_uSize = GLES20.glGetUniformLocation(screenImage_progId, "uSize");
 	}
@@ -155,7 +161,7 @@ public class RShaderLoader
 		
 		try
 		{
-			InputStream is = assetManager.open(assetName);			
+			InputStream is = assetManager.open("shaders/"+assetName);			
 			BufferedReader in = new BufferedReader(new InputStreamReader(is));
 			
 			while(true)
