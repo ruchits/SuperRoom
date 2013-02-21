@@ -103,8 +103,11 @@ public class MSoundManager
 		
 		public void stopAndRelease()
 		{
-			mediaPlayer.stop();
-			mediaPlayer.release();
+			if (mediaPlayer != null) {
+				mediaPlayer.stop();
+				mediaPlayer.reset();
+				mediaPlayer.release();
+			}
 		}		
 	}
 	
