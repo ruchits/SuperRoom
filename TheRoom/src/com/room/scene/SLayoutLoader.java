@@ -24,10 +24,12 @@ public class SLayoutLoader
 	}
 
 	public SLayout puzzleExample;
+	public SLayout mainMenu;
 	
 	public void init()
 	{
 		puzzleExample = loadLayout("puzzle_example.layout");
+		mainMenu = loadLayout("main_menu.layout");
 	}
 	
 	private SLayout loadLayout(String assetName)

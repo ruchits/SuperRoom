@@ -219,15 +219,27 @@ public class MSoundManager
 		}
 	}
    
-   public void stopAndReleaseMusic()
-   {
-	   if (musicMediaPlayer != null) {
- 	 	   musicMediaPlayer.stop();
-   	       musicMediaPlayer.release();
-	       musicMediaPlayer = null;
-	       currentMusicResourceID = -1;
-	   }
-   }   
+	public void stopMusic()
+	{				
+		//stop the music if music is disabled
+		if (!Options.isMusicEnabled())
+		{
+			if ( musicMediaPlayer != null )
+			{
+				stopAndReleaseMusic();
+			}	
+		}
+	}
+	
+	public void stopAndReleaseMusic()
+	{
+		if (musicMediaPlayer != null) {
+			musicMediaPlayer.stop();
+   	       	musicMediaPlayer.release();
+   	       	musicMediaPlayer = null;
+   	       	currentMusicResourceID = -1;
+		}
+	}
    
    public boolean isMusicPlaying()
    {
@@ -278,8 +290,7 @@ public class MSoundManager
 		   soundEffectsPool.stop((Integer)((HashMap.Entry)effectsIterator.next()).getKey());
 	   }
 	   	   
-   }
-   
+   } 
    
 	private MSoundManager()   
 	{
