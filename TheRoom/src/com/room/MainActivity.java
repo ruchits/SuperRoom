@@ -55,7 +55,7 @@ public class MainActivity extends Activity implements OnClickListener
 	         Global.GL_HEIGHT = Global.SCREEN_HEIGHT;		
 	 		
 	         //temp speed hack for BB10:
-	 		 if(Global.GL_WIDTH >= 960)
+	 		 if(Global.HALF_RES_RENDER)
 	 		 {
 	 	 		 Global.GL_WIDTH*=0.50f;
 	 			 Global.GL_HEIGHT*=0.50f;

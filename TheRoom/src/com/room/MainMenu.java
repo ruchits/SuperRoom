@@ -48,12 +48,22 @@ public class MainMenu extends SSceneActivity {
     public void onBoxTouched(String boxName)
     {	
 		MSoundManager.getInstance().playSoundEffect(R.raw.swords);
-    	if (boxName.equals("start")) {
+    	if (boxName.equals("start"))
+    	{
     		startGame(true);
     	}
-    	else if (boxName.equals("options")) {
+    	else if (boxName.equals("options"))
+    	{
     		showOptions();
     	}
+    	else if (boxName.equals("credits"))
+    	{
+    		showCredits();
+    	}      	
+    	else if (boxName.equals("quit"))
+    	{
+    		finish();
+    	}    	
     }
 	
 	private void startGame(boolean intro)

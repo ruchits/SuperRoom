@@ -103,7 +103,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         Global.GL_HEIGHT = height;
         
         //temp speed hack for BB10:
-		if(Global.GL_WIDTH >= 1000)
+		if(Global.HALF_RES_RENDER)
 		{
 			Global.GL_WIDTH*=0.50f;
 			Global.GL_HEIGHT*=0.50f;

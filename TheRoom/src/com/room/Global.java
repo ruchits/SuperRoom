@@ -13,6 +13,7 @@ public class Global
 	public static int CURRENT_DAY = 5;
 	public static int FIRST_DAY = 1;
 	public static int LAST_DAY = 5;
+	public static boolean HALF_RES_RENDER = true;
 
 	public static boolean DEBUG_SKIP_MENU = false;
 	public static boolean DEBUG_NO_DECALS = false;
