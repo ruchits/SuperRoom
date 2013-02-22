@@ -100,10 +100,15 @@ public class MSoundManager
 		
 		public void stopAndRelease()
 		{
-			if (mediaPlayer != null) {
-				mediaPlayer.stop();
-				mediaPlayer.reset();
-				mediaPlayer.release();
+			if (mediaPlayer != null)
+			{
+				try
+				{
+					mediaPlayer.stop();
+					mediaPlayer.reset();
+					mediaPlayer.release();
+				}
+				catch(Exception e){}
 			}
 		}		
 	}
