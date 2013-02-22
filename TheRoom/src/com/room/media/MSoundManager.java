@@ -56,15 +56,6 @@ public class MSoundManager
 			
 			try{mediaPlayer.setVolume(0, 0);}
 			catch(Exception e){}
-			
-			mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
-			{				
-				@Override
-				public void onPrepared(MediaPlayer player)
-				{
-					player.start();
-				}
-			});
 		}
 		
 		public float getVolumeAt(float px, float py)
@@ -91,7 +82,13 @@ public class MSoundManager
 		
 		public void setVolume(float leftVolume, float rightVolume)
 		{
-			try{mediaPlayer.setVolume(leftVolume, rightVolume);}
+			try
+			{
+				if(!mediaPlayer.isPlaying())
+					mediaPlayer.start();
+				
+				mediaPlayer.setVolume(leftVolume, rightVolume);
+			}
 			catch(Exception e){}
 		}
 		
