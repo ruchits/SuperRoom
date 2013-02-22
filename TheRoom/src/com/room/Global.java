@@ -1,11 +1,14 @@
 package com.room;
 
+import com.room.render.RRenderActivity;
+
 import android.app.ProgressDialog;
 
 
 public class Global
 {
 	public static MainActivity mainActivity;
+	public static RRenderActivity renderActivity;
 	public static int SCREEN_WIDTH = 0;
 	public static int SCREEN_HEIGHT = 0;
 	public static int GL_WIDTH = 0;

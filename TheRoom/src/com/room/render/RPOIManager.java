@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.room.Global;
+import com.room.puzzles.*;
 import com.room.scene.SLayout;
 
 public class RPOIManager
@@ -36,6 +38,16 @@ public class RPOIManager
 	{
 		areas = new ArrayList<POIArea>(); 
 		loadPOIFile("points_of_interest.poi");
+		
+		poiActivityMap = new HashMap<String,Class>();
+		poiActivityMap.put("POI_phone", PPhone.class);
+		poiActivityMap.put("POI_urn", PUrn.class);
+		poiActivityMap.put("POI_deadman", PDeadMan.class);
+		poiActivityMap.put("POI_statues", PStatues.class);
+		poiActivityMap.put("POI_fakedoor", PFakeDoor.class);
+		poiActivityMap.put("POI_bathroomdoor", PBathroomDoor.class);
+		poiActivityMap.put("POI_sink", PSink.class);
+		poiActivityMap.put("POI_deadwoman", PDeadWoman.class);
 	}
 	
 	public String checkPOI(float playerPosX, float playerPosY, float playerDirX, float playerDirY)
@@ -61,6 +73,12 @@ public class RPOIManager
 		}
 		
 		return null;
+	}
+	
+	public Class getActivityForPOI(String inName)
+	{
+		Class c = poiActivityMap.get(inName);
+		return c;
 	}
 	
 	private static ArrayList<POIArea> areas;
@@ -99,6 +117,7 @@ public class RPOIManager
 		}
 	}
 	
+	private HashMap<String,Class> poiActivityMap;
 	
 	private static RPOIManager instance;
 

@@ -278,7 +278,7 @@ public class RTouchController
 	private RScreenImage leftRing;	
 	
 	private static final float STICK_RADIUS = 0.10f;
-	private static final float STICK_SIZE = 0.25f;
+	private static final float STICK_SIZE = 0.4f;
 	
 	private static RTouchController instance;
 }

@@ -95,14 +95,24 @@ public class RScreenImage
         GLES20.glDisable(GLES20.GL_BLEND);
 	}
 	
+	public boolean containsPoint(float x, float y)
+	{
+		if(!visible)
+			return false;
+		
+		float left = this.position[0] - this.size[0];
+		float right = this.position[0] + this.size[0];
+		float top = this.position[1] + this.size[1];
+		float bottom = this.position[1] - this.size[1];	
+		
+		return (left <= x && x <= right && bottom <= y && y <= top);
+	}
+	
 	public void setSize(float size)
 	{
-		float screenRatio = (float)Global.SCREEN_WIDTH/Global.SCREEN_HEIGHT;
-		this.size[0] = size/2;
-		this.size[1] = (size*screenRatio)/2;
-		
-		//this.size[0] = size;
-		//this.size[1] = size;
+		float screenRatio = (float)Global.SCREEN_HEIGHT/Global.SCREEN_WIDTH;
+		this.size[0] = (size*screenRatio)/2;
+		this.size[1] = size/2;
 	}
 	
 	public void setPosition(float x, float y)

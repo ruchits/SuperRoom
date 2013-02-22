@@ -22,16 +22,34 @@ public class SLayoutLoader
 		}
 		return instance;
 	}
-
-	public SLayout puzzleExample;
+	
 	public SLayout mainMenu;
 	public SLayout daySelection;
 	
+	public SLayout puzzleExample;
+	public SLayout puzzleBathroomDoor;
+	public SLayout puzzleDeadMan;
+	public SLayout puzzleDeadWoman;
+	public SLayout puzzleFakeDoor;
+	public SLayout puzzlePhone;
+	public SLayout puzzleSink;
+	public SLayout puzzleStatues;
+	public SLayout puzzleUrn;
+	
 	public void init()
 	{
-		puzzleExample = loadLayout("puzzle_example.layout");
 		mainMenu = loadLayout("main_menu.layout");
 		daySelection = loadLayout("day_selection.layout");
+		
+		puzzleExample = loadLayout("puzzle_example.layout");
+		puzzleBathroomDoor = loadLayout("puzzle_door_bathroom.layout");
+		puzzleDeadMan = loadLayout("puzzle_deadman.layout");
+		puzzleDeadWoman = loadLayout("puzzle_deadwoman.layout");
+		puzzleFakeDoor = loadLayout("puzzle_door_fake.layout");
+		puzzlePhone = loadLayout("puzzle_phone.layout");
+		puzzleSink = loadLayout("puzzle_sink.layout");
+		puzzleStatues = loadLayout("puzzle_statues.layout");
+		puzzleUrn = loadLayout("puzzle_urn.layout");
 	}
 	
 	private SLayout loadLayout(String assetName)

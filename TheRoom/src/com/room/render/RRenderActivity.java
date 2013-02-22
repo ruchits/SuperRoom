@@ -21,12 +21,14 @@ public class RRenderActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
     	super.onCreate(savedInstanceState);
+    	Global.renderActivity = this;
+    	
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);           
         Global.progDailog = ProgressDialog.show(this, "Please wait", "Loading game ...", true);
         
         view = new RRenderView(this);
-        setContentView(view);
+        setContentView(view);                
     }
     
     private class RRenderView extends GLSurfaceView
@@ -49,7 +51,11 @@ public class RRenderActivity extends Activity
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
-    	RTouchController.getInstance().processTouchEvent(e);
+    	boolean processed = RTopButtons.getInstance().processTouchEvent(e);
+    	
+    	if(!processed)
+    		RTouchController.getInstance().processTouchEvent(e);
+    	
         return true;
     }    
     

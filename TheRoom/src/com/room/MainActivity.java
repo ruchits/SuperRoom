@@ -57,8 +57,8 @@ public class MainActivity extends Activity implements OnClickListener
 	         //temp speed hack for BB10:
 	 		 if(Global.HALF_RES_RENDER)
 	 		 {
-	 	 		 Global.GL_WIDTH*=0.50f;
-	 			 Global.GL_HEIGHT*=0.50f;
+	 			Global.GL_WIDTH = (int)(Global.SCREEN_WIDTH * 0.50f);
+				Global.GL_HEIGHT = (int)(Global.SCREEN_HEIGHT * 0.50f);
 	 		 }		
 	 		
 	         //ALL loaders should initialize here

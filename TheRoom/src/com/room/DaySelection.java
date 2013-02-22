@@ -13,6 +13,7 @@ import android.util.Log;
 import com.room.Global;
 import com.room.media.MSoundManager;
 import com.room.media.MVideoActivity;
+import com.room.render.RModelLoader;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UTransitionUtil;
@@ -28,7 +29,7 @@ public class DaySelection extends SSceneActivity
 		setBackgroundImage(R.drawable.day_selection);
 		
 		if(Global.DEBUG_SKIP_MENU)
-        	startGame(Global.CURRENT_DAY);
+        	startGame(Global.CURRENT_DAY, true);
 	}
     
 	@Override
@@ -37,12 +38,16 @@ public class DaySelection extends SSceneActivity
 		MSoundManager.getInstance().playSoundEffect(R.raw.swords);
 		
 		int dayNum = Integer.parseInt(boxName);
-		startGame(dayNum);    	
+		startGame(dayNum, false);    	
     }
 	
-	private void startGame(int dayNum)
+	private void startGame(int dayNum, boolean skipVideo)
 	{
-		switch(dayNum)
+		if(skipVideo)
+		{
+			MVideoActivity.videoToPlay = null;
+		}		
+		else switch(dayNum)
 		{
 			case 1:
 				MVideoActivity.videoToPlay = MVideoActivity.DAY1_VIDEO;		
@@ -62,6 +67,7 @@ public class DaySelection extends SSceneActivity
 		}
 		
 		Global.CURRENT_DAY = dayNum;
+		RModelLoader.getInstance().updateBoundaries();
 		
 		Intent intent = new Intent(this, MVideoActivity.class);
 		startActivity(intent);

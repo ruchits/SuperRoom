@@ -1,6 +1,13 @@
 package com.room.render;
 
+import android.content.Intent;
+import android.view.MotionEvent;
+
+import com.room.DaySelection;
 import com.room.Global;
+import com.room.R;
+import com.room.media.MVideoActivity;
+import com.room.utils.UTransitionUtil;
 
 public class RTopButtons
 {
@@ -18,9 +25,35 @@ public class RTopButtons
 	{
 		poiImage = new RScreenImage(
 				RTextureLoader.getInstance().getTextureID("ui_poi"));
-		poiImage.setSize(0.3f);
-		poiImage.setPosition(0.75f, 0.6f);
+		poiImage.setSize(0.5f);
+		poiImage.setPosition(0.8f, 0.7f);
+		
 		poiImage.setVisible(false);
+	}
+	
+	public boolean processTouchEvent(MotionEvent event)
+	{
+		int action = event.getAction();
+		int actionCode = action & MotionEvent.ACTION_MASK;
+				
+		//only care about DOWN events
+		if (actionCode != MotionEvent.ACTION_DOWN)
+		{
+			return false;
+		}
+		
+		float glX = RMath.pixelToGLX(event.getX());
+		float glY = RMath.pixelToGLY(event.getY());
+		
+		if(poiImage.containsPoint(glX, glY))
+		{
+			Class c = RPOIManager.getInstance().getActivityForPOI(poiName);
+			Intent intent = new Intent(Global.mainActivity, c);
+		    Global.renderActivity.startActivity(intent);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void setPOI(String poiName)
@@ -28,10 +61,12 @@ public class RTopButtons
 		if(poiName != null)
 		{
 			poiImage.setVisible(true);
+			this.poiName = poiName;
 		}
 		else
 		{
 			poiImage.setVisible(false);
+			this.poiName = null;
 		}
 	}
 	
@@ -41,6 +76,7 @@ public class RTopButtons
 	}
 	
 	private RScreenImage poiImage;
+	private String poiName;
 	
 	private static RTopButtons instance;
 }
