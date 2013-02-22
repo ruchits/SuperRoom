@@ -25,11 +25,13 @@ public class SLayoutLoader
 
 	public SLayout puzzleExample;
 	public SLayout mainMenu;
+	public SLayout daySelection;
 	
 	public void init()
 	{
 		puzzleExample = loadLayout("puzzle_example.layout");
 		mainMenu = loadLayout("main_menu.layout");
+		daySelection = loadLayout("day_selection.layout");
 	}
 	
 	private SLayout loadLayout(String assetName)

@@ -17,57 +17,54 @@ import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UTransitionUtil;
 
-public class MainMenu extends SSceneActivity
+public class DaySelection extends SSceneActivity
 {
 	@Override	
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		
-		setLayout(SLayoutLoader.getInstance().mainMenu);
-		setBackgroundImage(R.drawable.main_menu);
+		setLayout(SLayoutLoader.getInstance().daySelection);
+		setBackgroundImage(R.drawable.day_selection);
 		
 		if(Global.DEBUG_SKIP_MENU)
-			showDaySelection();
+        	startGame(Global.CURRENT_DAY);
 	}
-	
     
 	@Override
     public void onBoxTouched(String boxName)
     {	
 		MSoundManager.getInstance().playSoundEffect(R.raw.swords);
-    	if (boxName.equals("start"))
-    	{
-    		showDaySelection();
-    	}
-    	else if (boxName.equals("options"))
-    	{
-    		showOptions();
-    	}
-    	else if (boxName.equals("credits"))
-    	{
-    		showCredits();
-    	}      	
-    	else if (boxName.equals("quit"))
-    	{
-    		finish();
-    	}    	
+		
+		int dayNum = Integer.parseInt(boxName);
+		startGame(dayNum);    	
     }
 	
-	private void showDaySelection()
+	private void startGame(int dayNum)
 	{
-		Intent intent = new Intent(this, DaySelection.class);
-	    startActivity(intent);
-	}
-	
-	private void showCredits() {
-		  Intent intent = new Intent(this, Credits.class);
-		  startActivity(intent);
-	}
-	
-	private void showOptions() {
-		  Intent intent = new Intent(this, Options.class);
-		  startActivity(intent);
+		switch(dayNum)
+		{
+			case 1:
+				MVideoActivity.videoToPlay = MVideoActivity.DAY1_VIDEO;		
+			break;
+			case 2:
+				MVideoActivity.videoToPlay = MVideoActivity.DAY2_VIDEO;		
+			break;
+			case 3:
+				MVideoActivity.videoToPlay = MVideoActivity.DAY3_VIDEO;		
+			break;
+			case 4:
+				MVideoActivity.videoToPlay = MVideoActivity.DAY4_VIDEO;		
+			break;
+			case 5:
+				MVideoActivity.videoToPlay = MVideoActivity.DAY5_VIDEO;		
+			break;		
+		}
+		
+		Global.CURRENT_DAY = dayNum;
+		
+		Intent intent = new Intent(this, MVideoActivity.class);
+		startActivity(intent);
 	}
 	
 	@Override
@@ -94,6 +91,5 @@ public class MainMenu extends SSceneActivity
 	protected void onDestroy()
 	{		
 		super.onDestroy();
-		MSoundManager.getInstance().stopAllSounds();
 	}
 }
