@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.room.R;
 import com.room.Global;
+import com.room.media.MSoundManager;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 
@@ -28,10 +29,21 @@ public class PFlood extends SSceneActivity
     
 	int [] redbox = new int[4];
 	int [] skybox = new int[4];
-	private int padding_from_top;// = (int) coords[2];//( 0.054166667f * Global.SCREEN_HEIGHT );
-    private int aBoxSideLen;// = (int) (Global.SCREEN_HEIGHT * ( 0.95555556f - 0.054166667f ))/12;//((( 0.7140625f - 0.20859376f ) * Global.SCREEN_WIDTH )/12);
-    private int padding_from_left;// = (int) (0.71f * Global.SCREEN_WIDTH - aBoxSideLen*12);//( 0.20859376f * Global.SCREEN_WIDTH );
+	private int padding_from_top;
+    private int aBoxSideLen;
+    private int padding_from_left;
     private int[][] floodTiles;
+    private boolean useImage = true;
+    
+	Resources res = Global.mainActivity.getResources();
+	Bitmap tileImages[] = { BitmapFactory.decodeResource(res, R.drawable.tile_red),
+			BitmapFactory.decodeResource(res, R.drawable.tile_pink),
+			BitmapFactory.decodeResource(res, R.drawable.tile_blue),
+			BitmapFactory.decodeResource(res, R.drawable.tile_green),
+			BitmapFactory.decodeResource(res, R.drawable.tile_yellow),
+			BitmapFactory.decodeResource(res, R.drawable.tile_sky)
+			};
+    
 	/*
     private String puzzle = 
     		"rrsbykyygkbp" +
@@ -60,7 +72,6 @@ public class PFlood extends SSceneActivity
             "350002152350" +
     		"115024443434" +
             "130024130000";
-    Rect r = new Rect();
 
 	@Override	
 	protected void onCreate(Bundle savedInstanceState)
@@ -95,19 +106,34 @@ public class PFlood extends SSceneActivity
 		super.onDraw(canvas, paint);
 		setBackgroundImage(R.drawable.puzzle_flood);
 		Paint floodbox = new Paint();
-		int color[] = { getResources().getColor(R.color.red),
-	               getResources().getColor(R.color.pink),
-	               getResources().getColor(R.color.blue),
-	               getResources().getColor(R.color.green),
-	               getResources().getColor(R.color.yellow),
-	               getResources().getColor(R.color.sky) };
-        for (int i = 0; i < tilesPerSide; i++) {
-           for (int j = 0; j < tilesPerSide; j++) {
-                 getRect(i, j, r);
-                 floodbox.setColor(color[floodTiles[i][j]]);
-                 canvas.drawRect(r, floodbox);
-           }
-        }
+		Rect r = new Rect();
+		
+		if ( useImage == false )
+		{
+			int color[] = { getResources().getColor(R.color.red),
+							getResources().getColor(R.color.pink),
+							getResources().getColor(R.color.blue),
+							getResources().getColor(R.color.green),
+							getResources().getColor(R.color.yellow),
+							getResources().getColor(R.color.sky) };
+			for (int i = 0; i < tilesPerSide; i++) {
+				for (int j = 0; j < tilesPerSide; j++) {
+					getRect(i, j, r);
+					floodbox.setColor(color[floodTiles[i][j]]);
+					canvas.drawRect(r, floodbox);
+				}
+			}
+		}
+		else {
+	        for (int i = 0; i < tilesPerSide; i++) {
+	            for (int j = 0; j < tilesPerSide; j++) {
+	            	  getRect(i, j, r);
+	                  canvas.drawBitmap(tileImages[floodTiles[i][j]],
+	      					new Rect(0,0,tileImages[floodTiles[i][j]].getWidth(),tileImages[floodTiles[i][j]].getHeight()),
+	      					r, floodbox);
+	            }
+	         }
+		}
 	}
     
 	private void getRect(int x, int y, Rect rect) {
@@ -149,6 +175,7 @@ public class PFlood extends SSceneActivity
 	@Override
     public void onBoxTouched(String boxName)
     {
+		MSoundManager.getInstance().playSoundEffect(R.raw.tick);
     	Log.d("BOXCLICK",boxName);
         int newColor = getBoxNum(boxName);
         if ( newColor < 0 ) return;

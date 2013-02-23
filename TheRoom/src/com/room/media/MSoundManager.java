@@ -118,6 +118,7 @@ public class MSoundManager
 	   soundEffectsPool = new SoundPool( 20, AudioManager.STREAM_MUSIC, 0);
 	   if ( soundEffectsMap == null ) soundEffectsMap = new HashMap<Integer, Integer>();	   
 	   soundEffectsMap.put(R.raw.swords,soundEffectsPool.load(Global.mainActivity, R.raw.swords, 1));
+	   soundEffectsMap.put(R.raw.tick,soundEffectsPool.load(Global.mainActivity, R.raw.tick, 1));
 	   soundEffectsMap.put(R.raw.footstep01,soundEffectsPool.load(Global.mainActivity, R.raw.footstep01, 1));
 	   soundEffectsMap.put(R.raw.footstep02,soundEffectsPool.load(Global.mainActivity, R.raw.footstep02, 1));
 	   soundEffectsMap.put(R.raw.footstep03,soundEffectsPool.load(Global.mainActivity, R.raw.footstep03, 1));
