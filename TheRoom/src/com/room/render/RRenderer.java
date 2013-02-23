@@ -27,8 +27,8 @@ public class RRenderer implements GLSurfaceView.Renderer
 	}	
 	
 	public static final float PLAYER_HEIGHT = 15;
-	public static final float PLAYER_START_X = 8.69329f;
-	public static final float PLAYER_START_Y = -16.43272f; //this is really the z axis
+	public static final float PLAYER_START_X = 8.3532915f;
+	public static final float PLAYER_START_Y = -14.7741165f; //this is really the z axis
 	public static final float PLAYER_MAX_PITCH = 85;
 	public static final float PLAYER_MIN_PITCH = -85;	
 	public static final float FLASHLIGHT_MAX_PITCH = 85;
@@ -206,14 +206,26 @@ public class RRenderer implements GLSurfaceView.Renderer
         
         //Draw objects        
         RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        
+                
+        //TBD - we need to move our drawing logic to a seperate class
         if(!Global.DEBUG_NO_PROPS)
         {
         	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	RModelLoader.getInstance().modelPropsDeadman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	//RModelLoader.getInstance().modelPropsDeadwoman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	RModelLoader.getInstance().modelPropsStatues.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	//RModelLoader.getInstance().modelPropsNoCull.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	RModelLoader.getInstance().modelPropsNoCull.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);        	        	
+        	 
+        	if(Global.CURRENT_DAY >= 3)
+        		RModelLoader.getInstance().modelPropsDeadwoman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	
+        	if(Global.CURRENT_DAY == 1)
+        	{
+        		RModelLoader.getInstance().modelPropsStatuesNeutral.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        		RModelLoader.getInstance().modelPropClothCovered.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	}
+        	else
+        	{
+        		RModelLoader.getInstance().modelPropsStatuesActive.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        		RModelLoader.getInstance().modelPropsDeadman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        	}
         }
         
         if(Global.CURRENT_DAY < 3)
@@ -461,11 +473,16 @@ public class RRenderer implements GLSurfaceView.Renderer
 
         // Get the cross-product first. If negative, only then check for intersection and block the cam.
         // If positive, then that means that we are trying to stay inside the room. So don't block!
-        for(RMath.Line Wall: RModelLoader.Walls) {
+        for(RMath.Line Wall: RModelLoader.activeWallBoundary) {
                 if(RMath.crossProduct(Wall.toVector(), current.toVector()) < 0) {
                         crossWalls.add(Wall);
                 }
         }
+        for(RMath.Line Wall: RModelLoader.activePropBoundary) {
+            if(RMath.crossProduct(Wall.toVector(), current.toVector()) < 0) {
+                    crossWalls.add(Wall);
+            }
+        }        
 
         RMath.V2 projectPosition = null;
         RMath.Line projectLine = null;
@@ -539,7 +556,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         RMath.V2 currentVector = current.toVector();
         // Get the cross-product first. If negative, only then check for intersection and block the cam.
         ArrayList<RMath.Line> crossWalls = new ArrayList<RMath.Line>();
-        for(RMath.Line Wall: RModelLoader.Walls) {
+        for(RMath.Line Wall: RModelLoader.activeWallBoundary) {
                 if(RMath.crossProduct(Wall.toVector(), currentVector) < 0) {
                         crossWalls.add(Wall);
                 }

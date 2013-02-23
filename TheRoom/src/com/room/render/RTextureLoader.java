@@ -64,19 +64,28 @@ public class RTextureLoader
 			textureID.put("prop_urn_body", loadCompressedTexture("prop_urn_body",false,false,false));
 			textureID.put("prop_urn_ash", loadCompressedTexture("prop_urn_ash",false,false,false));
 			textureID.put("prop_urn_sticks", loadCompressedTexture("prop_urn_sticks",false,false,false));
-			textureID.put("prop_bed", loadCompressedTexture("prop_bed",false,false,false));
-			textureID.put("prop_deadman", loadCompressedTexture("prop_deadman",false,false,false));
-			textureID.put("prop_deadwoman", loadCompressedTexture("prop_deadwoman",false,false,false));
+			
+			textureID.put("prop_bed", loadCompressedTexture("prop_bed",false,false,false));			
 			textureID.put("prop_drawer", loadCompressedTexture("prop_drawer",false,false,false));
-			textureID.put("prop_pharoah", loadCompressedTexture("prop_pharoah",false,false,false));
+			textureID.put("prop_phone_receiver", loadCompressedTexture("prop_phone_receiver",false,false,false));
+			textureID.put("prop_phone_base", loadCompressedTexture("prop_phone_base",false,false,false));
+			
+			textureID.put("prop_cloth", loadCompressedTexture("prop_cloth",true,true,false));
+			textureID.put("prop_deadman", loadCompressedTexture("prop_deadman",false,false,false));			
+			textureID.put("prop_deadwoman", loadCompressedTexture("prop_deadwoman",false,false,false));
+						
 			textureID.put("prop_sink", loadCompressedTexture("prop_sink",false,false,false));
 			textureID.put("prop_toilet", loadCompressedTexture("prop_toilet",false,false,false));
 			textureID.put("prop_tpaper", loadCompressedTexture("prop_tpaper",false,false,false));
-			textureID.put("prop_samurai", loadCompressedTexture("prop_samurai",false,false,false));
-			textureID.put("prop_phone_receiver", loadCompressedTexture("prop_phone_receiver",false,false,false));
-			textureID.put("prop_phone_base", loadCompressedTexture("prop_phone_base",false,false,false));
+			textureID.put("prop_mirror", loadCompressedTexture("prop_mirror",true,true,false));
+									
 			textureID.put("prop_frame1", loadCompressedTexture("prop_frame1",false,false,false));
 			textureID.put("prop_portrait_girl", loadCompressedTexture("prop_portrait_girl",true,true,false));
+			textureID.put("prop_portrait_boy", loadCompressedTexture("prop_portrait_boy",true,true,false));
+			
+			textureID.put("prop_samurai", loadCompressedTexture("prop_samurai",false,false,false));
+			textureID.put("prop_feudal", loadCompressedTexture("prop_feudal",true,true,false));
+			textureID.put("prop_guan", loadCompressedTexture("prop_guan",true,true,false));
 		}
 
 		//ui

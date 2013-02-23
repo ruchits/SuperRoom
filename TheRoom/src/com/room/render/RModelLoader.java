@@ -36,10 +36,12 @@ public class RModelLoader
 	public RModel modelProps;
 	public RModel modelPropsDeadman;
 	public RModel modelPropsDeadwoman;
-	public RModel modelPropsStatues;
+	public RModel modelPropsStatuesActive;
+	public RModel modelPropsStatuesNeutral;
 	public RModel modelPropsNoCull;
 	public RModel modelDoorBathroomStage1;
 	public RModel modelDoorBathroomStage2;
+	public RModel modelPropClothCovered;
 	public RModel decalWall;
 	public RModel decalBoard;
 	public RModel decalCeilingMinor;
@@ -47,7 +49,8 @@ public class RModelLoader
 	public RModel decalNumber;
 	public RModel modelPOI;
 	
-	public static ArrayList<RMath.Line> Walls;
+	public static ArrayList<RMath.Line> activeWallBoundary;
+	public static ArrayList<RMath.Line> activePropBoundary;
 	
 	private ArrayList<RMath.Line> boundaryStage1;
 	private ArrayList<RMath.Line> boundaryStage2;
@@ -59,10 +62,12 @@ public class RModelLoader
 		{
 			modelProps = loadModel("model_props.obj");
 			modelPropsDeadman = loadModel("model_props_deadman.obj");
-			//modelPropsDeadwoman = loadModel("model_props_deadwoman.obj");
-			modelPropsStatues = loadModel("model_props_statues.obj");
-			//modelPropsNoCull = loadModel("model_props_nocull.obj");
-			//modelPropsNoCull.enableCull(false);
+			modelPropsDeadwoman = loadModel("model_props_deadwoman.obj");
+			modelPropsStatuesActive = loadModel("model_props_statues_active.obj");
+			modelPropsStatuesNeutral = loadModel("model_props_statues_neutral.obj");
+			modelPropsNoCull = loadModel("model_props_nocull.obj");
+			modelPropsNoCull.enableCull(false);			
+			modelPropClothCovered = loadModel("model_prop_cloth_covered.obj");
 		}
 		
 		modelRoom = loadModel("model_room.obj");
@@ -92,6 +97,7 @@ public class RModelLoader
 
 		boundaryStage1 = loadBoundaries("collision_stage1.boundary");
 		boundaryStage2 = loadBoundaries("collision_stage2.boundary");				
+		boundaryProps = loadBoundaries("collision_props.boundary");
 		
 		updateBoundaries();
 		
@@ -101,12 +107,14 @@ public class RModelLoader
 	{
 		if(Global.CURRENT_DAY < 3)
 		{
-			Walls = boundaryStage1;
+			activeWallBoundary = boundaryStage1;
 		}
 		else
 		{
-			Walls = boundaryStage2;
+			activeWallBoundary = boundaryStage2;
 		}
+		
+		activePropBoundary = boundaryProps;
 	}
 
 	private class OBJFace
