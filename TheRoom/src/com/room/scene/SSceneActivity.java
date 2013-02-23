@@ -33,7 +33,7 @@ public class SSceneActivity extends Activity
         setContentView(view);
     }
 	
-	private class SSceneView extends View
+	public class SSceneView extends View
 	{		
 		public SSceneView(Context context)
 		{
@@ -111,8 +111,19 @@ public class SSceneActivity extends Activity
     	this.layout = layout;
     }
     
+    // return left, right, top, bottom in coords array
+    public void getBoxCoords(String boxName,  int []coords)
+    {
+		layout.getBoxCoords(boxName, coords);
+    }
+
+    public int getBoxNum(String boxName)
+    {
+    	return layout.getBoxNum(boxName);
+    }
+    
 	public SSceneView view;
-	private SLayout layout;        
+	protected SLayout layout;        
     private Bitmap backgroundImage;
     
 }
