@@ -33,7 +33,7 @@ public class SSceneActivity extends Activity
         setContentView(view);
     }
 	
-	public class SSceneView extends View
+	private class SSceneView extends View
 	{		
 		public SSceneView(Context context)
 		{
@@ -50,6 +50,11 @@ public class SSceneActivity extends Activity
 		}
 		private SSceneActivity activity;
 		private Paint paint;
+	}
+	
+	public void repaint()
+	{
+	    if(view!=null) view.invalidate();
 	}
 	
     @Override

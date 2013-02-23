@@ -61,6 +61,7 @@ public class PFlood extends SSceneActivity
     		"115024443434" +
             "130024130000";
     Rect r = new Rect();
+
 	@Override	
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -116,56 +117,33 @@ public class PFlood extends SSceneActivity
 	    		  (int) (padding_from_top + y * aBoxSideLen + aBoxSideLen)); //bottom
 	}
 	
-	private void replaceTiles (int oldColor, int newColor, int[][]floodTiles, boolean doIdraw)
+	//looks retarded but works well in practice
+	private void replaceTiles (int oldColor, int newColor, int i, int j, int[][]floodTiles )
 	{
-    	int maxCol, j;
-    	for ( j = 0; j < tilesPerSide; ++j )
-    	{
-    		if ( oldColor == floodTiles[0][j])
-    		{
-    			floodTiles[0][j] = newColor;
-    		}
-    		else break;
-    	}
-    	maxCol = j;
-    	j = 0;
-    	int newMaxCol;
-    	L1: for ( int i = 1; i < tilesPerSide; ++i )
-    	{
-    		j = 0; 
-    		newMaxCol = -1;
-    		while ( true )
-    		{
-    			if ( maxCol == -1 ) break L1;
-    			if ( j == tilesPerSide ) {
-    				maxCol = newMaxCol;
-    				break;
-    			}
-    			else if ( j > maxCol )
-    			{
-        			maxCol = newMaxCol;
-        			break;
-    			}
-    			//Check left
-    			if ( j > 0 && floodTiles[i][j-1] == newColor && floodTiles[i][j] == oldColor)
-    			{
-    				floodTiles[i][j] = newColor;
-    				newMaxCol = j;
-    				j++;
-    			}
-    			//Check above
-    			else if ( floodTiles[i-1][j] == newColor )
-    			{
-    				if ( floodTiles[i][j] == oldColor )
-    				{
-    					floodTiles[i][j] = newColor;
-    					newMaxCol = j;
-    				}
-    				j++;
-    			}
-    			else j++;
-    		}
-    	}
+			//check top
+			if ( i-1 >= 0 && floodTiles[i-1][j] == oldColor )
+			{
+				floodTiles[i-1][j] = newColor;
+				replaceTiles ( oldColor, newColor, i-1, j, floodTiles );
+			}
+		    //check bottom
+			if ( i+1 < tilesPerSide && floodTiles[i+1][j] == oldColor )
+			{
+				floodTiles[i+1][j] = newColor;
+				replaceTiles(oldColor, newColor, i+1, j, floodTiles);
+			}
+			//check left
+			if ( j-1 >= 0 && floodTiles[i][j-1] == oldColor )
+			{
+				floodTiles[i][j-1] = newColor;
+				replaceTiles ( oldColor, newColor, i, j-1, floodTiles );
+			}
+			//check right
+			if ( j+1 < tilesPerSide && floodTiles[i][j+1] == oldColor )
+			{
+				floodTiles[i][j+1] = newColor;
+				replaceTiles ( oldColor, newColor, i, j+1, floodTiles );
+			}
 	}
 	
 	@Override
@@ -174,9 +152,9 @@ public class PFlood extends SSceneActivity
     	Log.d("BOXCLICK",boxName);
         int newColor = getBoxNum(boxName);
         if ( newColor < 0 ) return;
-    	int matchColor = floodTiles[0][0];
-    	replaceTiles(matchColor, -1, floodTiles, false);
-        replaceTiles(-1, getBoxNum(boxName), floodTiles, true);
-        view.invalidate();
+    	int oldColor = floodTiles[0][0];
+    	floodTiles[0][0] = newColor;
+    	replaceTiles (oldColor, newColor, 0, 0, floodTiles );
+    	repaint();
     }
 }

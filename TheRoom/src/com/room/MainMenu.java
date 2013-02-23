@@ -13,6 +13,7 @@ import android.util.Log;
 import com.room.Global;
 import com.room.media.MSoundManager;
 import com.room.media.MVideoActivity;
+import com.room.puzzles.PFlood;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UTransitionUtil;
@@ -46,7 +47,8 @@ public class MainMenu extends SSceneActivity
     	}
     	else if (boxName.equals("credits"))
     	{
-    		showCredits();
+  		    startActivity(new Intent(this, PFlood.class)); //TEMPORARY
+    		//showCredits();
     	}      	
     	else if (boxName.equals("quit"))
     	{
