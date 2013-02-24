@@ -9,112 +9,59 @@
 package com.room.puzzles;
 
 import java.util.Random;
+import java.util.StringTokenizer;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.room.R;
-import com.room.Global;
 import com.room.media.MSoundManager;
-import com.room.media.MVideoActivity;
-import com.room.render.RModelLoader;
-import com.room.render.RRenderActivity;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
-import com.room.utils.UTransitionUtil;
+import com.room.utils.UBitmapUtil;
 
 public class PFlood extends SSceneActivity
 {
-	static int tilesPerSide = 12;
+	private static final int tilesPerSide = 12;
+	private static final char nonExistingColor = (char)-1;
 
-	int [] redbox = new int[4];
-	int [] skybox = new int[4];
-	private int padding_from_top;
-	private int aBoxSideLen;
-	private int padding_from_left;
-	private int[][] floodTiles;
-	private boolean useImage = true;
-	int filled;
-	int nonExistingColor = -1;
-	int oldColor = -1;
-
-	Resources res = Global.mainActivity.getResources();
-	Bitmap tileImages[] = { BitmapFactory.decodeResource(res, R.drawable.tile_red),
-		BitmapFactory.decodeResource(res, R.drawable.tile_pink),
-		BitmapFactory.decodeResource(res, R.drawable.tile_blue),
-		BitmapFactory.decodeResource(res, R.drawable.tile_green),
-		BitmapFactory.decodeResource(res, R.drawable.tile_yellow),
-		BitmapFactory.decodeResource(res, R.drawable.tile_sky)
-		};
-
+	private RectF tileArea;
+	private float tileWidth;
+	private float tileHeight;
+	private char[][] floodTiles;
+	private Bitmap tileImages[];
+	private char oldColor;
 
 	private String puzzle =
-	"rrsbykyygkbp" +
-	"pbggbbspssrs" +
-	"gsyrpyybprgb" +
-	"sprbssggsysg" +
-	"yggygybbsypr" +
-	"yrbgrgyspgpb" +
-	"rgssygypssby" +
-	"ryrygggbyygs" +
-	"sbsbbspgbsrb" +
-	"gsrrrbpsbgsr" +
-	"ppsrbyyygygy" +
-	"pgrrbypgrrrr";
+	       "005245443521" +
+	       "123322515505" +
+	       "354014421032" +
+	       "510255335453" +
+	       "433434225410" +
+	       "402303451312" +
+	       "035543415524" +
+	       "040433324435" +
+	       "525225132502" +
+	       "350002152350" +
+	       "115024443434" +
+	       "130024130000";
 
 	private String puzzle2 =
-	"sybggbspbbss" +
-	"bysggysspgsb" +
-	"bygsspypsyyr" +
-	"ssypprrbgggs" +
-	"sbssgysyrspy" +
-	"sbssgysyrspy" +
-	"rgbgppsrysrg" +
-	"yspsbgpsrpsp" +
-	"rrrrprsbpgrs" +
-	"bpgpbprysbbb" +
-	"rsgsbbyrbygg" +
-	"gpgrbbgysygb" +
-	"bbrgbsgyrysy";
-
-	/*private String puzzle_debug =
-	"bybbbbbpbbbb" +
-	"bybbbybbpbbb" +
-	"bybbbpypbyyb" +
-	"bbyppbbbbbbb" +
-	"bbbbbybybbpy" +
-	"bbbbbybybbpy" +
-	"bbbbppbbybbb" +
-	"ybpbbbpbbpbp" +
-	"bbbbpbbbpbbb" +
-	"bpbpbpbybbbb" +
-	"bbbbbbybbybb" +
-	"bpbbbbbybybb" +
-	"bbbbbbbybyby";*/
-	
-	String puzzle_debug = 
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbb" +
-            "bbbbbbbbbbbp";	
+	       "542332512255" +
+	       "245334551352" +
+	       "243551415440" +
+	       "554110023335" +
+	       "525534540514" +
+	       "032311504503" +
+	       "451523150151" +
+	       "000010521305" +
+	       "213121045222" +
+	       "053522402433" +
+	       "313022345432" +
+	       "220325340454";
 
 	private String [] puzzles = { puzzle, puzzle2 };
 
@@ -124,46 +71,35 @@ public class PFlood extends SSceneActivity
 		super.onCreate(savedInstanceState);
 		setLayout(SLayoutLoader.getInstance().puzzleFlood);
 		setBackgroundImage(R.drawable.puzzle_flood);
+		
 		Random rand = new Random();
-		floodTiles = fromPuzzleString(puzzles[rand.nextInt(puzzles.length)]);
-		//floodTiles = fromPuzzleString(puzzle_debug);
-		getBoxCoords("bRed", redbox);
-		getBoxCoords("bSky", skybox);
-		padding_from_top = (int) redbox[2];
-		aBoxSideLen = (int) ( skybox[3] - redbox[2] )/tilesPerSide;
-		padding_from_left = (int) Global.SCREEN_WIDTH - redbox[1];
+		floodTiles = fromPuzzleString(puzzles[rand.nextInt(puzzles.length)]);		
+		
+		tileArea = getBoxPixelCoords("tileArea");
+		tileHeight =  ( tileArea.bottom - tileArea.top )/tilesPerSide;
+		tileWidth =  ( tileArea.right - tileArea.left )/tilesPerSide;
+		
+		tileImages = new Bitmap[]{
+				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile0, (int)tileWidth, (int)tileHeight),
+				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile1, (int)tileWidth, (int)tileHeight),
+				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile2, (int)tileWidth, (int)tileHeight),
+				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile3, (int)tileWidth, (int)tileHeight),
+				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile4, (int)tileWidth, (int)tileHeight),
+				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile5, (int)tileWidth, (int)tileHeight)
+				};
 	}
+	
+	
 
-	static protected int[][] fromPuzzleString(String str)
+	private static char[][] fromPuzzleString(String str)
 	{
-		int[][] puzzle = new int[tilesPerSide][tilesPerSide];
+		char[][] puzzle = new char[tilesPerSide][tilesPerSide];
 
 		for ( int i = 0; i < tilesPerSide; ++i )
 		{
 			for ( int j = 0; j < tilesPerSide; ++j )
 			{
-				char tile = str.charAt(i+j*tilesPerSide);
-				switch (tile)
-				{
-					case 'r':
-						puzzle[i][j] = 0;
-					break;
-					case 'p':
-						puzzle[i][j] = 1;
-					break;
-					case 'b':
-						puzzle[i][j] = 2;
-					break;
-					case 'g':
-						puzzle[i][j] = 3;
-					break;
-					case 'y':
-						puzzle[i][j] = 4;
-					break;
-					case 's':
-						puzzle[i][j] = 5;
-					break;
-				}
+				puzzle[i][j] = (char)Integer.parseInt(str.charAt(i+j*tilesPerSide)+"");				
 			}
 		}
 		return puzzle;
@@ -172,52 +108,20 @@ public class PFlood extends SSceneActivity
 	@Override
 	public void onDraw(Canvas canvas, Paint paint)
 	{
-		super.onDraw(canvas, paint);
-		setBackgroundImage(R.drawable.puzzle_flood);
-		Paint floodbox = new Paint();
-		Rect r = new Rect();
-
-		if ( useImage == false )
+		super.onDraw(canvas, paint);		
+		
+		for (int i = 0; i < tilesPerSide; i++)
 		{
-			int color[] = { getResources().getColor(R.color.red),
-			getResources().getColor(R.color.pink),
-			getResources().getColor(R.color.blue),
-			getResources().getColor(R.color.green),
-			getResources().getColor(R.color.yellow),
-			getResources().getColor(R.color.sky) };
-			for (int i = 0; i < tilesPerSide; i++)
+			for (int j = 0; j < tilesPerSide; j++)
 			{
-				for (int j = 0; j < tilesPerSide; j++)
-				{
-					getRect(i, j, r);
-					floodbox.setColor(color[floodTiles[i][j]]);
-					canvas.drawRect(r, floodbox);
-				}
-			}
-		}
-		else
-		{
-			for (int i = 0; i < tilesPerSide; i++)
-			{
-				for (int j = 0; j < tilesPerSide; j++)
-				{
-					getRect(i, j, r);
-					canvas.drawBitmap(tileImages[floodTiles[i][j]],
-						new Rect(0,0,tileImages[floodTiles[i][j]].getWidth(),tileImages[floodTiles[i][j]].getHeight()),
-						r, floodbox);
-				}
+				canvas.drawBitmap(tileImages[floodTiles[i][j]],
+						tileArea.left + i * tileWidth,
+						tileArea.top + j * tileHeight,
+						paint);
 			}
 		}
 	}
 
-	private void getRect(int x, int y, Rect rect)
-	{
-		rect.set((int) (padding_from_left + x * aBoxSideLen), //left
-		(int) (padding_from_top + y * aBoxSideLen),  //top
-		(int) (padding_from_left + x * aBoxSideLen + aBoxSideLen), //right
-		(int) (padding_from_top + y * aBoxSideLen + aBoxSideLen)); //bottom
-	}
-	
 	private void replaceTiles (int i, int j)
 	{
 		if ( oldColor == nonExistingColor ) return;
@@ -246,15 +150,17 @@ public class PFlood extends SSceneActivity
 			replaceTiles( i+1, j );
 		}
 	}
-	
+
 	@Override
 	public void onBoxTouched(String boxName)
 	{
-		MSoundManager.getInstance().playSoundEffect(R.raw.tick);
-		Log.d("BOXCLICK",boxName);
-		if ( filled != tilesPerSide * tilesPerSide )
-		{
-			int newColor = getBoxNum(boxName);
+		StringTokenizer st = new StringTokenizer(boxName,"_");
+		
+		if(st.nextToken().equals("button"))
+		{			
+			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
+
+			char newColor = (char)Integer.parseInt(st.nextToken());
 
 			if ( newColor < 0 )
 				return;
@@ -262,81 +168,52 @@ public class PFlood extends SSceneActivity
 			oldColor = floodTiles[0][0];
 			floodTiles[0][0] = nonExistingColor;		
 			replaceTiles (0, 0);
-			fillTiles (-1,newColor,floodTiles);
+			fillTiles(nonExistingColor,newColor);
+			int numTilesFilled = numTilesOfColor(newColor);
 			repaint();
-			filled = checkIfAllFilled ( floodTiles );
 
-			if ( filled >= tilesPerSide * tilesPerSide )
+			if ( numTilesFilled >= tilesPerSide * tilesPerSide )
 			{
+				//MSoundManager.getInstance().playSoundEffect(R.raw.open_door);
 				goToNextStage();
-			}
+			}			
 		}
 	}
 
-	private int checkIfAllFilled(int[][] floodTiles) //TODO: Change later to boolean
-	{
-		int match = floodTiles[0][0];
-		int filled = 0;
-		for ( int i = tilesPerSide-1 ;  i >= 0; --i )
-		{
-			for ( int j = tilesPerSide-1; j >= 0; --j )
-			{
-				if (floodTiles[i][j]!=match)
-				{
-					Log.e("PFlood", "filled=" + filled);
-				}
-				else filled++;
-			}
-		}
-		return filled;
-	}
-
-
-	//Fill tiles and count how many are filled
-	private void fillTiles(int oldColor, int newColor, int[][] floodTiles)
+	private void fillTiles(char findColor, char replaceColor)
 	{
 		for ( int i = 0; i < tilesPerSide; ++i )
 		{
 			for ( int j = 0; j < tilesPerSide; ++j )
 			{
-				if ( floodTiles[i][j] == oldColor )
+				if ( floodTiles[i][j] == findColor )
 				{
-					floodTiles[i][j] = newColor;
+					floodTiles[i][j] = replaceColor;
 				}
 			}
-		}
+		}		
 	}
+	
+	private int numTilesOfColor(char color)
+	{
+		int count = 0;
+		for ( int i = 0; i < tilesPerSide; ++i )
+		{
+			for ( int j = 0; j < tilesPerSide; ++j )
+			{
+				if ( floodTiles[i][j] == color )
+				{
+					++count;
+				}
+			}
+		}		
+		return count;
+	}	
 
 	private void goToNextStage()
 	{
-		switch(Global.CURRENT_DAY)
-		{
-			case 1:
-				MVideoActivity.videoToPlay = MVideoActivity.DAY2_VIDEO;
-			break;
-			case 2:
-				MVideoActivity.videoToPlay = MVideoActivity.DAY3_VIDEO;
-			break;
-			case 3:
-				MVideoActivity.videoToPlay = MVideoActivity.DAY4_VIDEO;
-			break;
-			case 4:
-				MVideoActivity.videoToPlay = MVideoActivity.DAY5_VIDEO;
-			break;
-			case 5:
-				MVideoActivity.videoToPlay = MVideoActivity.ENDING_VIDEO;
-			break;
-		}
-		Global.CURRENT_DAY++;
-		RModelLoader.getInstance().updateBoundaries();
-		Intent intent = new Intent(Global.mainActivity, MVideoActivity.class);
-		startActivityForResult(intent, 1);
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		super.onActivityResult(requestCode, resultCode, data);
+		//TODO: play end scene, and goto next stage properly
 		finish();
 	}
+
 }

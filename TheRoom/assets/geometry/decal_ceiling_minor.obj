@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 09.02.2013 23:40:07
+# File Created: 24.02.2013 00:52:42
 
 mtllib decal_ceiling_minor.mtl
 
@@ -7,10 +7,10 @@ mtllib decal_ceiling_minor.mtl
 # object Decal3SmallCrack
 #
 
-v  -25.2817 25.5658 37.8952
-v  -21.8119 25.5658 -2.9308
-v  -13.4412 25.5658 -2.2194
-v  -16.9110 25.5658 38.6066
+v  -23.0611 25.5658 38.1549
+v  -19.6548 25.5658 -2.6764
+v  -17.2897 25.5658 -2.4791
+v  -20.6960 25.5658 38.3522
 # 4 vertices
 
 vn 0.0000 -1.0000 -0.0000

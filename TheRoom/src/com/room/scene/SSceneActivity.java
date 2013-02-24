@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,14 +118,9 @@ public class SSceneActivity extends Activity
     }
     
     // return left, right, top, bottom in coords array
-    public void getBoxCoords(String boxName,  int []coords)
+    public RectF getBoxPixelCoords(String boxName)
     {
-		layout.getBoxCoords(boxName, coords);
-    }
-
-    public int getBoxNum(String boxName)
-    {
-    	return layout.getBoxNum(boxName);
+		return layout.getBoxPixelCoords(boxName);
     }
     
 	public SSceneView view;
