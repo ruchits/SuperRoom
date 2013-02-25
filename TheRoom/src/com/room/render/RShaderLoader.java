@@ -26,6 +26,7 @@ public class RShaderLoader
 	//shader program ids
 	public int main_progId;
 	public int mainWithAlpha_progId;
+	public int mainUnlitWithAlpha_progId;
 	public int screenImage_progId;
 	
 	//main variable maps
@@ -58,7 +59,20 @@ public class RShaderLoader
 	public int mainWithAlpha_uSpotLightVec;
 	public int mainWithAlpha_uSpotLightPos;
 	public int mainWithAlpha_uSpotLightVariation;
-		
+			
+	//mainUnlitWithAlpha variable maps
+	//===================
+	
+	//mapped attributes
+	public int mainUnlitWithAlpha_aPosition;
+	public int mainUnlitWithAlpha_aNormal;
+	public int mainUnlitWithAlpha_aTexCoords;
+	
+	//mapped uniforms
+	public int mainUnlitWithAlpha_uProjViewMatrix;
+	public int mainUnlitWithAlpha_uTexId;
+	public int mainUnlitWithAlpha_uTexAlphaId;
+
 	
 	//screenImage variable maps
 	//==========================
@@ -78,6 +92,7 @@ public class RShaderLoader
 	{
 		main_progId = loadProgram(assetToString("main.vert"), assetToString("main.frag"));
 		mainWithAlpha_progId = loadProgram(assetToString("main.vert"), assetToString("mainWithAlpha.frag"));
+		mainUnlitWithAlpha_progId = loadProgram(assetToString("main.vert"), assetToString("mainUnlitWithAlpha.frag"));
 		screenImage_progId = loadProgram(assetToString("screenImage.vert"), assetToString("screenImage.frag"));
 		
 		//bind main attributes
@@ -104,6 +119,16 @@ public class RShaderLoader
 		mainWithAlpha_uSpotLightVec = GLES20.glGetUniformLocation(mainWithAlpha_progId, "uSpotLightVec");
 		mainWithAlpha_uSpotLightPos = GLES20.glGetUniformLocation(mainWithAlpha_progId, "uSpotLightPos");
 		mainWithAlpha_uSpotLightVariation = GLES20.glGetUniformLocation(mainWithAlpha_progId, "uSpotLightVariation");		
+
+		//bind mainUnlitWithAlpha attributes
+		mainUnlitWithAlpha_aPosition = GLES20.glGetAttribLocation(mainUnlitWithAlpha_progId, "aPosition");
+		mainUnlitWithAlpha_aTexCoords = GLES20.glGetAttribLocation(mainUnlitWithAlpha_progId, "aTexCoords");
+		mainUnlitWithAlpha_aNormal = GLES20.glGetAttribLocation(mainUnlitWithAlpha_progId, "aNormal");
+		
+		//bind mainUnlitWithAlpha uniforms
+		mainUnlitWithAlpha_uProjViewMatrix = GLES20.glGetUniformLocation(mainUnlitWithAlpha_progId, "uProjViewMatrix");
+		mainUnlitWithAlpha_uTexId = GLES20.glGetUniformLocation(mainUnlitWithAlpha_progId, "uTexId");
+		mainUnlitWithAlpha_uTexAlphaId = GLES20.glGetUniformLocation(mainUnlitWithAlpha_progId, "uTexAlphaId");		
 		
 		//bind screenImage attributes
 		screenImage_aPosition = GLES20.glGetAttribLocation(screenImage_progId, "aPosition");

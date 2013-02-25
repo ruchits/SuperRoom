@@ -1,5 +1,7 @@
 package com.room;
 
+import com.room.render.RModelLoader;
+import com.room.render.RPOIManager;
 import com.room.item.IItems.Item;
 import com.room.render.RRenderActivity;
 import com.room.utils.UPair;
@@ -15,7 +17,7 @@ public class Global
 	public static int SCREEN_HEIGHT = 0;
 	public static int GL_WIDTH = 0;
 	public static int GL_HEIGHT = 0;	
-	public static int CURRENT_DAY = 5;
+	private static int CURRENT_DAY = 5;
 	public static int FIRST_DAY = 1;
 	public static int LAST_DAY = 5;
 	public static boolean HALF_RES_RENDER = true;
@@ -37,4 +39,29 @@ public class Global
 	public enum ResType { LOW_RES, MED_RES, HI_RES};
 	
 	public static ProgressDialog progDailog;
+
+	public static int getCurrentDay()
+	{
+		return CURRENT_DAY;		
+	}
+	
+	public static void setDay(int day)
+	{
+		if(FIRST_DAY <= day && day <= LAST_DAY)
+		{
+			CURRENT_DAY = day;
+			RModelLoader.getInstance().updateBoundaries();
+			RPOIManager.getInstance().setDefaultsForCurrentDay();
+		}						
+	}
+	
+	public static void gotoNextDay()
+	{
+		setDay(Global.CURRENT_DAY+1);
+	}
+	
+	public static void gotoPrevDay()
+	{
+		setDay(Global.CURRENT_DAY-1);
+	}	
 }

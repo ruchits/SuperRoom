@@ -31,20 +31,12 @@ public class RKeyController
     	{
     		case KeyEvent.KEYCODE_R:
 	    	case KeyEvent.KEYCODE_VOLUME_DOWN:
-	    		if(Global.CURRENT_DAY > Global.FIRST_DAY)
-	    		{
-	    			Global.CURRENT_DAY --;
-	    			RModelLoader.getInstance().updateBoundaries();
-	    		}
+	    		Global.gotoPrevDay();
 	    	return true;
 	    	
 	    	case KeyEvent.KEYCODE_F:
 	    	case KeyEvent.KEYCODE_VOLUME_UP:
-	    		if(Global.CURRENT_DAY < Global.LAST_DAY)
-	    		{
-	    			Global.CURRENT_DAY ++;
-	    			RModelLoader.getInstance().updateBoundaries();
-	    		}
+	    		Global.gotoNextDay();
 	    	return true;
 	    	
 			case KeyEvent.KEYCODE_W:

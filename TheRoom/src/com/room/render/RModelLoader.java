@@ -34,11 +34,12 @@ public class RModelLoader
 		
 	public RModel modelRoom;
 	public RModel modelProps;
-	public RModel modelPropsDeadman;
-	public RModel modelPropsDeadwoman;
+	public RModel modelPropsDeadMan;
+	public RModel modelPropsDeadWoman;
+	public RModel modelPropsDeadManHair;
+	public RModel modelPropsDeadWomanHair;
 	public RModel modelPropsStatuesActive;
 	public RModel modelPropsStatuesNeutral;
-	public RModel modelPropsNoCull;
 	public RModel modelDoorBathroomStage1;
 	public RModel modelDoorBathroomStage2;
 	public RModel modelPropClothCovered;
@@ -47,6 +48,7 @@ public class RModelLoader
 	public RModel decalCeilingMinor;
 	public RModel decalCeilingMajor;
 	public RModel decalNumber;
+	public RModel decalPuzzleFlood;
 	public RModel modelPOI;
 	
 	public static ArrayList<RMath.Line> activeWallBoundary;
@@ -61,13 +63,15 @@ public class RModelLoader
 		if(!Global.DEBUG_NO_PROPS)	
 		{
 			modelProps = loadModel("model_props.obj");
-			modelPropsDeadman = loadModel("model_props_deadman.obj");
-			modelPropsDeadwoman = loadModel("model_props_deadwoman.obj");
+			modelPropsDeadMan = loadModel("model_props_deadman.obj");
+			modelPropsDeadWoman = loadModel("model_props_deadwoman.obj");
 			modelPropsStatuesActive = loadModel("model_props_statues_active.obj");
 			modelPropsStatuesNeutral = loadModel("model_props_statues_neutral.obj");
-			modelPropsNoCull = loadModel("model_props_nocull.obj");
-			modelPropsNoCull.enableCull(false);			
 			modelPropClothCovered = loadModel("model_prop_cloth_covered.obj");
+			modelPropsDeadManHair = loadModel("model_props_deadman_hair.obj");
+			modelPropsDeadManHair.enableCull(false);			
+			modelPropsDeadWomanHair = loadModel("model_props_deadwoman_hair.obj");
+			modelPropsDeadWomanHair.enableCull(false);			
 		}
 		
 		modelRoom = loadModel("model_room.obj");
@@ -93,6 +97,10 @@ public class RModelLoader
 			
 			decalNumber = loadModel("decal_number.obj");
 			decalNumber.enableAlpha(true);
+			
+			decalPuzzleFlood = loadModel("decal_puzzle_flood.obj");
+			decalPuzzleFlood.enableAlpha(true);
+			decalPuzzleFlood.enableUnlit(true);
 		}
 
 		boundaryStage1 = loadBoundaries("collision_stage1.boundary");
@@ -105,7 +113,7 @@ public class RModelLoader
 	
 	public void updateBoundaries()
 	{
-		if(Global.CURRENT_DAY < 3)
+		if(Global.getCurrentDay() < 3)
 		{
 			activeWallBoundary = boundaryStage1;
 		}

@@ -42,7 +42,7 @@ public class RModel
 				
 				if(token.equals("day"))
 				{
-					textureName+="_day"+Global.CURRENT_DAY;
+					textureName+="_day"+Global.getCurrentDay();
 				}
 			}
 			
@@ -50,8 +50,17 @@ public class RModel
 				
 			if(alphaEnabled)
 			{
-				setupMainWithAlphaShader(projViewMatrix,spotLightPos,spotLightVec,spotLightVariation,
-						vertexBuff,normalBuff,texBuff, textID.rgb, textID.alpha);
+				if(unlitEnabled)
+				{
+					setupMainUnlitWithAlphaShader(projViewMatrix,
+							vertexBuff,normalBuff,texBuff, textID.rgb, textID.alpha);
+				}
+				else
+				{
+					setupMainWithAlphaShader(projViewMatrix,spotLightPos,spotLightVec,spotLightVariation,
+							vertexBuff,normalBuff,texBuff, textID.rgb, textID.alpha);					
+				}
+
 				GLES20.glEnable(GLES20.GL_BLEND);
 			}
 			else
@@ -133,6 +142,34 @@ public class RModel
 		// Apply the projection and view transformation
         GLES20.glUniformMatrix4fv(RShaderLoader.getInstance().mainWithAlpha_uProjViewMatrix, 1, false, projViewMatrix, 0); 
     }  
+    
+    private void setupMainUnlitWithAlphaShader(float[] projViewMatrix,
+    		FloatBuffer vertexBuff, FloatBuffer normalBuff, FloatBuffer texBuff, int rgbTextureID, int alphaTextureID)
+    {       
+        GLES20.glUseProgram(RShaderLoader.getInstance().mainUnlitWithAlpha_progId);
+        
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().mainUnlitWithAlpha_aPosition, 3, GLES20.GL_FLOAT, false, 0, vertexBuff);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().mainUnlitWithAlpha_aPosition);
+      
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().mainUnlitWithAlpha_aNormal, 3, GLES20.GL_FLOAT, false, 0, normalBuff);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().mainUnlitWithAlpha_aNormal);		
+		
+		GLES20.glVertexAttribPointer(RShaderLoader.getInstance().mainUnlitWithAlpha_aTexCoords, 2, GLES20.GL_FLOAT, false, 0, texBuff);
+		GLES20.glEnableVertexAttribArray(RShaderLoader.getInstance().mainUnlitWithAlpha_aTexCoords);	
+		
+		//activate texture 0
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);		
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, rgbTextureID);			
+		GLES20.glUniform1i(RShaderLoader.getInstance().mainUnlitWithAlpha_uTexId, 0);	
+		
+		//activate texture 1
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE1);				
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, alphaTextureID);
+		GLES20.glUniform1i(RShaderLoader.getInstance().mainUnlitWithAlpha_uTexAlphaId, 1);	
+		
+		// Apply the projection and view transformation
+        GLES20.glUniformMatrix4fv(RShaderLoader.getInstance().mainUnlitWithAlpha_uProjViewMatrix, 1, false, projViewMatrix, 0); 
+    }      
 	
     public void enableAlpha(boolean b)
     {
@@ -144,8 +181,16 @@ public class RModel
     	cullEnabled = b;
     }    
     
+    
+    public void enableUnlit(boolean b)
+    {
+    	unlitEnabled = b;
+    }    
+        
+    
     private boolean alphaEnabled = false;
     private boolean cullEnabled = true;
+    private boolean unlitEnabled = false;
     
 	//these are only to be filled by the ModelLoader:
     public int numGroups;

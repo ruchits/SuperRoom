@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import android.content.res.AssetManager;
@@ -26,34 +27,96 @@ public class RPOIManager
 		return instance;
 	}
 	
-	private static class POIArea
+	private class POIActivity
 	{
+		Class activity;
+		boolean activated;
+		
+		//co-ordinates of the POI
 		RMath.V2 o = new RMath.V2();
 		RMath.V2 v1 = new RMath.V2();
 		RMath.V2 v2 = new RMath.V2();
-		String name = "";
+		String name = "";		
 	}
 			
 	public void init()
-	{
-		areas = new ArrayList<POIArea>(); 
+	{				
+		poiActivityMap = new HashMap<String,POIActivity>();
 		loadPOIFile("points_of_interest.poi");
+		poiActivityMap.get("POI_phone").activity = PPhone.class;
+		poiActivityMap.get("POI_urn").activity = PUrn.class;
+		poiActivityMap.get("POI_deadman").activity = PDeadMan.class;
+		poiActivityMap.get("POI_statues").activity = PStatues.class;
+		poiActivityMap.get("POI_fakedoor").activity = PFakeDoor.class;
+		poiActivityMap.get("POI_bathroomdoor").activity = PBathroomDoor.class;
+		poiActivityMap.get("POI_sink").activity = PSink.class;
+		poiActivityMap.get("POI_deadwoman").activity = PDeadWoman.class;
+		poiActivityMap.get("POI_flood").activity = PFlood.class;
+	}
+	
+	public void setDefaultsForCurrentDay()
+	{
+		disableAllPOIs();
 		
-		poiActivityMap = new HashMap<String,Class>();
-		poiActivityMap.put("POI_phone", PPhone.class);
-		poiActivityMap.put("POI_urn", PUrn.class);
-		poiActivityMap.put("POI_deadman", PDeadMan.class);
-		poiActivityMap.put("POI_statues", PStatues.class);
-		poiActivityMap.put("POI_fakedoor", PFakeDoor.class);
-		poiActivityMap.put("POI_bathroomdoor", PBathroomDoor.class);
-		poiActivityMap.put("POI_sink", PSink.class);
-		poiActivityMap.put("POI_deadwoman", PDeadWoman.class);
+		switch(Global.getCurrentDay())
+		{
+			case 1:
+				setPOIState("POI_phone", true);
+				setPOIState("POI_urn", true);
+				setPOIState("POI_deadman", true);
+				setPOIState("POI_statues", true);
+				setPOIState("POI_fakedoor", true);
+				setPOIState("POI_bathroomdoor", true);
+			break;
+			case 2:
+				setPOIState("POI_phone", true);
+				setPOIState("POI_urn", true);
+				setPOIState("POI_deadman", true);
+				setPOIState("POI_statues", true);
+				setPOIState("POI_fakedoor", true);
+				setPOIState("POI_bathroomdoor", true);
+			break;			
+			case 3:
+				setPOIState("POI_phone", true);
+				setPOIState("POI_urn", true);
+				setPOIState("POI_deadman", true);
+				setPOIState("POI_statues", true);
+				setPOIState("POI_fakedoor", true);
+				setPOIState("POI_sink", true);
+				//setPOIState("POI_bathroomdoor", true);
+				setPOIState("POI_flood", true);
+			break;	
+			case 4:
+				setPOIState("POI_phone", true);
+				setPOIState("POI_urn", true);
+				setPOIState("POI_deadman", true);
+				setPOIState("POI_statues", true);
+				setPOIState("POI_fakedoor", true);
+				setPOIState("POI_sink", true);
+				setPOIState("POI_deadwoman", true);
+			break;	
+			case 5:
+				setPOIState("POI_phone", true);
+				setPOIState("POI_urn", true);
+				setPOIState("POI_deadman", true);
+				setPOIState("POI_statues", true);
+				setPOIState("POI_fakedoor", true);
+				setPOIState("POI_sink", true);
+				setPOIState("POI_deadwoman", true);
+			break;				
+		}
 	}
 	
 	public String checkPOI(float playerPosX, float playerPosY, float playerDirX, float playerDirY)
 	{
-		for(POIArea area:areas)
+		Iterator<POIActivity> e = poiActivityMap.values().iterator();
+		while(e.hasNext())
 		{
+			POIActivity area = e.next();
+			
+			if(!area.activated)
+				continue;
+			
 			//this algorithm assumes the areas to be orthogonal (or close to orthogonal)
 			float u = (playerPosX - area.o.x)/area.v1.x;
 			float v = (playerPosY - area.o.y)/area.v2.y;
@@ -77,11 +140,26 @@ public class RPOIManager
 	
 	public Class getActivityForPOI(String inName)
 	{
-		Class c = poiActivityMap.get(inName);
+		Class c = poiActivityMap.get(inName).activity;
 		return c;
 	}
 	
-	private static ArrayList<POIArea> areas;
+	public void setPOIState(String poiName, boolean enable)
+	{
+		POIActivity poiActivity = poiActivityMap.get(poiName);
+		if(poiActivity!=null)
+			poiActivity.activated = enable;
+	}		
+	
+	private void disableAllPOIs()
+	{
+		Iterator<POIActivity> e = poiActivityMap.values().iterator();
+		while(e.hasNext())
+		{
+			e.next().activated = false;
+		}
+	}
+	
 	
 	private void loadPOIFile(String assetName)
 	{
@@ -99,7 +177,7 @@ public class RPOIManager
 								
 				StringTokenizer st = new StringTokenizer(line);
 				
-				POIArea poiArea = new POIArea();
+				POIActivity poiArea = new POIActivity();
 				poiArea.name = st.nextToken();
 				poiArea.o.x = Float.parseFloat(st.nextToken());
 				poiArea.o.y = Float.parseFloat(st.nextToken());
@@ -107,8 +185,8 @@ public class RPOIManager
 				poiArea.v1.y = Float.parseFloat(st.nextToken()) - poiArea.o.y;
 				poiArea.v2.x = Float.parseFloat(st.nextToken()) - poiArea.o.x;
 				poiArea.v2.y = Float.parseFloat(st.nextToken()) - poiArea.o.y;
-				
-				areas.add(poiArea);
+				poiArea.activated = false;
+				poiActivityMap.put(poiArea.name, poiArea);
 			}
 		}
 		catch(Exception e)
@@ -117,7 +195,7 @@ public class RPOIManager
 		}
 	}
 	
-	private HashMap<String,Class> poiActivityMap;
+	private HashMap<String,POIActivity> poiActivityMap;
 	
 	private static RPOIManager instance;
 

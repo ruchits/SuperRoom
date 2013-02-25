@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 23.02.2013 03:10:52
+# File Created: 25.02.2013 04:08:35
 
 mtllib model_props.mtl
 
@@ -5871,7 +5871,7 @@ vt 1.0000 0.0000 0.0000
 # 4 texture coords
 
 g prop_girl_portrait
-usemtl prop_portrait_girl
+usemtl prop_portrait_girlXday
 f 1132/1563/1023 1133/1564/1023 1134/1565/1023 
 f 1134/1565/1023 1135/1566/1023 1132/1563/1023 
 # 2 faces
@@ -11625,7 +11625,7 @@ vt 1.0000 0.0000 0.0000
 # 4 texture coords
 
 g prop_boy_portrait
-usemtl prop_portrait_boy
+usemtl prop_portrait_boyXday
 f 2461/2468/2011 2462/2469/2011 2463/2470/2011 
 f 2463/2470/2011 2464/2471/2011 2461/2468/2011 
 # 2 faces

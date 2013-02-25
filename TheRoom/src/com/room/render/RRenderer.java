@@ -204,42 +204,8 @@ public class RRenderer implements GLSurfaceView.Renderer
         //generate a random number flicker the flashlight
         float spotLightVariation = RMath.getRandFlashlightFlicker();
         
-        //Draw objects        
-        RModelLoader.getInstance().modelRoom.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-                
-        //TBD - we need to move our drawing logic to a seperate class
-        if(!Global.DEBUG_NO_PROPS)
-        {
-        	RModelLoader.getInstance().modelProps.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	RModelLoader.getInstance().modelPropsNoCull.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);        	        	
-        	 
-        	if(Global.CURRENT_DAY >= 3)
-        		RModelLoader.getInstance().modelPropsDeadwoman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	
-        	if(Global.CURRENT_DAY == 1)
-        	{
-        		RModelLoader.getInstance().modelPropsStatuesNeutral.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        		RModelLoader.getInstance().modelPropClothCovered.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	}
-        	else
-        	{
-        		RModelLoader.getInstance().modelPropsStatuesActive.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        		RModelLoader.getInstance().modelPropsDeadman.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        	}
-        }
-        
-        if(Global.CURRENT_DAY < 3)
-        	RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        else
-        	RModelLoader.getInstance().modelDoorBathroomStage2.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-
-        if(Global.DEBUG_SHOW_POI_BOXES)
-        	RModelLoader.getInstance().modelPOI.draw(viewProjMatrix, spotLightPos, spotLightVec,spotLightVariation);
-        
-        RDecalSystem.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-        RTouchController.getInstance().draw();
-        RTopButtons.getInstance().draw();
-        
+        //Draw objects  
+        RDrawLogic.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);        
         ++frameCtr;
     }
 

@@ -29,7 +29,7 @@ public class DaySelection extends SSceneActivity
 		setBackgroundImage(R.drawable.day_selection);
 		
 		if(Global.DEBUG_SKIP_MENU)
-        	startGame(Global.CURRENT_DAY, true);
+        	startGame(Global.getCurrentDay(), true);
 	}
     
 	@Override
@@ -66,8 +66,7 @@ public class DaySelection extends SSceneActivity
 			break;		
 		}
 		
-		Global.CURRENT_DAY = dayNum;
-		RModelLoader.getInstance().updateBoundaries();
+		Global.setDay(dayNum);
 		
 		Intent intent = new Intent(this, MVideoActivity.class);
 		startActivity(intent);

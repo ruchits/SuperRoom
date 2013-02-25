@@ -19,7 +19,7 @@ public class RDecalSystem
 		if(Global.DEBUG_NO_DECALS)
 			return;
 		
-		switch(Global.CURRENT_DAY)
+		switch(Global.getCurrentDay())
 		{
 			case 1:
 				RModelLoader.getInstance().decalNumber.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
@@ -32,6 +32,7 @@ public class RDecalSystem
 			case 3:
 				RModelLoader.getInstance().decalWall.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 				RModelLoader.getInstance().decalBoard.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalPuzzleFlood.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
 			break;
 			
 			case 4:

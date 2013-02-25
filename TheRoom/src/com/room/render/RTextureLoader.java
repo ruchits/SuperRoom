@@ -80,8 +80,18 @@ public class RTextureLoader
 			textureID.put("prop_mirror", loadCompressedTexture("prop_mirror",true,true,false));
 									
 			textureID.put("prop_frame1", loadCompressedTexture("prop_frame1",false,false,false));
-			textureID.put("prop_portrait_girl", loadCompressedTexture("prop_portrait_girl",true,true,false));
-			textureID.put("prop_portrait_boy", loadCompressedTexture("prop_portrait_boy",true,true,false));
+			
+			textureID.put("prop_portrait_girl_day1", loadCompressedTexture("prop_portrait_girl_day1",true,true,false));
+			textureID.put("prop_portrait_girl_day2", loadCompressedTexture("prop_portrait_girl_day2",true,true,false));
+			textureID.put("prop_portrait_girl_day3", loadCompressedTexture("prop_portrait_girl_day3",true,true,false));
+			textureID.put("prop_portrait_girl_day4", loadCompressedTexture("prop_portrait_girl_day4",true,true,false));
+			textureID.put("prop_portrait_girl_day5", loadCompressedTexture("prop_portrait_girl_day5",true,true,false));
+			
+			textureID.put("prop_portrait_boy_day1", loadCompressedTexture("prop_portrait_boy_day1",true,true,false));
+			textureID.put("prop_portrait_boy_day2", loadCompressedTexture("prop_portrait_boy_day2",true,true,false));
+			textureID.put("prop_portrait_boy_day3", loadCompressedTexture("prop_portrait_boy_day3",true,true,false));
+			textureID.put("prop_portrait_boy_day4", loadCompressedTexture("prop_portrait_boy_day4",true,true,false));
+			textureID.put("prop_portrait_boy_day5", loadCompressedTexture("prop_portrait_boy_day5",true,true,false));
 			
 			textureID.put("prop_samurai", loadCompressedTexture("prop_samurai",false,false,false));
 			textureID.put("prop_feudal", loadCompressedTexture("prop_feudal",true,true,false));
@@ -105,7 +115,8 @@ public class RTextureLoader
 			textureID.put("decal_board_day5", loadCompressedTexture("decal_board_day5",false,true,true));		
 			textureID.put("decal_small_crack", loadCompressedTexture("decal_small_crack",true,true,true));
 			textureID.put("decal_big_crack", loadCompressedTexture("decal_big_crack",true,true,true));
-			textureID.put("decal_number", loadCompressedTexture("decal_number",true,true,true));		
+			textureID.put("decal_number", loadCompressedTexture("decal_number",true,true,true));
+			textureID.put("decal_puzzle_flood", loadCompressedTexture("decal_puzzle_flood",true,true,true));
 		}
 		
 	}
