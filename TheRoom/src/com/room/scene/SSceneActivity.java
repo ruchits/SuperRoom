@@ -6,6 +6,7 @@ import com.room.R;
 import com.room.item.IItemMenu;
 import com.room.item.IItems;
 import com.room.scene.SLayout.Box;
+import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
 
 import android.app.Activity;
@@ -261,8 +262,7 @@ public class SSceneActivity extends Activity
     	}
     	else
     	{
-    		Resources res = Global.mainActivity.getResources();
-    		backgroundImage = BitmapFactory.decodeResource(res, resourceID);
+    		backgroundImage = UBitmapUtil.decodeSampledBitmapForResolution(resourceID, Global.ResType.MED_RES); 
     	}
     }
     

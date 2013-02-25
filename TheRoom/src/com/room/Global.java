@@ -2,6 +2,7 @@ package com.room;
 
 import com.room.item.IItems.Item;
 import com.room.render.RRenderActivity;
+import com.room.utils.UPair;
 
 import android.app.ProgressDialog;
 
@@ -32,6 +33,8 @@ public class Global
 	public static int ICON_HEIGHT = 120;
 	public enum TextType { TEXT_ITEM_DESCR, TEXT_SUBTITLE, TEXT_CENTERED };
 	public static Item itemInuse;
+	
+	public enum ResType { LOW_RES, MED_RES, HI_RES};
 	
 	public static ProgressDialog progDailog;
 }
