@@ -9,7 +9,7 @@ import com.room.Global;
 
 public class SLayout
 {
-	static class Box
+	public static class Box
 	{
 		public String name=null;
 		public float left,right,top,bottom;
@@ -63,6 +63,9 @@ public class SLayout
 		return null;
 	}
 	
+	public ArrayList<Box> getAllBoxes() {
+		return boxes;
+	}
 
 	private ArrayList<Box> boxes = new ArrayList<Box>();
 }

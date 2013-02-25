@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.room.Global;
+import com.room.item.IItems;
 import com.room.media.MSoundManager;
 import com.room.media.MVideoActivity;
 import com.room.puzzles.PFlood;
@@ -30,6 +31,12 @@ public class MainMenu extends SSceneActivity
 		
 		if(Global.DEBUG_SKIP_MENU)
 			showDaySelection();
+		
+		IItems.getInstance().init();
+		addToItemMenu(); // test function to populate items menu.
+		
+		showInventory(true);
+		showBackButton(false);
 	}
 	
     
@@ -70,6 +77,19 @@ public class MainMenu extends SSceneActivity
 	private void showOptions() {
 		  Intent intent = new Intent(this, Options.class);
 		  startActivity(intent);
+	}
+	
+	// Test function to populate Item Menu.
+	private void addToItemMenu() {
+		// Create mock items first.
+		IItems.Item key = new IItems.Item("Key", "This item can be used to unlock doors.", R.drawable.key_icon);
+		IItems.Item knife = new IItems.Item("Knife", "A sharp object for sharp people. Use it with caution!", R.drawable.knife_icon);
+		IItems.getInstance().addItem(key);
+		IItems.getInstance().addItem(knife);
+	}
+	private void clearItemMenu() {
+		IItems.getInstance().removeItem("Key");
+		IItems.getInstance().removeItem("Knife");
 	}
 	
 	@Override

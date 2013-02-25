@@ -25,6 +25,7 @@ public class SLayoutLoader
 	
 	public SLayout mainMenu;
 	public SLayout daySelection;
+	public SLayout itemMenu;
 	
 	public SLayout puzzleFlood;
 	public SLayout puzzleExample;
@@ -41,6 +42,7 @@ public class SLayoutLoader
 	{
 		mainMenu = loadLayout("main_menu.layout");
 		daySelection = loadLayout("day_selection.layout");
+		itemMenu = loadLayout("items_menu.layout");
 		
 		puzzleFlood = loadLayout("puzzle_flood.layout");
 		puzzleExample = loadLayout("puzzle_example.layout");
