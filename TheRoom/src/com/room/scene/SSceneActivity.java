@@ -34,6 +34,8 @@ public class SSceneActivity extends Activity
 	private static Bitmap backbutton;
 	private static final Rect invDestination = new Rect(0, 0, Global.ICON_WIDTH, Global.ICON_HEIGHT);
 	private static final Rect backbtnDestination = new Rect(Global.SCREEN_WIDTH-Global.ICON_WIDTH, 0, Global.SCREEN_WIDTH, Global.ICON_HEIGHT);
+	private static final RectF invDestinationF = new RectF(0, 0, Global.ICON_WIDTH, Global.ICON_HEIGHT);
+	private static final RectF backbtnDestinationF = new RectF(Global.SCREEN_WIDTH-Global.ICON_WIDTH, 0, Global.SCREEN_WIDTH, Global.ICON_HEIGHT);     
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,10 +75,12 @@ public class SSceneActivity extends Activity
 			
 			// Draw the Icons
 			if(activity.showInventoryIcon) {
+    			drawIconBG(canvas, paint, SSceneActivity.invDestinationF);
 				Bitmap inventory = SSceneActivity.inventory;
 				canvas.drawBitmap(inventory, null, SSceneActivity.invDestination, paint);
 			}
 			if (activity.showBackButton) {
+    			drawIconBG(canvas, paint, SSceneActivity.backbtnDestinationF);
 				Bitmap backButton = SSceneActivity.backbutton;
 				canvas.drawBitmap(backButton, null, SSceneActivity.backbtnDestination, paint);
 			}
@@ -138,6 +142,16 @@ public class SSceneActivity extends Activity
 				}
 				
 			}
+		}
+		
+		private void drawIconBG(Canvas canvas, Paint paint, RectF rect) {
+			int alpha = paint.getAlpha();
+			paint.setAlpha(100);
+			float cx= rect.left + (rect.right-rect.left)/2;
+			float cy = rect.top + (rect.bottom-rect.top)/2;
+			float radius = Global.ICON_WIDTH/2;
+			canvas.drawCircle(cx, cy, radius, paint);
+			paint.setAlpha(alpha);
 		}
 		
 		private void setStrokePaint() {
