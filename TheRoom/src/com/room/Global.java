@@ -33,6 +33,7 @@ public class Global
 	public static int TEXT_LENGTH = 32;
 	public static int ICON_WIDTH = 120;
 	public static int ICON_HEIGHT = 120;
+	public static int ROUND_EDGE_WIDTH = 16;
 	public enum TextType { TEXT_ITEM_DESCR, TEXT_SUBTITLE, TEXT_CENTERED };
 	public static Item itemInuse;
 	

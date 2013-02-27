@@ -70,13 +70,13 @@ public class SSceneActivity extends Activity
 			
 			// Draw the Icons
 			if(activity.showInventoryIcon) {
-				paint.setAlpha(125);
+				paint.setAlpha(150);
 				Bitmap inventory = SSceneActivity.inventory;
 				canvas.drawBitmap(inventory, null, SSceneActivity.invDestination, paint);
 				paint.reset();
 			}
 			if (activity.showBackButton) {
-				paint.setAlpha(125);
+				paint.setAlpha(150);
 				Bitmap backButton = SSceneActivity.backbutton;
 				canvas.drawBitmap(backButton, null, SSceneActivity.backbtnDestination, paint);
 				paint.reset();
@@ -97,8 +97,9 @@ public class SSceneActivity extends Activity
 					Box descriptionBox = IItems.getInstance().getDescriptionBox();
 					
 					gap = (int) (paint.descent() - paint.ascent());
+					int spaceBtnBoxnText = 2*gap;
 					x = (int) (descriptionBox.left*Global.SCREEN_WIDTH);
-					y = (int) (descriptionBox.bottom*Global.SCREEN_HEIGHT + gap);
+					y = (int) (descriptionBox.bottom*Global.SCREEN_HEIGHT + spaceBtnBoxnText);
 				
 					// Draw the description string below the box.
 					// Split a long string into TEXT_LENGTH blocks for text wrapping.
@@ -334,7 +335,7 @@ public class SSceneActivity extends Activity
     
     private String text = null;
     private TextType textType;
-    private boolean showInventoryIcon = false;
-    private boolean showBackButton = false;
+    private boolean showInventoryIcon = true;
+    private boolean showBackButton = true;
     
 }

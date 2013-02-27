@@ -7,8 +7,10 @@ import java.util.Map.Entry;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 
 import com.room.Global;
@@ -99,12 +101,16 @@ public class IItemMenu extends SSceneActivity {
 	    		int iconLeft = (int)(box.left*Global.SCREEN_WIDTH);
 	    		int iconRight = (int)(box.right*Global.SCREEN_WIDTH);
 	    		int iconTop = (int)(box.top*Global.SCREEN_HEIGHT);
-	    		int iconBottom = (int)(box.bottom*Global.SCREEN_HEIGHT);
+	    		int iconBottom = (int)(box.bottom*Global.SCREEN_HEIGHT);						
 	    		Rect icon = new Rect(iconLeft, iconTop, iconRight, iconBottom);
+	    		RectF iconF = new RectF(iconLeft, iconTop, iconRight, iconBottom);
 	    		
 	    		if ((showBox != null) && showBox.name.equals(box.name)) {
+	    			// set paint for when the box is selected.
+	    		}
+	    		else {
 	    			paint.setAlpha(50);
-	    			canvas.drawRect(icon, paint);
+	    			canvas.drawRoundRect(iconF, Global.ROUND_EDGE_WIDTH, Global.ROUND_EDGE_WIDTH, paint);
 	    			paint.reset();
 	    		}
 	    		
