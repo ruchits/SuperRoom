@@ -21,16 +21,16 @@ public class RRenderer implements GLSurfaceView.Renderer
 	{
 		if(instance == null)
 		{
-			instance = new RRenderer();			
-		}		
+			instance = new RRenderer();
+		}
 		return instance;
-	}	
-	
+	}
+
 	public static final float PLAYER_HEIGHT = 15;
 	public static final float PLAYER_START_X = 8.3532915f;
 	public static final float PLAYER_START_Y = -14.7741165f; //this is really the z axis
 	public static final float PLAYER_MAX_PITCH = 85;
-	public static final float PLAYER_MIN_PITCH = -85;	
+	public static final float PLAYER_MIN_PITCH = -85;
 	public static final float FLASHLIGHT_MAX_PITCH = 85;
 	public static final float FLASHLIGHT_MIN_PITCH = -70;
 	public static final float PLAYER_WALK_SPEED = 15; //units per second
@@ -46,36 +46,36 @@ public class RRenderer implements GLSurfaceView.Renderer
     private static final RMath.V2 FlASHLIGHT_P1= new RMath.V2(1, FLASHLIGHT_HEIGHT_MAX);
     private static final RMath.V2 FlASHLIGHT_P2= new RMath.V2(25, FLASHLIGHT_HEIGHT_MIN);
 
-    
+
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        
+
         //turn on depth test
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glDepthFunc(GLES20.GL_LEQUAL);  
-        
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+
         //set blend function, but disable it until its needed
         GLES20.glDisable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);        
-        
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
         //turn on culling
 		GLES20.glFrontFace(GLES20.GL_CCW);
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
-		GLES20.glCullFace(GLES20.GL_BACK);     
-		
+		GLES20.glCullFace(GLES20.GL_BACK);
+
 		// TBD - make it so that the resources DONT have to be reinitialized everytime surface changes!!
 		RShaderLoader.getInstance().init();
-		RTextureLoader.getInstance().init();   
-		
+		RTextureLoader.getInstance().init();
+
 		//starting location:
 		camPos[0] = PLAYER_START_X;
 		camPos[1] = PLAYER_HEIGHT;
 		camPos[2] = PLAYER_START_Y;
 		camForward[0] = 1;
 		camForward[1] = 0;
-		camForward[2] = -1;	
+		camForward[2] = -1;
 		camUp[0] = 0;
 		camUp[1] = 1;
 		camUp[2] = 0;
@@ -84,36 +84,36 @@ public class RRenderer implements GLSurfaceView.Renderer
 		lastDrawTime = System.currentTimeMillis();
 		headbobCtr = 0;
 		lastStep = 0;
-		
+
 	    fpsCtrBaseFrame = 0;
 	    fpsCtrBaseTime = lastDrawTime;
-	    fpsCtrDisplay = 0;		
-		
+	    fpsCtrDisplay = 0;
+
 		//set starting camera angle
 		cameraPitch(-23.71069f);
 		cameraYaw(16.102112f);
         Global.progDailog.dismiss();
     }
-    
+
     public void onSurfaceChanged(GL10 unused, int width, int height)
     {
         GLES20.glViewport(0, 0, width, height);
-        
+
         Global.GL_WIDTH = width;
         Global.GL_HEIGHT = height;
-        
+
         //temp speed hack for BB10:
 		if(Global.HALF_RES_RENDER)
 		{
-			Global.GL_WIDTH = (int)(Global.SCREEN_WIDTH * 0.50f);
-			Global.GL_HEIGHT = (int)(Global.SCREEN_HEIGHT * 0.50f);
+			Global.GL_WIDTH = (int)(Global.SCREEN_WIDTH * 0.75f);
+			Global.GL_HEIGHT = (int)(Global.SCREEN_HEIGHT * 0.75f);
 		}
-        
+
         float ratio = 1;
-        
+
         if(width > height)
         {
-        	ratio = (float) height / width; 
+        	ratio = (float) height / width;
         	Matrix.frustumM(projMatrix, 0, -1, 1, -ratio, ratio, 1f, 100f);
         }
         else
@@ -121,14 +121,14 @@ public class RRenderer implements GLSurfaceView.Renderer
         	ratio = (float) width / height;
         	Matrix.frustumM(projMatrix, 0, -ratio, ratio, -1, 1, 1f, 100f);
         }
-    }      
+    }
 
     public void onDrawFrame(GL10 unused)
     {
     	long currentTime = System.currentTimeMillis();
-    	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;    	
+    	float deltaTimeSeconds = (currentTime - lastDrawTime)/1000f;
     	lastDrawTime = currentTime;
-    	
+
     	//update FPS counter
     	if ((currentTime - fpsCtrBaseTime) > 1000)
     	{
@@ -137,33 +137,33 @@ public class RRenderer implements GLSurfaceView.Renderer
     		fpsCtrBaseFrame=frameCtr;
     		if(Global.DEBUG_SHOW_FPS)
     			Log.d("FPS", fpsCtrDisplay+"");
-    	}    	
-    	
+    	}
+
     	//process all controller inputs
     	processControllerInput(deltaTimeSeconds);
 
         // Redraw background color, and clear depth buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        
+
         //update the flashlight height
         updateFlashlightHeight(deltaTimeSeconds);
-        
+
         //check if we are in a poi
         checkPOI();
-        
+
         //update location sensitive sounds
         updateLocationSensitiveSounds();
-        
+
         //Calculate the point the camera is currently looking at
         float[] camLookAt = {camPos[0]+camForward[0],camPos[1]+camForward[1],camPos[2]+camForward[2]};
-        
+
         //calculate the headbob offsets
         RMath.V2 headBobOffsets = updateHeadbobOffsets();
-    	
+
     	//get the left vector by taking the negative recip of the forward XZ components
     	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
     	RMath.normalize(camLeft);
- 
+
         // Set the camera position (View matrix)
         Matrix.setLookAtM
         	(
@@ -176,36 +176,36 @@ public class RRenderer implements GLSurfaceView.Renderer
         	);
 
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(viewProjMatrix, 0, projMatrix, 0, viewMatrix, 0);   
-       
+        Matrix.multiplyMM(viewProjMatrix, 0, projMatrix, 0, viewMatrix, 0);
+
         //This is the position of the flashlight
         float[] spotLightPos = {
         		camPos[0],
         		currentFLHeight,
         		camPos[2]
         		};
-        
+
         //This is the direction of the flashlight
         //first take the XZ component of camForward
         float[] spotLightVec = { camForward[0], 0, camForward[2], 0 };
-    	    	
-    	//flashlight_min_pitch + flashlight_range * %_of_current_player_pitch 
+
+    	//flashlight_min_pitch + flashlight_range * %_of_current_player_pitch
     	float degrees =  FLASHLIGHT_MIN_PITCH
     			+ (FLASHLIGHT_MAX_PITCH - FLASHLIGHT_MIN_PITCH)
     			* ((getCamCurrentPitch() - PLAYER_MIN_PITCH)/(PLAYER_MAX_PITCH - PLAYER_MIN_PITCH))
     			;
-    	
+
     	//pitch the flashlight
     	float[] axisRot = new float[16];
         Matrix.setIdentityM(axisRot, 0);
-        Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);          
+        Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);
         Matrix.multiplyMV(spotLightVec, 0, axisRot, 0, spotLightVec, 0);
-        
+
         //generate a random number flicker the flashlight
         float spotLightVariation = RMath.getRandFlashlightFlicker();
-        
-        //Draw objects  
-        RDrawLogic.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);        
+
+        //Draw objects
+        RDrawLogic.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
         ++frameCtr;
     }
 
@@ -213,17 +213,17 @@ public class RRenderer implements GLSurfaceView.Renderer
     {
     	//get left controller state:
     	if(RTouchController.getInstance().isLeftStickActive())
-    	{    		
+    	{
 	    	cameraMove(RTouchController.getInstance().getLeftValue()*deltaTimeSeconds*PLAYER_WALK_SPEED,
 					RTouchController.getInstance().getLeftAngle());
-	    	headbobCtr+=PLAYER_HEADBOB_SPEED*RTouchController.getInstance().getLeftValue()*deltaTimeSeconds;	    	
+	    	headbobCtr+=PLAYER_HEADBOB_SPEED*RTouchController.getInstance().getLeftValue()*deltaTimeSeconds;
     	}
     	//get keyboard state
     	else if(RKeyController.WKeyDown)
     	{
 	    	cameraMove(deltaTimeSeconds*PLAYER_WALK_SPEED,0);
 	    	headbobCtr+=PLAYER_HEADBOB_SPEED*deltaTimeSeconds;
-    	}    	
+    	}
     	else if(RKeyController.SKeyDown)
     	{
 	    	cameraMove(deltaTimeSeconds*PLAYER_WALK_SPEED,180);
@@ -244,11 +244,11 @@ public class RRenderer implements GLSurfaceView.Renderer
     	{
     		float periods = headbobCtr/RMath.PI_TIMES_2;
     		float periodsRem = 1 - (periods - (float)Math.floor(periods));
-    		
+
     		if(periodsRem != 1 && periodsRem > 0.05f)
     			headbobCtr += Math.min(PLAYER_HEADBOB_SPEED*deltaTimeSeconds, periodsRem*RMath.PI_TIMES_2);
-    	}    	 	
-    	
+    	}
+
     	//get right controller state:
     	if(RTouchController.getInstance().isRightStickActive())
     	{
@@ -262,9 +262,9 @@ public class RRenderer implements GLSurfaceView.Renderer
     	else if(RKeyController.EKeyDown)
     	{
     		cameraYaw(-deltaTimeSeconds*PLAYER_YAW_SPEED);
-    	}    	
+    	}
     }
-    
+
     private void updateFlashlightHeight(float deltaTimeSeconds)
     {
     	//calc height every 5 frames
@@ -273,21 +273,21 @@ public class RRenderer implements GLSurfaceView.Renderer
         	 * getFlashLightHeight will take care of this and make sure the value returned is valid.
         	 */
         	targetFLHeight = getFlashLightHeight();
-        	
+
         }
-    
+
     	float jump = FLASHLIGHT_VERTICAL_SPEED*deltaTimeSeconds;
-    	
+
     	if(currentFLHeight < (targetFLHeight - jump))
     		currentFLHeight +=  jump;
     	else if (currentFLHeight > (targetFLHeight + jump))
     		currentFLHeight -=  jump;
-    	else 
+    	else
     		currentFLHeight = targetFLHeight;
 
         //Log.e(TAG, "targetFLHeight= " + targetFLHeight + " currentHeight= " + currentFLHeight);
     }
-    
+
     private void checkPOI()
     {
     	if(frameCtr %5 == 1)
@@ -296,7 +296,7 @@ public class RRenderer implements GLSurfaceView.Renderer
     		RTopButtons.getInstance().setPOI(poiName);
     	}
     }
-    
+
     private void updateLocationSensitiveSounds()
     {
     	if(frameCtr %5 == 2)
@@ -304,14 +304,14 @@ public class RRenderer implements GLSurfaceView.Renderer
     		MSoundManager.getInstance().updateLocation(camPos[0], camPos[2]);
     	}
     }
-    
+
     private RMath.V2 updateHeadbobOffsets()
     {
         //Calculate the headbob to offset the camPos
     	RMath.V2 offset = new RMath.V2();
     	offset.y = PLAYER_HEADBOB_VERTICAL_MAGNITUDE * (float)Math.cos(headbobCtr);
         offset.x = (float)Math.sin(headbobCtr/2);
-        
+
     	//check if we should play a footstep sound
     	if(offset.x > 0.8 && lastStep != 1)
     	{
@@ -323,24 +323,24 @@ public class RRenderer implements GLSurfaceView.Renderer
     		MFootstepSound.playRandomStep();
     		lastStep = -1;
     	}
-        
+
     	offset.x *= PLAYER_HEADBOB_HORIZONTAL_MAGNITUDE;
-    	
+
     	return offset;
     }
-    
+
     public void cameraMove(float distance, float degrees)
     {
-        float[] camLookAtXZ = 
+        float[] camLookAtXZ =
         	{ camForward[0], 0, camForward[2], 0};
-        
+
     	float[] yRot = new float[16];
         Matrix.setIdentityM(yRot, 0);
-        Matrix.rotateM(yRot, 0, degrees, 0,1,0);        
+        Matrix.rotateM(yRot, 0, degrees, 0,1,0);
         Matrix.multiplyMV(camLookAtXZ, 0, yRot, 0, camLookAtXZ, 0);
-        
+
         RMath.normalize(camLookAtXZ);
-        
+
     	camLookAtXZ[0] *= distance;
     	camLookAtXZ[1] *= distance;
     	camLookAtXZ[2] *= distance;
@@ -363,7 +363,7 @@ public class RRenderer implements GLSurfaceView.Renderer
             camPos[2] = newPosition.y;
         }
     }
-    
+
     public void cameraPitch(float degrees)
     {
     	if(camCurrentPitch+degrees > PLAYER_MAX_PITCH)
@@ -374,14 +374,14 @@ public class RRenderer implements GLSurfaceView.Renderer
     	{
     		degrees = PLAYER_MIN_PITCH - camCurrentPitch;
     	}
-    	
+
     	//get the left vector by taking the negative recip of the forward XZ components
     	float[] camLeft = { -camForward[2], 0, camForward[0], 0 };
-    	
+
     	float[] axisRot = new float[16];
         Matrix.setIdentityM(axisRot, 0);
         Matrix.rotateM(axisRot, 0, degrees, camLeft[0],camLeft[1],camLeft[2]);
-        
+
         float[] camLookAtVector = {
         		camForward[0],
         		camForward[1],
@@ -390,22 +390,22 @@ public class RRenderer implements GLSurfaceView.Renderer
         	};
 
         float[] rotatedCameraLookAtVector = new float[4];
-        		
+
         Matrix.multiplyMV(rotatedCameraLookAtVector, 0,
         		axisRot, 0, camLookAtVector, 0);
 
         camForward[0] = rotatedCameraLookAtVector[0];
         camForward[1] = rotatedCameraLookAtVector[1];
-        camForward[2] = rotatedCameraLookAtVector[2];     
-        
+        camForward[2] = rotatedCameraLookAtVector[2];
+
         camCurrentPitch+=degrees;
     }
-    
+
     public void cameraYaw(float degrees)
     {
     	float[] yRot = new float[16];
         Matrix.setIdentityM(yRot, 0);
-        Matrix.rotateM(yRot, 0, degrees, 0,1,0);    	
+        Matrix.rotateM(yRot, 0, degrees, 0,1,0);
 
         float[] camLookAtVector = {
         		camForward[0],
@@ -415,7 +415,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         	};
 
         float[] rotatedCameraLookAtVector = new float[4];
-        		
+
         Matrix.multiplyMV(rotatedCameraLookAtVector, 0,
         		yRot, 0, camLookAtVector, 0);
 
@@ -424,7 +424,7 @@ public class RRenderer implements GLSurfaceView.Renderer
         camForward[2] = rotatedCameraLookAtVector[2];
 
     	camCurrentYaw += degrees;
-    }    
+    }
 
 
     /* Check if the new position lies within the bounds of the game.
@@ -448,7 +448,7 @@ public class RRenderer implements GLSurfaceView.Renderer
             if(RMath.crossProduct(Wall.toVector(), current.toVector()) < 0) {
                     crossWalls.add(Wall);
             }
-        }        
+        }
 
         RMath.V2 projectPosition = null;
         RMath.Line projectLine = null;
@@ -464,7 +464,7 @@ public class RRenderer implements GLSurfaceView.Renderer
                     // Get the projected point/line. We need to check this against other walls.
                     RMath.V2 wallVector = Wall.toVector();
                     RMath.normalize(wallVector);
-                    
+
                     // Instead of sliding along the wall, we will slide along the line passing through
                     // our current position(parallel to the wall). That way, we can avoid issues related
                     // to non-orthogonal walls.
@@ -533,7 +533,7 @@ public class RRenderer implements GLSurfaceView.Renderer
                 distanceVector = current.getDistance(Wall);
                 if ( (distanceVector.x >= 0 && distanceVector.x < minDistance) && (distanceVector.y <=1 && distanceVector.y >= 0)) minDistance = distanceVector.x;
         }
-        
+
         float magnitude = 1;
         if (minDistance != Float.POSITIVE_INFINITY && minDistance >= 0) {
                 magnitude = currentVector.x * currentVector.x +
@@ -543,7 +543,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 
         float distance = minDistance*magnitude;
         //Log.e(TAG, "distance= " + distance);
-        
+
         if (distance == Float.POSITIVE_INFINITY) {
                 return FLASHLIGHT_HEIGHT_MIN;
         }
@@ -559,37 +559,37 @@ public class RRenderer implements GLSurfaceView.Renderer
     public float[] camPos = new float[3];		//position
     public float[] camForward = new float[3];	//vector
     public float[] camUp = new float[3];		//vector
-    
+
     public float getCamCurrentYaw()
     {
     	return camCurrentYaw;
     }
-    
+
     public float getCamCurrentPitch()
     {
     	return camCurrentPitch;
-    }    
-    
+    }
+
     private float currentFLHeight = FLASHLIGHT_HEIGHT_MIN;
     private float targetFLHeight = 0;
-    
+
     public int frameCtr = 0;
-    
+
     private int fpsCtrBaseFrame;
     private long fpsCtrBaseTime;
     public float fpsCtrDisplay;
-    
+
     private float camCurrentYaw;
     private float camCurrentPitch;
     private long lastDrawTime; //in millis
     public float headbobCtr;
     private int lastStep; 	//used to time footstep sound with headbob
     							//store -1 or 1 if last step was a left or right step
-    
+
 	private float[] projMatrix = new float[16];
 	private float[] viewMatrix = new float[16];
-	private float[] viewProjMatrix = new float[16]; 
-   
-    private static final String TAG = "com.render.RRenderer"; 
+	private float[] viewProjMatrix = new float[16];
+
+    private static final String TAG = "com.render.RRenderer";
     private static RRenderer instance;
 }
