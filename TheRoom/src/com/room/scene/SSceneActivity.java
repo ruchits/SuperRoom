@@ -56,6 +56,9 @@ public class SSceneActivity extends Activity
 		{
 			super(context);
 			paint = new Paint();
+			paint.setAntiAlias(true);
+			paint.setFilterBitmap(true);
+			paint.setDither(true);
 			activity = (SSceneActivity)context;	
 			
 			// Set strokePaint for subtitle track.
@@ -70,16 +73,12 @@ public class SSceneActivity extends Activity
 			
 			// Draw the Icons
 			if(activity.showInventoryIcon) {
-				paint.setAlpha(150);
 				Bitmap inventory = SSceneActivity.inventory;
 				canvas.drawBitmap(inventory, null, SSceneActivity.invDestination, paint);
-				paint.reset();
 			}
 			if (activity.showBackButton) {
-				paint.setAlpha(150);
 				Bitmap backButton = SSceneActivity.backbutton;
 				canvas.drawBitmap(backButton, null, SSceneActivity.backbtnDestination, paint);
-				paint.reset();
 			}
 			
 			// Draw text if any.
@@ -138,7 +137,6 @@ public class SSceneActivity extends Activity
 					//do nothing - must specify type to display text.
 				}
 				
-				paint.reset();
 			}
 		}
 		
@@ -263,7 +261,7 @@ public class SSceneActivity extends Activity
     	}
     	else
     	{
-    		backgroundImage = UBitmapUtil.decodeSampledBitmapForResolution(resourceID, Global.ResType.MED_RES); 
+    		backgroundImage = UBitmapUtil.decodeSampledBitmapForResolution(resourceID, Global.ResType.HI_RES); 
     	}
     }
     
@@ -291,7 +289,7 @@ public class SSceneActivity extends Activity
      * 		  	false: [TODO] hard constraint on length of string. Have to find a substring within the given length.
      */
     protected static UPair<String, Integer> trimString(String string, int length, boolean soft) {
-	    if(string == null || string.trim().isEmpty()){
+	    if(string == null || string.trim().equals("")){
 	        return null;
 	    }
 

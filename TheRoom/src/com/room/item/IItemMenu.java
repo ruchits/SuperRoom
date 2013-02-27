@@ -68,7 +68,7 @@ public class IItemMenu extends SSceneActivity {
 				Item item = (Item) pairs.getValue();
 			
 				if(box.name.equals(boxName)) {
-					MSoundManager.getInstance().playSoundEffect(R.raw.swords);
+					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 					//double click on the same box, i.e. use the item now.
 					if ((showBox != null) && showBox.name.equals(boxName)) {
 						useItem(box);
@@ -109,9 +109,10 @@ public class IItemMenu extends SSceneActivity {
 	    			// set paint for when the box is selected.
 	    		}
 	    		else {
+					int alpha = paint.getAlpha();
 	    			paint.setAlpha(50);
 	    			canvas.drawRoundRect(iconF, Global.ROUND_EDGE_WIDTH, Global.ROUND_EDGE_WIDTH, paint);
-	    			paint.reset();
+	    			paint.setAlpha(alpha);
 	    		}
 	    		
 	    		// Draw the bitmap for this icon.

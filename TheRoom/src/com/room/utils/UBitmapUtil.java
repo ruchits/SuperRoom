@@ -30,7 +30,9 @@ public class UBitmapUtil {
 			
 		case HI_RES:
 			// keep original resolution.
-			return BitmapFactory.decodeResource(res, resID);	
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inPreferredConfig = Bitmap.Config.RGB_565;
+			return BitmapFactory.decodeResource(res, resID,options);	
 		}
 		return null;
 	}

@@ -28,6 +28,9 @@ public class DaySelection extends SSceneActivity
 		setLayout(SLayoutLoader.getInstance().daySelection);
 		setBackgroundImage(R.drawable.day_selection);
 		
+		showInventory(false);
+		showBackButton(false);		
+		
 		if(Global.DEBUG_SKIP_MENU)
         	startGame(Global.getCurrentDay(), true);
 	}
