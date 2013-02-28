@@ -1,11 +1,3 @@
-//FLOOD_BOX 0.20859376 0.7140625 0.054166667 0.9513889   //left,right,top,bottom
-//bRed 0.73515624 0.8078125 0.05138889 0.18194444
-//bPink 0.73515624 0.8070313 0.20555556 0.3375
-//bBlue 0.7359375 0.8078125 0.3625 0.49305555
-//bGreen 0.73515624 0.80859375 0.51805556 0.6458333
-//bYellow 0.73515624 0.8078125 0.66805553 0.7986111
-//bSky 0.734375 0.8078125 0.825 0.95555556
-
 package com.room.puzzles;
 
 import java.lang.reflect.Field;
@@ -37,7 +29,7 @@ public class PFlood extends SSceneActivity
 	private static final char nonExistingColor = (char)-1;
 	private static final int MAXCLICK = 3; //TODO: change to 22 later
 	private static final int numSymbols = 6;
-	private static final int hintMessageDuration = 5000;
+	private static final int hintMessageDuration = 7000;
 	
 	private RectF tileArea;
 	private RectF lifeBarArea;
@@ -98,32 +90,14 @@ public class PFlood extends SSceneActivity
 		tileWidth =  ( tileArea.right - tileArea.left )/tilesPerSide;
 		
 		//are we really going to have 22 different bar images?~_~
-		lifeBarImages = populateBitmaps("lifebar_", MAXCLICK, lifeBarWidth, lifeBarHeight); 
-		tileImages = populateBitmaps("puzzle_flood_tile", numSymbols, tileWidth, tileHeight);
+		lifeBarImages = UBitmapUtil.populateBitmaps("lifebar_", MAXCLICK, lifeBarWidth, lifeBarHeight); 
+		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, tileWidth, tileHeight);
 	}
 	
 	private void init_puzzle() {
 		Random rand = new Random();
 		floodTiles = fromPuzzleString(puzzles[rand.nextInt(puzzles.length)]);
 		clickCounter = 0;
-	}
-	
-    //TODO: Maybe we can make it more generic so it can be used elsewhere.
-	private ArrayList<Bitmap> populateBitmaps(String prefix, int size, float width, float height) {
-		ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
-		Class res = R.drawable.class;
-		
-		for ( int i = 0; i < size; ++i )
-		{
-			try {
-				Field field = res.getField(prefix+i);
-				int drawableId = field.getInt(null);
-				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, (int)width, (int)height));
-			}
-			catch (Exception e) { 
-			}
-		}
-		return bitmaps;
 	}
 
 
@@ -146,6 +120,7 @@ public class PFlood extends SSceneActivity
 	{
 		super.onDraw(canvas, paint);		
 		Log.e("PFlood", "clickCounter:"+clickCounter);
+		
 		for (int i = 0; i < Math.min(clickCounter, MAXCLICK); ++i) //for now 
 		{
 			canvas.drawBitmap(lifeBarImages.get(i),
@@ -153,6 +128,7 @@ public class PFlood extends SSceneActivity
 					lifeBarArea.top + i * lifeBarHeight,
 					paint);
 		}
+
 		for (int i = 0; i < tilesPerSide; i++)
 		{
 			for (int j = 0; j < tilesPerSide; j++)

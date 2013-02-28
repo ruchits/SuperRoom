@@ -1,6 +1,10 @@
 package com.room.utils;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+
 import com.room.Global;
+import com.room.R;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -101,4 +105,20 @@ public class UBitmapUtil {
         return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorW), (int) (b.getHeight() * factorH), false);  
     }
 
+    static public ArrayList<Bitmap> populateBitmaps(String prefix, int size, float width, float height) {
+		ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+		Class res = R.drawable.class;
+		
+		for ( int i = 0; i < size; ++i )
+		{
+			try {
+				Field field = res.getField(prefix+i);
+				int drawableId = field.getInt(null);
+				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, (int)width, (int)height));
+			}
+			catch (Exception e) { 
+			}
+		}
+		return bitmaps;
+	}
 }
