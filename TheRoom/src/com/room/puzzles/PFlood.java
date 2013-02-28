@@ -8,15 +8,23 @@
 
 package com.room.puzzles;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.room.Global;
 import com.room.R;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayoutLoader;
@@ -27,13 +35,22 @@ public class PFlood extends SSceneActivity
 {
 	private static final int tilesPerSide = 12;
 	private static final char nonExistingColor = (char)-1;
-
+	private static final int MAXCLICK = 3; //TODO: change to 22 later
+	private static final int numSymbols = 6;
+	private static final int hintMessageDuration = 5000;
+	
 	private RectF tileArea;
+	private RectF lifeBarArea;
 	private float tileWidth;
 	private float tileHeight;
+	private float lifeBarWidth;
+	private float lifeBarHeight;
 	private char[][] floodTiles;
-	private Bitmap tileImages[];
+	private ArrayList<Bitmap> tileImages;
+	private ArrayList<Bitmap> lifeBarImages;
 	private char oldColor;
+	private int clickCounter;
+	int numTilesFilled;
 
 	private String puzzle =
 	       "005245443521" +
@@ -72,24 +89,43 @@ public class PFlood extends SSceneActivity
 		setLayout(SLayoutLoader.getInstance().puzzleFlood);
 		setBackgroundImage(R.drawable.puzzle_flood);
 		
-		Random rand = new Random();
-		floodTiles = fromPuzzleString(puzzles[rand.nextInt(puzzles.length)]);		
-		
+		init_puzzle();
 		tileArea = getBoxPixelCoords("tileArea");
+		lifeBarArea = getBoxPixelCoords("lifeBar");
+		lifeBarHeight = (lifeBarArea.bottom - lifeBarArea.top)/MAXCLICK;
+		lifeBarWidth = (lifeBarArea.right - lifeBarArea.left);
 		tileHeight =  ( tileArea.bottom - tileArea.top )/tilesPerSide;
 		tileWidth =  ( tileArea.right - tileArea.left )/tilesPerSide;
 		
-		tileImages = new Bitmap[]{
-				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile0, (int)tileWidth, (int)tileHeight),
-				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile1, (int)tileWidth, (int)tileHeight),
-				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile2, (int)tileWidth, (int)tileHeight),
-				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile3, (int)tileWidth, (int)tileHeight),
-				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile4, (int)tileWidth, (int)tileHeight),
-				UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_flood_tile5, (int)tileWidth, (int)tileHeight)
-				};
+		//are we really going to have 22 different bar images?~_~
+		lifeBarImages = populateBitmaps("lifebar_", MAXCLICK, lifeBarWidth, lifeBarHeight); 
+		tileImages = populateBitmaps("puzzle_flood_tile", numSymbols, tileWidth, tileHeight);
 	}
 	
+	private void init_puzzle() {
+		Random rand = new Random();
+		floodTiles = fromPuzzleString(puzzles[rand.nextInt(puzzles.length)]);
+		clickCounter = 0;
+	}
 	
+    //TODO: Maybe we can make it more generic so it can be used elsewhere.
+	private ArrayList<Bitmap> populateBitmaps(String prefix, int size, float width, float height) {
+		ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+		Class res = R.drawable.class;
+		
+		for ( int i = 0; i < size; ++i )
+		{
+			try {
+				Field field = res.getField(prefix+i);
+				int drawableId = field.getInt(null);
+				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, (int)width, (int)height));
+			}
+			catch (Exception e) { 
+			}
+		}
+		return bitmaps;
+	}
+
 
 	private static char[][] fromPuzzleString(String str)
 	{
@@ -109,12 +145,19 @@ public class PFlood extends SSceneActivity
 	public void onDraw(Canvas canvas, Paint paint)
 	{
 		super.onDraw(canvas, paint);		
-		
+		Log.e("PFlood", "clickCounter:"+clickCounter);
+		for (int i = 0; i < Math.min(clickCounter, MAXCLICK); ++i) //for now 
+		{
+			canvas.drawBitmap(lifeBarImages.get(i),
+					lifeBarArea.left,
+					lifeBarArea.top + i * lifeBarHeight,
+					paint);
+		}
 		for (int i = 0; i < tilesPerSide; i++)
 		{
 			for (int j = 0; j < tilesPerSide; j++)
 			{
-				canvas.drawBitmap(tileImages[floodTiles[i][j]],
+				canvas.drawBitmap(tileImages.get(floodTiles[i][j]),
 						tileArea.left + i * tileWidth,
 						tileArea.top + j * tileHeight,
 						paint);
@@ -166,18 +209,38 @@ public class PFlood extends SSceneActivity
 				return;
 
 			oldColor = floodTiles[0][0];
-			floodTiles[0][0] = nonExistingColor;		
-			replaceTiles (0, 0);
-			fillTiles(nonExistingColor,newColor);
-			int numTilesFilled = numTilesOfColor(newColor);
-			repaint();
+			if (oldColor != newColor) {
+				clickCounter++;
+				floodTiles[0][0] = nonExistingColor;		
+				replaceTiles (0, 0);
+				fillTiles(nonExistingColor,newColor);
+				numTilesFilled = numTilesOfColor(newColor);
+				repaint();
+			}
 
 			if ( numTilesFilled >= tilesPerSide * tilesPerSide )
 			{
-				//MSoundManager.getInstance().playSoundEffect(R.raw.open_door);
 				goToNextStage();
-			}			
+			}
+			if ( clickCounter == MAXCLICK )
+			{
+				handleFailure();
+			}
 		}
+	}
+
+	private void handleFailure() {
+		Context context = getApplicationContext();
+		Toast toast = Toast.makeText(context, R.string.hint_flood, hintMessageDuration);
+		toast.show();
+		MSoundManager.getInstance().playSoundEffect(R.raw.swords); //change later
+		Handler handler = new Handler(); 
+	    handler.postDelayed(new Runnable() { 
+	         public void run() { 
+	        	 init_puzzle();
+	        	 repaint();
+	         } 
+	    }, 3000); 
 	}
 
 	private void fillTiles(char findColor, char replaceColor)

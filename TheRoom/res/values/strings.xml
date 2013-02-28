@@ -22,4 +22,5 @@
     <string name="video">Video</string>
     <string name="skip_video">Skip scene?</string>
     <string name="item_menu">Item Menu</string>
+    <string name="hint_flood">Flood the grid with one single symbol within 22 steps</string>
 </resources>
