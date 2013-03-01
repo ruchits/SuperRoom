@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.util.Log;
 
 public class UBitmapUtil {
 	private static final UPair<Integer, Integer> LOW_RES = new UPair<Integer, Integer>(480, 320); //TODO: right value?
@@ -105,7 +106,7 @@ public class UBitmapUtil {
         return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorW), (int) (b.getHeight() * factorH), false);  
     }
 
-    static public ArrayList<Bitmap> populateBitmaps(String prefix, int size, float width, float height) {
+    static public ArrayList<Bitmap> populateBitmaps(String prefix, int size, int width, int height) {
 		ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
 		Class res = R.drawable.class;
 		
@@ -114,9 +115,10 @@ public class UBitmapUtil {
 			try {
 				Field field = res.getField(prefix+i);
 				int drawableId = field.getInt(null);
-				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, (int)width, (int)height));
+				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, width, height));
 			}
 			catch (Exception e) { 
+				Log.e("UBitmapUtil", "Failed to load the image " + prefix + i +". Check the name again.");
 			}
 		}
 		return bitmaps;

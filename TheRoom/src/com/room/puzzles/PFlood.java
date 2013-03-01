@@ -89,9 +89,8 @@ public class PFlood extends SSceneActivity
 		tileHeight =  ( tileArea.bottom - tileArea.top )/tilesPerSide;
 		tileWidth =  ( tileArea.right - tileArea.left )/tilesPerSide;
 		
-		//are we really going to have 22 different bar images?~_~
-		lifeBarImages = UBitmapUtil.populateBitmaps("lifebar_", MAXCLICK, lifeBarWidth, lifeBarHeight); 
-		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, tileWidth, tileHeight);
+		lifeBarImages = UBitmapUtil.populateBitmaps("lifebar_", MAXCLICK, (int)lifeBarWidth, (int)lifeBarHeight); 
+		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, (int)tileWidth, (int)tileHeight);
 	}
 	
 	private void init_puzzle() {
@@ -196,7 +195,7 @@ public class PFlood extends SSceneActivity
 
 			if ( numTilesFilled >= tilesPerSide * tilesPerSide )
 			{
-				goToNextStage();
+				handleSuccess();
 			}
 			if ( clickCounter == MAXCLICK )
 			{
@@ -249,7 +248,7 @@ public class PFlood extends SSceneActivity
 		return count;
 	}	
 
-	private void goToNextStage()
+	private void handleSuccess()
 	{
 		//TODO: play end scene, and goto next stage properly
 		finish();
