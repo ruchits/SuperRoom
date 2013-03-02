@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class PStatues extends SSceneActivity
 	public static final int NUM_STATUES = 3;
 	public static final int ROTATIONS = 4;
 	private static final int MAXCLICK = 6;
-	private static final int HINT_MSG_DURATION = 8000;
+	private static final int HINT_MSG_DURATION = 10000;
 	
 	private RectF[] symbolArea = new RectF[NUM_STATUES];
 	private RectF[] statueArea = new RectF[NUM_STATUES];
@@ -46,7 +47,7 @@ public class PStatues extends SSceneActivity
 	}
 	private int clickCounter;
 	private SymbolState[] symbols = new SymbolState[NUM_STATUES];
-	private int[] answers = new int[NUM_STATUES]; //change it to array
+	private int[] answers = new int[NUM_STATUES];
 	private int[] guesses = new int[NUM_STATUES];
 	
 	@Override	
@@ -93,7 +94,7 @@ public class PStatues extends SSceneActivity
 	public void onDraw(Canvas canvas, Paint paint)
 	{
 		super.onDraw(canvas, paint);
-		for (int i = 0; i < NUM_STATUES; ++i) //for now 
+		for (int i = 0; i < NUM_STATUES; ++i)
 		{
 			canvas.drawBitmap(statueImages.get(guesses[i]),
 					statueArea[i].left,
@@ -191,14 +192,16 @@ public class PStatues extends SSceneActivity
 	}
 
 	private void handleFailure() {
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		v.vibrate(300);
 		Context context = getApplicationContext();
 		Toast toast = Toast.makeText(context, R.string.hint_statue, HINT_MSG_DURATION);
 		toast.show();
-		MSoundManager.getInstance().playSoundEffect(R.raw.swords); //change later
 		Handler handler = new Handler(); 
-	    handler.postDelayed(new Runnable() { 
+	    handler.postDelayed(new Runnable() {
 	         public void run() { 
 	        	 init_puzzle();
+	        	 MSoundManager.getInstance().playSoundEffect(R.raw.swords); //change later
 	        	 repaint();
 	         } 
 	    }, 3000); 

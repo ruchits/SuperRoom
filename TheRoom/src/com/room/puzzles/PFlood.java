@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class PFlood extends SSceneActivity
 	private static final char nonExistingColor = (char)-1;
 	private static final int MAXCLICK = 3; //TODO: change to 22 later
 	private static final int numSymbols = 6;
-	private static final int hintMessageDuration = 7000;
+	private static final int hintMessageDuration = 10000;
 	
 	private RectF tileArea;
 	private RectF lifeBarArea;
@@ -205,14 +206,16 @@ public class PFlood extends SSceneActivity
 	}
 
 	private void handleFailure() {
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		v.vibrate(300);
 		Context context = getApplicationContext();
 		Toast toast = Toast.makeText(context, R.string.hint_flood, hintMessageDuration);
 		toast.show();
-		MSoundManager.getInstance().playSoundEffect(R.raw.swords); //change later
 		Handler handler = new Handler(); 
 	    handler.postDelayed(new Runnable() { 
 	         public void run() { 
 	        	 init_puzzle();
+	        	 MSoundManager.getInstance().playSoundEffect(R.raw.swords); //change later
 	        	 repaint();
 	         } 
 	    }, 3000); 
