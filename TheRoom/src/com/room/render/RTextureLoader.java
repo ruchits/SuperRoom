@@ -78,6 +78,9 @@ public class RTextureLoader
 			textureID.put("prop_toilet", loadCompressedTexture("prop_toilet",false,false,false));
 			textureID.put("prop_tpaper", loadCompressedTexture("prop_tpaper",false,false,false));
 			textureID.put("prop_mirror", loadCompressedTexture("prop_mirror",true,true,false));
+			textureID.put("prop_tub", loadCompressedTexture("prop_tub",false,false,false));
+			textureID.put("prop_tub_faucet", loadCompressedTexture("prop_tub_faucet",false,false,false));
+			textureID.put("prop_tub_shower", loadCompressedTexture("prop_tub_shower",false,false,false));
 									
 			textureID.put("prop_frame1", loadCompressedTexture("prop_frame1",false,false,false));
 			

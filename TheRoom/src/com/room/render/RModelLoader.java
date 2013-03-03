@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -14,8 +15,6 @@ import com.room.Global;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-//tbd willc - using OBJ format is slow in debug mode.
-//            if you're loading lots of data here, don't use debug!
 
 public class RModelLoader
 {
@@ -60,45 +59,47 @@ public class RModelLoader
 
 	public void init()
 	{
+		
+		
 		if(!Global.DEBUG_NO_PROPS)	
 		{
-			modelProps = loadModel("model_props.obj");
-			modelPropsDeadMan = loadModel("model_props_deadman.obj");
-			modelPropsDeadWoman = loadModel("model_props_deadwoman.obj");
-			modelPropsStatuesActive = loadModel("model_props_statues_active.obj");
-			modelPropsStatuesNeutral = loadModel("model_props_statues_neutral.obj");
-			modelPropClothCovered = loadModel("model_prop_cloth_covered.obj");
-			modelPropsDeadManHair = loadModel("model_props_deadman_hair.obj");
+			modelProps = loadBinaryModel("model_props.bin");
+			modelPropsDeadMan = loadBinaryModel("model_props_deadman.bin");
+			modelPropsDeadWoman = loadBinaryModel("model_props_deadwoman.bin");
+			modelPropsStatuesActive = loadBinaryModel("model_props_statues_active.bin");
+			modelPropsStatuesNeutral = loadBinaryModel("model_props_statues_neutral.bin");
+			modelPropClothCovered = loadBinaryModel("model_prop_cloth_covered.bin");
+			modelPropsDeadManHair = loadBinaryModel("model_props_deadman_hair.bin");
 			modelPropsDeadManHair.enableCull(false);			
-			modelPropsDeadWomanHair = loadModel("model_props_deadwoman_hair.obj");
+			modelPropsDeadWomanHair = loadBinaryModel("model_props_deadwoman_hair.bin");
 			modelPropsDeadWomanHair.enableCull(false);			
 		}
 		
-		modelRoom = loadModel("model_room.obj");
-		modelDoorBathroomStage1 = loadModel("door_bathroom_stage1.obj");
-		modelDoorBathroomStage2 = loadModel("door_bathroom_stage2.obj");
+		modelRoom = loadBinaryModel("model_room.bin");
+		modelDoorBathroomStage1 = loadBinaryModel("door_bathroom_stage1.bin");
+		modelDoorBathroomStage2 = loadBinaryModel("door_bathroom_stage2.bin");
 		
 		if(Global.DEBUG_SHOW_POI_BOXES)
-			modelPOI = loadModel("points_of_interest.obj");
+			modelPOI = loadBinaryModel("points_of_interest.bin");
 		
 		if(!Global.DEBUG_NO_DECALS)
 		{
-			decalWall = loadModel("decal_wall.obj");
+			decalWall = loadBinaryModel("decal_wall.bin");
 			decalWall.enableAlpha(true);
 			
-			decalBoard = loadModel("decal_board.obj");
+			decalBoard = loadBinaryModel("decal_board.bin");
 			decalBoard.enableAlpha(true);
 			
-			decalCeilingMajor = loadModel("decal_ceiling_major.obj");
+			decalCeilingMajor = loadBinaryModel("decal_ceiling_major.bin");
 			decalCeilingMajor.enableAlpha(true);
 	
-			decalCeilingMinor = loadModel("decal_ceiling_minor.obj");
+			decalCeilingMinor = loadBinaryModel("decal_ceiling_minor.bin");
 			decalCeilingMinor.enableAlpha(true);	
 			
-			decalNumber = loadModel("decal_number.obj");
+			decalNumber = loadBinaryModel("decal_number.bin");
 			decalNumber.enableAlpha(true);
 			
-			decalPuzzleFlood = loadModel("decal_puzzle_flood.obj");
+			decalPuzzleFlood = loadBinaryModel("decal_puzzle_flood.bin");
 			decalPuzzleFlood.enableAlpha(true);
 			decalPuzzleFlood.enableUnlit(true);
 		}
@@ -201,6 +202,177 @@ public class RModelLoader
 		model.textureID.add(textureName);
 		
 		model.numGroups++;
+	}
+	
+	private void addModelGroup(RModel model, FloatBuffer vertices,
+			FloatBuffer normals, FloatBuffer textures,
+			ShortBuffer faces, String textureName)
+	{
+		faces.position(0);		
+		
+		FloatBuffer vertexBuffer;
+		FloatBuffer normalBuffer;
+		FloatBuffer texBuffer;
+		int numTriangles = faces.capacity()/9; //9 shorts per face				
+		
+        // #faces * 3(3 verts in a tri) * 3(x,y,z per vert) * 4 (4 bytes per float)    	
+		vertexBuffer = ByteBuffer.allocateDirect(numTriangles * 3 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		normalBuffer = ByteBuffer.allocateDirect(numTriangles * 3 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		texBuffer = ByteBuffer.allocateDirect(numTriangles * 3 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		
+		for(int i=0; i<numTriangles; ++i)
+		{
+			OBJFace face = new OBJFace();
+			face.v1 = faces.get();
+			face.v2 = faces.get();
+			face.v3 = faces.get();
+			face.vn1 = faces.get();
+			face.vn2 = faces.get();
+			face.vn3 = faces.get();
+			face.vt1 = faces.get();
+			face.vt2 = faces.get();
+			face.vt3 = faces.get();			
+			
+			vertices.position((face.v1-1)*3); //3 floats per vertex
+			vertexBuffer.put(vertices.get());
+			vertexBuffer.put(vertices.get());
+			vertexBuffer.put(vertices.get());			
+			
+			vertices.position((face.v2-1)*3); //3 floats per vertex
+			vertexBuffer.put(vertices.get());
+			vertexBuffer.put(vertices.get());
+			vertexBuffer.put(vertices.get());	
+			
+			vertices.position((face.v3-1)*3); //3 floats per vertex
+			vertexBuffer.put(vertices.get());
+			vertexBuffer.put(vertices.get());
+			vertexBuffer.put(vertices.get());				
+			
+			normals.position((face.vn1-1)*3); //3 floats per vertex
+			normalBuffer.put(normals.get());
+			normalBuffer.put(normals.get());
+			normalBuffer.put(normals.get());				
+			
+			normals.position((face.vn2-1)*3); //3 floats per vertex
+			normalBuffer.put(normals.get());
+			normalBuffer.put(normals.get());
+			normalBuffer.put(normals.get());			
+			
+			normals.position((face.vn3-1)*3); //3 floats per vertex
+			normalBuffer.put(normals.get());
+			normalBuffer.put(normals.get());
+			normalBuffer.put(normals.get());			
+			
+			textures.position((face.vt1-1)*2); //2 floats per vertex
+			texBuffer.put(textures.get());
+			texBuffer.put(textures.get());			
+			
+			textures.position((face.vt2-1)*2); //2 floats per vertex
+			texBuffer.put(textures.get());
+			texBuffer.put(textures.get());				
+			
+			textures.position((face.vt3-1)*2); //2 floats per vertex
+			texBuffer.put(textures.get());
+			texBuffer.put(textures.get());				
+		}
+				
+		vertexBuffer.position(0);
+		normalBuffer.position(0);
+		texBuffer.position(0);
+		
+		model.vertexBuffer.add(vertexBuffer);
+		model.normalBuffer.add(normalBuffer);
+		model.texBuffer.add(texBuffer);
+		model.numTriangles.add(numTriangles);
+		model.textureID.add(textureName);
+		
+		model.numGroups++;
+	}
+	
+	private RModel loadBinaryModel(String assetName)
+	{
+		RModel model = new RModel();
+		AssetManager assetManager = Global.mainActivity.getAssets();
+		int FILE_HEADER_SIZE = 6;
+		int GROUP_HEADER_SIZE = 6;
+		
+		try
+		{
+			InputStream is = assetManager.open("geometry/"+assetName);
+			
+			byte[] header = new byte[FILE_HEADER_SIZE];
+			is.read(header, 0, FILE_HEADER_SIZE);			
+			
+			ByteBuffer headerByteBuffer = ByteBuffer.wrap(header);
+			headerByteBuffer.order(ByteOrder.BIG_ENDIAN);
+			ShortBuffer headerBuffer = headerByteBuffer.asShortBuffer();
+
+			short numVertices = headerBuffer.get();
+			short numNormals = headerBuffer.get();
+			short numTextures = headerBuffer.get();
+			
+			byte[] vertices = new byte[numVertices*4*3];
+			is.read(vertices,0,numVertices*4*3);
+			
+			ByteBuffer verticesByteBuffer = ByteBuffer.wrap(vertices);
+			verticesByteBuffer.order(ByteOrder.BIG_ENDIAN);
+			FloatBuffer verticesBuffer = verticesByteBuffer.asFloatBuffer();
+			
+			byte[] normals = new byte[numNormals*4*3];
+			is.read(normals,0,numNormals*4*3);
+			
+			ByteBuffer normalsByteBuffer = ByteBuffer.wrap(normals);
+			normalsByteBuffer.order(ByteOrder.BIG_ENDIAN);
+			FloatBuffer normalsBuffer = normalsByteBuffer.asFloatBuffer();
+			
+			byte[] textures = new byte[numTextures*4*2];
+			is.read(textures,0,numTextures*4*2);
+			
+			ByteBuffer texturesByteBuffer = ByteBuffer.wrap(textures);
+			texturesByteBuffer.order(ByteOrder.BIG_ENDIAN);
+			FloatBuffer texturesBuffer = texturesByteBuffer.asFloatBuffer();			
+			
+			
+			while(true)
+			{
+				byte[] groupHeader = new byte[GROUP_HEADER_SIZE];
+				int status = is.read(groupHeader, 0, GROUP_HEADER_SIZE);
+				if(status == -1) break;
+				
+				ByteBuffer groupHeaderByteBuffer = ByteBuffer.wrap(groupHeader);
+				groupHeaderByteBuffer.order(ByteOrder.BIG_ENDIAN);
+				ShortBuffer groupHeaderBuffer = groupHeaderByteBuffer.asShortBuffer();
+
+				short groupNameLength = groupHeaderBuffer.get();
+				short groupMtlLength = groupHeaderBuffer.get();
+				short numFaces = groupHeaderBuffer.get();
+				
+				byte[] groupNameBytes = new byte[groupNameLength];
+				is.read(groupNameBytes,0,groupNameLength);
+				String groupName = new String(groupNameBytes);
+				
+				byte[] groupMtlBytes = new byte[groupMtlLength];
+				is.read(groupMtlBytes,0,groupMtlLength);
+				String groupMtl = new String(groupMtlBytes);						
+				
+				byte[] faces = new byte[numFaces*2*9];
+				is.read(faces, 0, numFaces*2*9);			
+				
+				ByteBuffer facesByteBuffer = ByteBuffer.wrap(faces);
+				facesByteBuffer.order(ByteOrder.BIG_ENDIAN);
+				ShortBuffer facesBuffer = facesByteBuffer.asShortBuffer();
+				
+				addModelGroup(model,verticesBuffer,normalsBuffer,texturesBuffer,facesBuffer,groupMtl);
+			}
+
+			is.close();
+		}
+		catch(Exception e)
+		{
+			Log.d("Model Loader", assetName+" failed to load!");
+		}
+		
+		return model;
 	}
 	
 	//loads OBJ models
