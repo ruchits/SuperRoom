@@ -183,8 +183,7 @@ public class PStatues extends SSceneActivity
 			symbols[j] = SymbolState.EMPTY;
 			Log.e("PStatues", "Empty in "+ j);
 		}
-		if (numBlack == NUM_STATUES) return true;
-		return false;
+		return (numBlack == NUM_STATUES);
 	}
 
 	private void handleSuccess() {

@@ -120,10 +120,24 @@ public class MSoundManager
 	   soundEffectsMap.put(R.raw.swords,soundEffectsPool.load(Global.mainActivity, R.raw.swords, 1));
 	   soundEffectsMap.put(R.raw.tick,soundEffectsPool.load(Global.mainActivity, R.raw.tick, 1));
 	   soundEffectsMap.put(R.raw.wood_whack,soundEffectsPool.load(Global.mainActivity, R.raw.wood_whack, 1));
+	   
 	   soundEffectsMap.put(R.raw.footstep01,soundEffectsPool.load(Global.mainActivity, R.raw.footstep01, 1));
 	   soundEffectsMap.put(R.raw.footstep02,soundEffectsPool.load(Global.mainActivity, R.raw.footstep02, 1));
 	   soundEffectsMap.put(R.raw.footstep03,soundEffectsPool.load(Global.mainActivity, R.raw.footstep03, 1));
 	   soundEffectsMap.put(R.raw.footstep04,soundEffectsPool.load(Global.mainActivity, R.raw.footstep04, 1));
+	   
+	   soundEffectsMap.put(R.raw.phone_0,soundEffectsPool.load(Global.mainActivity, R.raw.phone_0, 1));
+	   soundEffectsMap.put(R.raw.phone_1,soundEffectsPool.load(Global.mainActivity, R.raw.phone_1, 1));
+	   soundEffectsMap.put(R.raw.phone_2,soundEffectsPool.load(Global.mainActivity, R.raw.phone_2, 1));
+	   soundEffectsMap.put(R.raw.phone_3,soundEffectsPool.load(Global.mainActivity, R.raw.phone_3, 1));
+	   soundEffectsMap.put(R.raw.phone_4,soundEffectsPool.load(Global.mainActivity, R.raw.phone_4, 1));
+	   soundEffectsMap.put(R.raw.phone_5,soundEffectsPool.load(Global.mainActivity, R.raw.phone_5, 1));
+	   soundEffectsMap.put(R.raw.phone_6,soundEffectsPool.load(Global.mainActivity, R.raw.phone_6, 1));
+	   soundEffectsMap.put(R.raw.phone_7,soundEffectsPool.load(Global.mainActivity, R.raw.phone_7, 1));
+	   soundEffectsMap.put(R.raw.phone_8,soundEffectsPool.load(Global.mainActivity, R.raw.phone_8, 1));
+	   soundEffectsMap.put(R.raw.phone_9,soundEffectsPool.load(Global.mainActivity, R.raw.phone_9, 1));
+	   soundEffectsMap.put(R.raw.phone_star,soundEffectsPool.load(Global.mainActivity, R.raw.phone_star, 1));
+	   soundEffectsMap.put(R.raw.phone_sharp,soundEffectsPool.load(Global.mainActivity, R.raw.phone_sharp, 1));
 	   
 	   if ( locationSensitiveSounds == null ) locationSensitiveSounds = new ArrayList<LocationSensitiveSound>();
 	   

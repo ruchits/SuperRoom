@@ -15,6 +15,7 @@ import com.room.item.IItems;
 import com.room.media.MSoundManager;
 import com.room.media.MVideoActivity;
 import com.room.puzzles.PFlood;
+import com.room.puzzles.PPhone;
 import com.room.puzzles.PStatues;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
@@ -56,7 +57,7 @@ public class MainMenu extends SSceneActivity
     	}
     	else if (boxName.equals("credits"))
     	{
-  		    startActivity(new Intent(this, PStatues.class)); //TEMPORARY
+  		    startActivity(new Intent(this, PPhone.class)); //TEMPORARY
     		//showCredits();
     	}      	
     	else if (boxName.equals("quit"))
