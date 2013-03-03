@@ -14,6 +14,13 @@ public class SLayout
 		public String name=null;
 		public float left,right,top,bottom;
 		public Box(){}
+		public Box(String name, float left, float right, float top, float bottom) {
+			this.name = name;
+			this.left = left;
+			this.right = right;
+			this.top = top;
+			this.bottom = bottom;
+		}
 	}
 		
 	public void addBox(Box b)

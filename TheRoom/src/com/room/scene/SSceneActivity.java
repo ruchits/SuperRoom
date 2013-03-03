@@ -32,10 +32,20 @@ public class SSceneActivity extends Activity
 {
 	private static Bitmap inventory;
 	private static Bitmap backbutton;
-	private static final Rect invDestination = new Rect(0, 0, Global.ICON_WIDTH, Global.ICON_HEIGHT);
-	private static final Rect backbtnDestination = new Rect(Global.SCREEN_WIDTH-Global.ICON_WIDTH, 0, Global.SCREEN_WIDTH, Global.ICON_HEIGHT);
-	private static final RectF invDestinationF = new RectF(0, 0, Global.ICON_WIDTH, Global.ICON_HEIGHT);
-	private static final RectF backbtnDestinationF = new RectF(Global.SCREEN_WIDTH-Global.ICON_WIDTH, 0, Global.SCREEN_WIDTH, Global.ICON_HEIGHT);     
+	
+	private static final Box inventoryBox = new Box("inventory", 0f, 0.0800f, 0f, 0.133f);
+	private static final Box backBtnBox = new Box("backBtn", 0.9200f, 1.0f, 0f, 0.133f);
+	
+	//left, top, right, bottom
+	private static final Rect invDestination = new Rect(Math.round(inventoryBox.left*Global.SCREEN_WIDTH), Math.round(inventoryBox.top*Global.SCREEN_HEIGHT),
+			Math.round(inventoryBox.right*Global.SCREEN_WIDTH), Math.round(inventoryBox.bottom*Global.SCREEN_HEIGHT));
+	private static final Rect backbtnDestination = new Rect(Math.round(backBtnBox.left*Global.SCREEN_WIDTH), Math.round(backBtnBox.top*Global.SCREEN_HEIGHT), 
+			Math.round(backBtnBox.right*Global.SCREEN_WIDTH), Math.round(backBtnBox.bottom*Global.SCREEN_HEIGHT));
+	private static final RectF invDestinationF = new RectF(inventoryBox.left*Global.SCREEN_WIDTH, inventoryBox.top*Global.SCREEN_HEIGHT,
+			inventoryBox.right*Global.SCREEN_WIDTH, inventoryBox.bottom*Global.SCREEN_HEIGHT);
+	private static final RectF backbtnDestinationF = new RectF(backBtnBox.left*Global.SCREEN_WIDTH, backBtnBox.top*Global.SCREEN_HEIGHT, 
+			backBtnBox.right*Global.SCREEN_WIDTH, backBtnBox.bottom*Global.SCREEN_HEIGHT);
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -145,14 +155,14 @@ public class SSceneActivity extends Activity
 		}
 		
 		private void drawIconBG(Canvas canvas, Paint paint, RectF rect) {
-			int alpha = paint.getAlpha();
-			paint.setAlpha(100);
+			paint.setColor(Color.WHITE);
+			paint.setAlpha(50);
 			float cx= rect.left + (rect.right-rect.left)/2;
 			float cy = rect.top + (rect.bottom-rect.top)/2;
-			float radius = Global.ICON_WIDTH/2;
+			float radius = Math.min((rect.right-rect.left)/2, (rect.bottom-rect.top)/2);
 			canvas.drawCircle(cx, cy, radius, paint);
-			paint.setAlpha(alpha);
-		}
+			paint.reset();
+		}		
 		
 		private void setStrokePaint() {
 			// Set up strokePaint for subtitle track.
