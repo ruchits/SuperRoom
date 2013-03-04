@@ -156,12 +156,13 @@ public class SSceneActivity extends Activity
 		
 		private void drawIconBG(Canvas canvas, Paint paint, RectF rect) {
 			paint.setColor(Color.WHITE);
+			int alpha = paint.getAlpha();
 			paint.setAlpha(50);
 			float cx= rect.left + (rect.right-rect.left)/2;
 			float cy = rect.top + (rect.bottom-rect.top)/2;
 			float radius = Math.min((rect.right-rect.left)/2, (rect.bottom-rect.top)/2);
 			canvas.drawCircle(cx, cy, radius, paint);
-			paint.reset();
+			paint.setAlpha(alpha);
 		}		
 		
 		private void setStrokePaint() {
