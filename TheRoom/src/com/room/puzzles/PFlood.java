@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.room.Global;
 import com.room.R;
 import com.room.media.MSoundManager;
+import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UBitmapUtil;
@@ -171,9 +173,9 @@ public class PFlood extends SSceneActivity
 	}
 
 	@Override
-	public void onBoxTouched(String boxName)
+	public void onBoxDown(SLayout.Box box, MotionEvent event)
 	{
-		StringTokenizer st = new StringTokenizer(boxName,"_");
+		StringTokenizer st = new StringTokenizer(box.name,"_");
 		
 		if(st.nextToken().equals("button"))
 		{			

@@ -9,11 +9,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.room.Global;
 import com.room.media.MSoundManager;
 import com.room.media.MVideoActivity;
 import com.room.render.RModelLoader;
+import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UTransitionUtil;
@@ -36,11 +38,11 @@ public class DaySelection extends SSceneActivity
 	}
     
 	@Override
-    public void onBoxTouched(String boxName)
+    public void onBoxDown(SLayout.Box box, MotionEvent event)
     {	
 		MSoundManager.getInstance().playSoundEffect(R.raw.swords);
 		
-		int dayNum = Integer.parseInt(boxName);
+		int dayNum = Integer.parseInt(box.name);
 		startGame(dayNum, false);    	
     }
 	

@@ -8,10 +8,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.room.R;
 import com.room.Global;
 import com.room.media.MSoundManager;
+import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 
@@ -27,11 +29,11 @@ public class PPhone extends SSceneActivity
 	}
 	
 	@Override
-    public void onBoxTouched(String boxName)
+	public void onBoxDown(SLayout.Box box, MotionEvent event)
     {	
-    	Log.d("BOXCLICK",boxName);
+    	Log.d("BOXCLICK",box.name);
 
-			switch (boxName.charAt(0))
+			switch (box.name.charAt(0))
 			{
 				case '0':
 					MSoundManager.getInstance().playSoundEffect(R.raw.phone_0);

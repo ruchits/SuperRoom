@@ -26,7 +26,7 @@ public class SceneView extends JDialog
 					if(b!=null)
 					{
 						selectedBox = b;
-						ScreenLayoutTool.instance.enableText(selectedBox.name);
+						ScreenLayoutTool.instance.enableText(selectedBox.name,selectedBox.desc);
 					}					
 					else
 					{
@@ -97,7 +97,7 @@ public class SceneView extends JDialog
 						{
 							boxAdded = true;
 							Data.addBox(selectedBox);
-							ScreenLayoutTool.instance.enableText(selectedBox.name);
+							ScreenLayoutTool.instance.enableText(selectedBox.name,selectedBox.desc);
 						}
 					}
 					
@@ -126,7 +126,8 @@ public class SceneView extends JDialog
 	
 	public void loadImage(String path)
 	{
-		img = FileIO.readImage(path);
+		img = ImgFileIO.readImage(path);
+		
 		
 		if(img!=null)
 		{

@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.room.Global;
 import com.room.item.IItems;
@@ -17,6 +18,7 @@ import com.room.media.MVideoActivity;
 import com.room.puzzles.PFlood;
 import com.room.puzzles.PPhone;
 import com.room.puzzles.PStatues;
+import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UTransitionUtil;
@@ -44,23 +46,23 @@ public class MainMenu extends SSceneActivity
 	
     
 	@Override
-    public void onBoxTouched(String boxName)
+    public void onBoxDown(SLayout.Box box, MotionEvent event)
     {	
 		MSoundManager.getInstance().playSoundEffect(R.raw.swords);
-    	if (boxName.equals("start"))
+    	if (box.name.equals("start"))
     	{
     		showDaySelection();
     	}
-    	else if (boxName.equals("options"))
+    	else if (box.name.equals("options"))
     	{
     		showOptions();
     	}
-    	else if (boxName.equals("credits"))
+    	else if (box.name.equals("credits"))
     	{
   		    startActivity(new Intent(this, PPhone.class)); //TEMPORARY
     		//showCredits();
     	}      	
-    	else if (boxName.equals("quit"))
+    	else if (box.name.equals("quit"))
     	{
     		finish();
     	}    	

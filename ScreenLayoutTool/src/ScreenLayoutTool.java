@@ -64,7 +64,9 @@ public class ScreenLayoutTool extends JFrame
         loadLayoutButton = new JButton("Load Layout");
         saveLayoutButton = new JButton("Save Layout");
         nameTextField = new JTextField(10);
-        nameTextField.setEnabled(false);
+        nameTextField.setEnabled(false);        
+        descTextField = new JTextField(10);
+        descTextField.setEnabled(false);        
         
         contentPane.add(useImageButton);
 		layout.putConstraint(SpringLayout.WEST, useImageButton, 10, SpringLayout.WEST, contentPane);
@@ -84,7 +86,11 @@ public class ScreenLayoutTool extends JFrame
 		
         contentPane.add(nameTextField);
         layout.putConstraint(SpringLayout.WEST, nameTextField, 10, SpringLayout.WEST, contentPane);
-		layout.putConstraint(SpringLayout.NORTH, nameTextField, 10 + 30*4, SpringLayout.NORTH, contentPane);        
+		layout.putConstraint(SpringLayout.NORTH, nameTextField, 10 + 30*4, SpringLayout.NORTH, contentPane);
+		
+        contentPane.add(descTextField);
+        layout.putConstraint(SpringLayout.WEST, descTextField, 10, SpringLayout.WEST, contentPane);
+		layout.putConstraint(SpringLayout.NORTH, descTextField, 10 + 30*5, SpringLayout.NORTH, contentPane);		
 	}
 
 	
@@ -147,6 +153,14 @@ public class ScreenLayoutTool extends JFrame
 				updateSelectedBoxName();
 			}
 		});
+		
+		descTextField.addKeyListener(new KeyAdapter()
+		{
+			public void keyReleased(KeyEvent e)
+			{
+				updateSelectedBoxDesc();
+			}
+		});		
 	}
 	
 	private String getFileName()
@@ -161,16 +175,20 @@ public class ScreenLayoutTool extends JFrame
 		return null;
 	}
 	
-	public void enableText(String s)
+	public void enableText(String name, String desc)
 	{
 		nameTextField.setEnabled(true);
-		nameTextField.setText(s);
+		nameTextField.setText(name);
+		descTextField.setEnabled(true);
+		descTextField.setText(desc);				
 	}
 	
 	public void disableText()
 	{
 		nameTextField.setText("");
 		nameTextField.setEnabled(false);
+		descTextField.setText("");
+		descTextField.setEnabled(false);		
 	}
 	
 	private void updateSelectedBoxName()
@@ -181,11 +199,20 @@ public class ScreenLayoutTool extends JFrame
 		}
 	}
 	
+	private void updateSelectedBoxDesc()
+	{
+		if(sceneView!=null && sceneView.selectedBox != null)
+		{
+			sceneView.selectedBox.desc = descTextField.getText();
+		}
+	}	
+	
 	private JButton useImageButton;
 	private JButton clearLayoutButton;
 	private JButton loadLayoutButton;
 	private JButton saveLayoutButton;
 	public JTextField nameTextField;
+	public JTextField descTextField;
 	private Container contentPane;
 	
 }

@@ -12,12 +12,14 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 import com.room.Global;
 import com.room.R;
 import com.room.item.IItems.Item;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout.Box;
+import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 
@@ -55,27 +57,25 @@ public class IItemMenu extends SSceneActivity {
 	}
 
 	@Override
-    public void onBoxTouched(String boxName)
+    public void onBoxDown(SLayout.Box box, MotionEvent event)
     {
-		super.onBoxTouched(boxName);
-		
 		if (itemList != null) {
 			Iterator<Entry<Box, Item>> it = itemList.entrySet().iterator();
 			
 			while(it.hasNext()) {
 				Map.Entry<Box, Item> pairs = (Map.Entry<Box, Item>) it.next();
-				Box box = (Box) pairs.getKey();
+				Box currBox = (Box) pairs.getKey();
 				Item item = (Item) pairs.getValue();
 			
-				if(box.name.equals(boxName)) {
+				if(currBox.name.equals(box.name)) {
 					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 					//double click on the same box, i.e. use the item now.
-					if ((showBox != null) && showBox.name.equals(boxName)) {
-						useItem(box);
+					if ((showBox != null) && showBox.name.equals(box.name)) {
+						useItem(currBox);
 					}
 					else {
 						showDescription = true;
-						showBox = box;
+						showBox = currBox;
 						setText(item.getDescriprion(), Global.TextType.TEXT_ITEM_DESCR, true);
 					}
 					break;
@@ -110,7 +110,8 @@ public class IItemMenu extends SSceneActivity {
 	    		}
 	    		else {
 					int alpha = paint.getAlpha();
-	    			paint.setAlpha(50);
+					paint.setColor(Color.BLACK);
+	    			paint.setAlpha(50);	    			
 	    			canvas.drawRoundRect(iconF, Global.ROUND_EDGE_WIDTH, Global.ROUND_EDGE_WIDTH, paint);
 	    			paint.setAlpha(alpha);
 	    		}

@@ -12,6 +12,7 @@ public class SLayout
 	public static class Box
 	{
 		public String name=null;
+		public String desc=null;
 		public float left,right,top,bottom;
 		public Box(){}
 		public Box(String name, float left, float right, float top, float bottom) {
@@ -28,14 +29,14 @@ public class SLayout
 		boxes.add(b);
 	}		
 	
-	public String getBoxAtPixel(float x, float y)
+	public Box getBoxAtPixel(float x, float y)
 	{
 		float fx = x/Global.SCREEN_WIDTH;
 		float fy = y/Global.SCREEN_HEIGHT;
 		return getBoxAt(fx,fy);
 	}
 	
-	private String getBoxAt(float x, float y)
+	private Box getBoxAt(float x, float y)
 	{
 		for(int i=0; i<boxes.size(); ++i)
 		{
@@ -44,7 +45,7 @@ public class SLayout
 			if(box.left <= x && x <= box.right
 				&& box.top <= y && y <= box.bottom)
 			{
-				return box.name;
+				return box;
 			}
 		}
 		

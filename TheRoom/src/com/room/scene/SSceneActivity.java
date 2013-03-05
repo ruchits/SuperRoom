@@ -223,10 +223,10 @@ public class SSceneActivity extends Activity
 		
 		if (actionCode == MotionEvent.ACTION_DOWN)
 		{
-			String boxName = null;			
-			boxName = layout.getBoxAtPixel(event.getX(), event.getY());
-			if(boxName != null)
-				onBoxTouched(boxName);
+			SLayout.Box box = null;			
+			box = layout.getBoxAtPixel(event.getX(), event.getY());
+			if(box != null)
+				onBoxDown(box, event);
 			
 			if(showInventoryIcon) {
 				// Handle touch events to inventory icon and back button on SceneLayout.
@@ -273,7 +273,7 @@ public class SSceneActivity extends Activity
 		}
 	}    
     
-    public void onBoxTouched(String boxName)
+    public void onBoxDown(SLayout.Box box, MotionEvent event)
     {
     	//Override this function
     }

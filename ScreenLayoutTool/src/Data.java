@@ -13,6 +13,7 @@ public class Data
 	static class Box
 	{
 		public String name="noname";
+		public String desc="nodesc";
 		public float left,right,top,bottom;
 		private float x1,y1,x2,y2;
 		public Box(){}
@@ -138,6 +139,9 @@ public class Data
 	
 	public static void draw(Graphics g)
 	{
+		if(ScreenLayoutTool.sceneView.img == null)
+			return;
+		
 		g.setColor(boxColor);
 		
 		for(int i=0; i<boxes.size(); ++i)
@@ -190,6 +194,9 @@ public class Data
 				box.top = Float.parseFloat(st.nextToken());
 				box.bottom = Float.parseFloat(st.nextToken());
 				
+				if(st.hasMoreTokens())
+					box.desc = st.nextToken();
+				
 				Data.addBox(box);
 				
 			}
@@ -215,7 +222,7 @@ public class Data
 			for(int i=0; i<boxes.size(); ++i)
 			{
 				Box box = boxes.get(i);
-				out.println(box.name+" "+box.left+" "+box.right+" "+box.top+" "+box.bottom);
+				out.println(box.name+" "+box.left+" "+box.right+" "+box.top+" "+box.bottom+" "+box.desc);
 			}
 			
 			out.close();

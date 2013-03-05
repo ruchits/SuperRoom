@@ -2,7 +2,7 @@ import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
 
-public class FileIO
+public class ImgFileIO
 {
 	public static String readFileAsString(String filePath)
 	{

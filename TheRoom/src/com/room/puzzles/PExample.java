@@ -8,9 +8,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.room.R;
 import com.room.Global;
+import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 
@@ -27,8 +29,8 @@ public class PExample extends SSceneActivity
 	}
 	
 	@Override
-    public void onBoxTouched(String boxName)
-    {	
-    	Log.d("BOXCLICK",boxName);
-    }
+	public void onBoxDown(SLayout.Box box, MotionEvent event)
+	{	
+		Log.d("BOXCLICK",box.name);
+	}
 }
