@@ -24,6 +24,11 @@ public class PDeadWoman extends SSceneActivity
 		super.onCreate(savedInstanceState);
 		
 		setLayout(SLayoutLoader.getInstance().puzzleDeadWoman);
+	}
+	
+	@Override	
+	protected void onResume() {
+		super.onResume();
 		setBackgroundImage(R.drawable.puzzle_deadwoman);
 	}
 	

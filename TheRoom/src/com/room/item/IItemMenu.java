@@ -24,8 +24,6 @@ import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 
 public class IItemMenu extends SSceneActivity {
-	private static final String TAG = "com.room.item.ItemMenu";
-	
 	private static HashMap<Box, IItems.Item> itemList = null;
 	private boolean showDescription = false;
 	private Box showBox = null;
@@ -39,7 +37,6 @@ public class IItemMenu extends SSceneActivity {
 		
 		// Initialize background layout.
 		setLayout(SLayoutLoader.getInstance().itemMenu);
-		setBackgroundImage(R.drawable.items_menu);
 		showInventory(false);
 		showBackButton(true);
  	}
@@ -48,6 +45,8 @@ public class IItemMenu extends SSceneActivity {
 	protected void onResume()
 	{
 		super.onResume();
+		setBackgroundImage(R.drawable.items_menu);
+		
 		itemList = IItems.getInstance().getItemList();
 		descriptionBox = IItems.getInstance().getDescriptionBox();
 		

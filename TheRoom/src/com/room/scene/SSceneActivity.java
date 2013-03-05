@@ -6,7 +6,6 @@ import com.room.R;
 import com.room.item.IItemMenu;
 import com.room.item.IItems;
 import com.room.scene.SLayout.Box;
-import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
 
 import android.app.Activity;
@@ -224,7 +223,7 @@ public class SSceneActivity extends Activity
 		
 		if (actionCode == MotionEvent.ACTION_DOWN)
 		{
-			box = null;
+			box = null;			
 			box = layout.getBoxAtPixel(event.getX(), event.getY());
 			if(box != null)
 				onBoxDown(box, event);
@@ -258,15 +257,15 @@ public class SSceneActivity extends Activity
     }
     
     public void onBoxRelease(Box box, MotionEvent event) {
-		//Override this function
-	}
-
-	public void onBoxMove(Box box, MotionEvent event) {
-		//Override this function
-	}
-
-	private boolean getTouchAt(float x, float y, Rect dest)
-	{
+    	//Override this function
+    }
+    
+    public void onBoxMove(Box box, MotionEvent event) {
+    	//Override this function
+    }
+    
+    private boolean getTouchAt(float x, float y, Rect dest)
+    {
 		if(dest.left <= x && x <= dest.right
 			&& dest.top <= y && y <= dest.bottom)
 		{
@@ -305,7 +304,7 @@ public class SSceneActivity extends Activity
     	}
     	else
     	{
-    		backgroundImage = UBitmapUtil.decodeSampledBitmapForResolution(resourceID, Global.ResType.HI_RES); 
+    		backgroundImage = SSceneBitmapProvider.getInstance().decodeImage(resourceID);
     	}
     }
     

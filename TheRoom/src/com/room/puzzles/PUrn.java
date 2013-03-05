@@ -17,13 +17,18 @@ import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 
 public class PUrn extends SSceneActivity
-{
+{	
 	@Override	
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		
 		setLayout(SLayoutLoader.getInstance().puzzleUrn);
+	}
+	
+	@Override	
+	protected void onResume() {
+		super.onResume();
 		setBackgroundImage(R.drawable.puzzle_urn);
 	}
 	

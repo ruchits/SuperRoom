@@ -63,7 +63,6 @@ public class PStatues extends SSceneActivity {
 		super.onCreate(savedInstanceState);
 
 		setLayout(SLayoutLoader.getInstance().puzzleStatues);
-		setBackgroundImage(R.drawable.puzzle_statues2);
 		for (int i = 0; i < NUM_STATUES; ++i) {
 			symbolArea[i] = getBoxPixelCoords("symbol_" + i);
 			statueArea[i] = getBoxPixelCoords("statue_" + i);
@@ -90,6 +89,12 @@ public class PStatues extends SSceneActivity {
 		init_puzzle();
 	}
 
+	@Override	
+	protected void onResume() {
+		super.onResume();
+		setBackgroundImage(R.drawable.puzzle_statues2);
+	}
+	
 	private void init_puzzle() {
 		Random rand = new Random();
 		// answers[0] = 1;

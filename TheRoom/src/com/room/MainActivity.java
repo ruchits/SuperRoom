@@ -4,7 +4,7 @@ import com.room.media.MSoundManager;
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
 import com.room.scene.SLayoutLoader;
-import com.room.utils.UTransitionUtil;
+import com.room.scene.SSceneBitmapProvider;
 
 import android.os.*;
 import android.app.*;
@@ -26,6 +26,9 @@ public class MainActivity extends Activity implements OnClickListener
         Global.mainActivity = this;
 
         setContentView(R.layout.activity_main);
+        ActivityManager am= (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        Global.VMMemSize = am.getMemoryClass();
+        
         new LoadTask(this, null).execute();
 	}
 
@@ -66,6 +69,7 @@ public class MainActivity extends Activity implements OnClickListener
 	         RModelLoader.getInstance().init();
 	         RPOIManager.getInstance().init();
 	         MSoundManager.getInstance().init();
+	         SSceneBitmapProvider.getInstance().init();
 	         //TBD - Right now these two loaders are initialized in RRenderer,
 	         //      We should remove that dependency and init them here as well.
 	 		 //RShaderLoader.getInstance().init();

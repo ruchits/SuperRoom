@@ -25,6 +25,11 @@ public class PExample extends SSceneActivity
 		
 		//MUST specify a layout:
 		setLayout(SLayoutLoader.getInstance().puzzleExample);
+	}
+	
+	@Override	
+	protected void onResume() {
+		super.onResume();
 		setBackgroundImage(R.drawable.puzzle_example);
 	}
 	

@@ -31,7 +31,6 @@ public class MainMenu extends SSceneActivity
 		super.onCreate(savedInstanceState);
 		
 		setLayout(SLayoutLoader.getInstance().mainMenu);
-		setBackgroundImage(R.drawable.main_menu);
 		
 		if(Global.DEBUG_SKIP_MENU)
 			showDaySelection();
@@ -113,6 +112,7 @@ public class MainMenu extends SSceneActivity
 	protected void onResume()
 	{
 		super.onResume();
+		setBackgroundImage(R.drawable.main_menu);
 		MSoundManager.getInstance().playMusic(R.raw.music_menu);
 	}
 	

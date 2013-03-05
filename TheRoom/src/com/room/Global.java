@@ -37,6 +37,7 @@ public class Global
 	public enum TextType { TEXT_ITEM_DESCR, TEXT_SUBTITLE, TEXT_CENTERED };
 	public static Item itemInuse;
 	
+	public static int VMMemSize;
 	public enum ResType { LOW_RES, MED_RES, HI_RES};
 	
 	public static ProgressDialog progDailog;

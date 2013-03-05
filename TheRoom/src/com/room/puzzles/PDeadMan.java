@@ -24,6 +24,11 @@ public class PDeadMan extends SSceneActivity
 		super.onCreate(savedInstanceState);
 		
 		setLayout(SLayoutLoader.getInstance().puzzleDeadMan);
+	}
+	
+	@Override	
+	protected void onResume() {
+		super.onResume();
 		setBackgroundImage(R.drawable.puzzle_deadman);
 	}
 	

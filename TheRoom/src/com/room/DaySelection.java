@@ -28,7 +28,6 @@ public class DaySelection extends SSceneActivity
 		super.onCreate(savedInstanceState);
 		
 		setLayout(SLayoutLoader.getInstance().daySelection);
-		setBackgroundImage(R.drawable.day_selection);
 		
 		showInventory(false);
 		showBackButton(false);		
@@ -81,6 +80,7 @@ public class DaySelection extends SSceneActivity
 	protected void onResume()
 	{
 		super.onResume();
+		setBackgroundImage(R.drawable.day_selection);
 		MSoundManager.getInstance().playMusic(R.raw.music_menu);
 	}
 	

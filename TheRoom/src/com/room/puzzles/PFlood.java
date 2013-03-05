@@ -82,7 +82,6 @@ public class PFlood extends SSceneActivity
 	{
 		super.onCreate(savedInstanceState);
 		setLayout(SLayoutLoader.getInstance().puzzleFlood);
-		setBackgroundImage(R.drawable.puzzle_flood);
 		
 		init_puzzle();
 		tileArea = getBoxPixelCoords("tileArea");
@@ -96,12 +95,17 @@ public class PFlood extends SSceneActivity
 		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, (int)tileWidth, (int)tileHeight);
 	}
 	
+	@Override	
+	protected void onResume() {
+		super.onResume();
+		setBackgroundImage(R.drawable.puzzle_flood);
+	}
+	
 	private void init_puzzle() {
 		Random rand = new Random();
 		floodTiles = fromPuzzleString(puzzles[rand.nextInt(puzzles.length)]);
 		clickCounter = 0;
 	}
-
 
 	private static char[][] fromPuzzleString(String str)
 	{
