@@ -46,6 +46,7 @@ public class SSceneActivity extends Activity
 	private static final RectF backbtnDestinationF = new RectF(backBtnBox.left*Global.SCREEN_WIDTH, backBtnBox.top*Global.SCREEN_HEIGHT, 
 			backBtnBox.right*Global.SCREEN_WIDTH, backBtnBox.bottom*Global.SCREEN_HEIGHT);
 	
+	private SLayout.Box box;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -223,7 +224,7 @@ public class SSceneActivity extends Activity
 		
 		if (actionCode == MotionEvent.ACTION_DOWN)
 		{
-			SLayout.Box box = null;			
+			box = null;
 			box = layout.getBoxAtPixel(event.getX(), event.getY());
 			if(box != null)
 				onBoxDown(box, event);
@@ -242,11 +243,29 @@ public class SSceneActivity extends Activity
 					finish();
  			}
 		}
+		else if (actionCode == MotionEvent.ACTION_MOVE)
+		{
+			if (box != null)
+				onBoxMove(box, event);
+		}
+		else if (actionCode == MotionEvent.ACTION_UP)
+		{
+			if (box != null)
+				onBoxRelease(box, event);
+		}
 		
         return true;
     }
     
-    private boolean getTouchAt(float x, float y, Rect dest)
+    public void onBoxRelease(Box box, MotionEvent event) {
+		//Override this function
+	}
+
+	public void onBoxMove(Box box, MotionEvent event) {
+		//Override this function
+	}
+
+	private boolean getTouchAt(float x, float y, Rect dest)
 	{
 		if(dest.left <= x && x <= dest.right
 			&& dest.top <= y && y <= dest.bottom)

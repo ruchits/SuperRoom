@@ -59,7 +59,7 @@ public class MainMenu extends SSceneActivity
     	}
     	else if (box.name.equals("credits"))
     	{
-  		    startActivity(new Intent(this, PPhone.class)); //TEMPORARY
+  		    startActivity(new Intent(this, PStatues.class)); //TEMPORARY
     		//showCredits();
     	}      	
     	else if (box.name.equals("quit"))
