@@ -128,7 +128,7 @@ public class PFlood extends SSceneActivity
 		super.onDraw(canvas, paint);		
 		Log.e("PFlood", "clickCounter:"+clickCounter);
 		
-		for (int i = 0; i < MAXCLICK - clickCounter; ++i)
+		for (int i =  MAXCLICK - 1; i >= clickCounter; --i)
 		{
 			canvas.drawBitmap(lifeBarImage,
 					lifeBarArea.left,
