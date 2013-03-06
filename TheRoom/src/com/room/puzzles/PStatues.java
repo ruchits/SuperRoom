@@ -152,11 +152,12 @@ public class PStatues extends SSceneActivity {
 		if (!clickedBox.equals("statue"))
 			return;
 		float positionX = event.getRawX();
-		if (draggedStatue == -1)
-			draggedStatue = touchedStatue;
 		float deltaX = positionX - prevX;
 		if (Math.abs(deltaX) <= touchSlop)
 			return;
+		if (draggedStatue == -1) {
+			draggedStatue = touchedStatue;
+		}
 		// Check the boundary
 		if ((statueArea[draggedStatue].left + deltaX) > statueArea_original[0].left
 				&& ((statueArea[draggedStatue].right + deltaX) < statueArea_original[NUM_STATUES - 1].right)) {
@@ -220,6 +221,7 @@ public class PStatues extends SSceneActivity {
 		boolean result = updateSymbolStates();
 		repaint();
 		clickCounter++;
+		MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 		if (result)
 			handleSuccess();
 		else if (clickCounter == MAXCLICK)
