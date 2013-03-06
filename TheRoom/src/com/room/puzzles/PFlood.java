@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -30,7 +31,7 @@ public class PFlood extends SSceneActivity
 {
 	private static final int tilesPerSide = 12;
 	private static final char nonExistingColor = (char)-1;
-	private static final int MAXCLICK = 3; //TODO: change to 22 later
+	private static final int MAXCLICK = 22;
 	private static final int numSymbols = 6;
 	private static final int hintMessageDuration = 10000;
 	
@@ -42,7 +43,7 @@ public class PFlood extends SSceneActivity
 	private float lifeBarHeight;
 	private char[][] floodTiles;
 	private ArrayList<Bitmap> tileImages;
-	private ArrayList<Bitmap> lifeBarImages;
+	private Bitmap lifeBarImage;
 	private char oldColor;
 	private int clickCounter;
 	int numTilesFilled;
@@ -91,14 +92,14 @@ public class PFlood extends SSceneActivity
 		tileHeight =  ( tileArea.bottom - tileArea.top )/tilesPerSide;
 		tileWidth =  ( tileArea.right - tileArea.left )/tilesPerSide;
 		
-		lifeBarImages = UBitmapUtil.populateBitmaps("lifebar_", MAXCLICK, (int)lifeBarWidth, (int)lifeBarHeight); 
+		lifeBarImage = UBitmapUtil.loadScaledBitmap(R.drawable.lifebar_0, (int)lifeBarWidth, (int)lifeBarHeight); 
 		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, (int)tileWidth, (int)tileHeight);
 	}
 	
 	@Override	
 	protected void onResume() {
 		super.onResume();
-		setBackgroundImage(R.drawable.puzzle_flood);
+		setBackgroundImage(R.drawable.puzzle_flood2);
 	}
 	
 	private void init_puzzle() {
@@ -127,9 +128,9 @@ public class PFlood extends SSceneActivity
 		super.onDraw(canvas, paint);		
 		Log.e("PFlood", "clickCounter:"+clickCounter);
 		
-		for (int i = 0; i < Math.min(clickCounter, MAXCLICK); ++i) //for now 
+		for (int i = 0; i < MAXCLICK - clickCounter; ++i)
 		{
-			canvas.drawBitmap(lifeBarImages.get(i),
+			canvas.drawBitmap(lifeBarImage,
 					lifeBarArea.left,
 					lifeBarArea.top + i * lifeBarHeight,
 					paint);
@@ -146,7 +147,7 @@ public class PFlood extends SSceneActivity
 			}
 		}
 	}
-
+	
 	private void replaceTiles (int i, int j)
 	{
 		if ( oldColor == nonExistingColor ) return;
@@ -186,9 +187,6 @@ public class PFlood extends SSceneActivity
 			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 
 			char newColor = (char)Integer.parseInt(st.nextToken());
-
-			if ( newColor < 0 )
-				return;
 
 			oldColor = floodTiles[0][0];
 			if (oldColor != newColor) {
