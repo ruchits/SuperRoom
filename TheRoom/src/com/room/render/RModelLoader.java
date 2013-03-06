@@ -48,6 +48,7 @@ public class RModelLoader
 	public RModel decalCeilingMajor;
 	public RModel decalNumber;
 	public RModel decalPuzzleFlood;
+	public RModel decalDeadMan;
 	public RModel modelPOI;
 	
 	public static ArrayList<RMath.Line> activeWallBoundary;
@@ -102,6 +103,9 @@ public class RModelLoader
 			decalPuzzleFlood = loadBinaryModel("decal_puzzle_flood.bin");
 			decalPuzzleFlood.enableAlpha(true);
 			decalPuzzleFlood.enableUnlit(true);
+			
+			decalDeadMan = loadBinaryModel("decal_deadman.bin");
+			decalDeadMan.enableAlpha(true);			
 		}
 
 		boundaryStage1 = loadBoundaries("collision_stage1.boundary");

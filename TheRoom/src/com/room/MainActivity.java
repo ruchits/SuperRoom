@@ -1,5 +1,6 @@
 package com.room;
 
+import com.room.item.IItems;
 import com.room.media.MSoundManager;
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
@@ -70,6 +71,7 @@ public class MainActivity extends Activity implements OnClickListener
 	         RPOIManager.getInstance().init();
 	         MSoundManager.getInstance().init();
 	         SSceneBitmapProvider.getInstance().init();
+ 	         IItems.getInstance().init();
 	         //TBD - Right now these two loaders are initialized in RRenderer,
 	         //      We should remove that dependency and init them here as well.
 	 		 //RShaderLoader.getInstance().init();

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.room.Global;
+import com.room.R;
 import com.room.item.IItems.Item;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SLayout.Box;
@@ -21,6 +22,7 @@ public class IItems {
 	private static ArrayList<Box> itemBoxes;
 	private Box descriptionBox = null;
 	private static final String TAG = "com.room.item.Items";
+	private HashMap<String, Item> itemPool;
 	
 	private static IItems instance = null;
 	
@@ -48,6 +50,15 @@ public class IItems {
 		
 		itemMap = new HashMap<Box, Item>();
 		maxListSize = itemBoxes.size();
+		
+		//Add all items to item pool.
+		itemPool = new HashMap<String, Item>();
+		itemPool.put("key", new IItems.Item("Key", "This item can be used to unlock doors.", R.drawable.key_icon));
+		itemPool.put("knife", new IItems.Item("Knife", "A sharp object for sharp people. Use it with caution!", R.drawable.knife_icon));
+		itemPool.put("phone", new IItems.Item("Phone", "This will save your ass when in need. Go easy on the battery!", R.drawable.phone_icon));
+		itemPool.put("notebook", new IItems.Item("Notebook", "A worn notebook with missing pages.", R.drawable.book_icon));
+		itemPool.put("notepad", new IItems.Item("Notepad", "No idea what this is doing here, looked like a cool icon.", R.drawable.notepad_icon));
+		itemPool.put("photo", new IItems.Item("Old Photograph", "Beautiful family - had to put this one in.", R.drawable.painting_icon));
 	}
 	
 	public static class Item {
@@ -94,7 +105,7 @@ public class IItems {
 		
 	}
 	
-	public void addItem(Item item) {
+	public void addItem(String itemName) {
 		/* Box is our key in the map. Go over each box in Arraylist and find an empty one.
 		 * 1. Can not add the same item twice
 		 * 2. Can not exceed MAX_MAP_SIZE
@@ -108,7 +119,7 @@ public class IItems {
 				Entry<Box, Item> entry = (Entry<Box, Item>) it.next();
 				Item i = entry.getValue();
 				
-				if(i.getName().equals(item.getName())) {
+				if(i.getName().equals(itemName)) {
 					// Do not add the same item again.
 					return;
 				}
@@ -117,7 +128,7 @@ public class IItems {
 		
 		for(Box box: itemBoxes) {
 			if (!itemMap.containsKey(box)) {
-				itemMap.put(box, item);
+				itemMap.put(box, itemPool.get(itemName));
 				break;
 			}
 		}
@@ -138,9 +149,14 @@ public class IItems {
 		}
 	}
 	
-	//TODO: init items uptill a certain stage aka from: 1....stage
-	public void initItemsforStage(int stage) {
-		return;
+	public boolean hasItem(String itemName)
+	{
+		return itemMap.containsKey(itemName);
+	}
+	
+	public void clearItems()
+	{
+		itemMap.clear();
 	}
 	
 	// Get the list of items in a player's inventory.

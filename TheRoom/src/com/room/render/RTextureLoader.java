@@ -120,6 +120,7 @@ public class RTextureLoader
 			textureID.put("decal_big_crack", loadCompressedTexture("decal_big_crack",true,true,true));
 			textureID.put("decal_number", loadCompressedTexture("decal_number",true,true,true));
 			textureID.put("decal_puzzle_flood", loadCompressedTexture("decal_puzzle_flood",true,true,true));
+			textureID.put("decal_deadman", loadCompressedTexture("decal_deadman",true,true,true));
 		}
 		
 	}

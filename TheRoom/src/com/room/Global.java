@@ -2,6 +2,7 @@ package com.room;
 
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
+import com.room.days.*;
 import com.room.item.IItems.Item;
 import com.room.render.RRenderActivity;
 import com.room.utils.UPair;
@@ -53,8 +54,27 @@ public class Global
 		{
 			CURRENT_DAY = day;
 			RModelLoader.getInstance().updateBoundaries();
-			RPOIManager.getInstance().setDefaultsForCurrentDay();
-		}						
+			RPOIManager.getInstance().setDefaultsForCurrentDay();			
+		}
+		
+		switch(day)
+		{
+			case 1:
+			Day1.reset();
+			break;
+			case 2:
+			Day2.reset();
+			break;
+			case 3:
+			Day3.reset();
+			break;
+			case 4:
+			Day4.reset();
+			break;
+			case 5:
+			Day5.reset();
+			break;			
+		}
 	}
 	
 	public static void gotoNextDay()

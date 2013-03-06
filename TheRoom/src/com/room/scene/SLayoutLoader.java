@@ -82,7 +82,7 @@ public class SLayoutLoader
 				box.bottom = Float.parseFloat(st.nextToken());
 				
 				if(st.hasMoreTokens())
-					box.desc = st.nextToken();
+					box.desc = st.nextToken("");
 				
 				layout.addBox(box);
 				
