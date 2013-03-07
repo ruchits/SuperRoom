@@ -30,6 +30,9 @@ public class MainActivity extends Activity implements OnClickListener
         ActivityManager am= (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         Global.VMMemSize = am.getMemoryClass();
         
+        // Get the screen's density scale
+        Global.deviceDPIScale = this.getResources().getDisplayMetrics().density;
+        
         new LoadTask(this, null).execute();
 	}
 
@@ -70,8 +73,8 @@ public class MainActivity extends Activity implements OnClickListener
 	         RModelLoader.getInstance().init();
 	         RPOIManager.getInstance().init();
 	         MSoundManager.getInstance().init();
+	         IItems.getInstance().init();
 	         SSceneBitmapProvider.getInstance().init();
- 	         IItems.getInstance().init();
 	         //TBD - Right now these two loaders are initialized in RRenderer,
 	         //      We should remove that dependency and init them here as well.
 	 		 //RShaderLoader.getInstance().init();

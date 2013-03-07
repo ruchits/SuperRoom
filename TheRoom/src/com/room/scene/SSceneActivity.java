@@ -6,6 +6,7 @@ import com.room.R;
 import com.room.item.IItemMenu;
 import com.room.item.IItems;
 import com.room.scene.SLayout.Box;
+import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
 
 import android.app.Activity;
@@ -45,7 +46,20 @@ public class SSceneActivity extends Activity
 	private static final RectF backbtnDestinationF = new RectF(backBtnBox.left*Global.SCREEN_WIDTH, backBtnBox.top*Global.SCREEN_HEIGHT, 
 			backBtnBox.right*Global.SCREEN_WIDTH, backBtnBox.bottom*Global.SCREEN_HEIGHT);
 	
-	private SLayout.Box box;
+	
+	private static Bitmap itemTextBitmap = Bitmap.createBitmap(500, 200, Bitmap.Config.ARGB_8888);
+	private static Bitmap subtitleBitmap = Bitmap.createBitmap(800, 100, Bitmap.Config.ARGB_8888);
+	private static Bitmap centeredTextBitmap = Bitmap.createBitmap(500, 70, Bitmap.Config.ARGB_8888);
+	
+	private static final Box subtitleBox = new Box("subtitle", 0.18020834f, 0.8385417f, 0.85f, 0.9907407f);
+	private static final Rect subtitleRect = new Rect(Math.round(subtitleBox.left*Global.SCREEN_WIDTH), Math.round(subtitleBox.top*Global.SCREEN_HEIGHT),
+			Math.round(subtitleBox.right*Global.SCREEN_WIDTH), Math.round(subtitleBox.bottom*Global.SCREEN_HEIGHT));
+	
+	private static final Box centerBox = new Box("center", 0.321875f, 0.703125f, 0.4037037f, 0.5611111f);
+	private static final Rect centerRect = new Rect(Math.round(centerBox.left*Global.SCREEN_WIDTH), Math.round(centerBox.top*Global.SCREEN_HEIGHT),
+			Math.round(centerBox.right*Global.SCREEN_WIDTH), Math.round(centerBox.bottom*Global.SCREEN_HEIGHT));
+	
+	private static Rect itemTextRect;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -60,6 +74,10 @@ public class SSceneActivity extends Activity
         Resources res = Global.mainActivity.getResources();
 		inventory = BitmapFactory.decodeResource(res, R.drawable.backpack);
 		backbutton = BitmapFactory.decodeResource(res, R.drawable.back);
+		
+		Box textBox = IItems.getInstance().getTextBox();
+		itemTextRect = new Rect(Math.round(textBox.left*Global.SCREEN_WIDTH), Math.round(textBox.top*Global.SCREEN_HEIGHT),
+				Math.round(textBox.right*Global.SCREEN_WIDTH), Math.round(textBox.bottom*Global.SCREEN_HEIGHT));
     }
 	
 	private class SSceneView extends View
@@ -71,10 +89,10 @@ public class SSceneActivity extends Activity
 			paint.setAntiAlias(true);
 			paint.setFilterBitmap(true);
 			paint.setDither(true);
-			activity = (SSceneActivity)context;	
+			activity = (SSceneActivity)context;
+			textCanvas = new Canvas();
 			
-			// Set strokePaint for subtitle track.
-			setStrokePaint();
+			setStrokePaint(); // Set strokePaint for subtitle track.
 		}
 
 		@Override
@@ -95,62 +113,87 @@ public class SSceneActivity extends Activity
 				canvas.drawBitmap(backButton, null, SSceneActivity.backbtnDestination, paint);
 			}
 			
+			// Draw text
+			drawText(canvas);
+		}
+		
+		private void drawText(Canvas canvas) {
 			// Draw text if any.
-			String text = activity.text;
-			TextType type = activity.textType;
+			String text = activity.sceneText;
+			TextType type = activity.sceneTextType;
 			
 			if (text != null) {
-				// Set up the paint object for this text type.
-				setTextPaint(type);
-				int x, y, gap;
+				setTextPaint(type); // Set up the paint object for this text type.		
+				int deltaHeight = (int) (paint.descent() - paint.ascent());
+				int x=0, y=deltaHeight, textLen=0, bmWidth = 0;
+				
+				paint.getTextBounds(text, 0, text.length(), textBound);
+				int stringWidth = textBound.right - textBound.left;	
 				
 				switch (type) {
-				case TEXT_ITEM_DESCR:	
-					// Get the description box.
-					Box descriptionBox = IItems.getInstance().getDescriptionBox();
-					
-					gap = (int) (paint.descent() - paint.ascent());
-					int spaceBtnBoxnText = 2*gap;
-					x = (int) (descriptionBox.left*Global.SCREEN_WIDTH);
-					y = (int) (descriptionBox.bottom*Global.SCREEN_HEIGHT + spaceBtnBoxnText);
-				
-					// Draw the description string below the box.
-					// Split a long string into TEXT_LENGTH blocks for text wrapping.
-					String temp = text;
-					while(temp.length() > 0) {
-						// Trim the string to fit one line.
-						// TODO: This logic needs to be more robust. Especially once we add hard constraint for trimming.
-						UPair<String, Integer> res = SSceneActivity.trimString(temp, Global.TEXT_LENGTH, true);
-					
-						canvas.drawText(res.getLeft(), x, y, paint);
-						y += gap;
-					
-						int numCharRead = res.getRight();
-						if(numCharRead == temp.length())
-							break;
-						else
-							temp = temp.substring(numCharRead, temp.length());		
-					}		
+				case TEXT_ITEM_DESCR:
+					itemTextBitmap.eraseColor(Color.TRANSPARENT); // Clear the text bitmap
+					textCanvas.setBitmap(itemTextBitmap);
+					bmWidth = itemTextBitmap.getWidth();
 					break;
 	    		
 				case TEXT_SUBTITLE:
-					gap = (int) (paint.descent() - paint.ascent());
-					x=(int) Global.SCREEN_WIDTH/2;
-					y=(int) Global.SCREEN_HEIGHT-gap;
-					canvas.drawText(text, x, y, strokePaint);
-					canvas.drawText(text, x, y, paint);
+					subtitleBitmap.eraseColor(Color.TRANSPARENT);
+					textCanvas.setBitmap(subtitleBitmap);
+					bmWidth = subtitleBitmap.getWidth();
 	    			break;
 	    		
 				case TEXT_CENTERED:
-					x=(int) Global.SCREEN_WIDTH/2;
-					y=(int) Global.SCREEN_HEIGHT/2;
-					canvas.drawText(text, x, y, paint);
+					centeredTextBitmap.eraseColor(Color.TRANSPARENT);
+					textCanvas.setBitmap(centeredTextBitmap);
+					bmWidth = centeredTextBitmap.getWidth();
 					break;
-					
-				default:
-					//do nothing - must specify type to display text.
 				}
 				
+				// # of characters that can fit in the bitmap?
+				float ratio = (stringWidth < bmWidth) ? 1.0f: (float)bmWidth/(float)stringWidth;
+				textLen = Math.round(ratio*text.length());
+				
+				if (paint.getTextAlign() == Align.CENTER) {
+					x = bmWidth/2;
+				}
+				else if (paint.getTextAlign() == Align.RIGHT) {
+					x = bmWidth;
+				}
+				
+				// Split a long string into textLen blocks for text wrapping.
+				String temp = text;
+				while(temp.length() > 0) {
+					// returns the trimmed string, and the end index in original string.
+					UPair<String, Integer> res = SSceneActivity.trimString(temp, textLen, false);
+				
+					if (type == TextType.TEXT_SUBTITLE) {
+						textCanvas.drawText(res.getLeft(), x, y, strokePaint);
+					}
+					
+					textCanvas.drawText(res.getLeft(), x, y, paint);
+					y += deltaHeight;
+				
+					int numCharRead = res.getRight();
+					if(numCharRead == temp.length())
+						break;
+					else
+						temp = temp.substring(numCharRead, temp.length());
+				}
+				
+				switch (type) {
+				case TEXT_ITEM_DESCR:
+					canvas.drawBitmap(UBitmapUtil.scaleToFitWidth(itemTextBitmap, (itemTextRect.right - itemTextRect.left)), itemTextRect.left, itemTextRect.top, paint);
+					break;
+					
+				case TEXT_SUBTITLE:
+					canvas.drawBitmap(UBitmapUtil.scaleToFitWidth(subtitleBitmap, (subtitleRect.right - subtitleRect.left)), subtitleRect.left, subtitleRect.top, paint);
+	    			break;
+	    		
+				case TEXT_CENTERED:
+					canvas.drawBitmap(UBitmapUtil.scaleToFitWidth(centeredTextBitmap, (centerRect.right - centerRect.left)), centerRect.left, centerRect.top, paint);
+					break;
+				}
 			}
 		}
 		
@@ -174,37 +217,39 @@ public class SSceneActivity extends Activity
 			strokePaint.setTypeface(Typeface.MONOSPACE);
 			strokePaint.setStyle(Paint.Style.STROKE);
 			strokePaint.setStrokeWidth(2);
+			strokePaint.setFilterBitmap(true);
+			strokePaint.setDither(true);
+			strokePaint.setAntiAlias(true);
 		}
 		
 		private void setTextPaint(Global.TextType type) {
+			//common settings for all.
+			paint.setColor(Color.BLACK); 
+			paint.setTextSize(Global.FONT_SIZE);
+			paint.setTypeface(Typeface.MONOSPACE);
+			paint.setTextAlign(Align.CENTER);
+			
 			switch (type) {
 				case TEXT_ITEM_DESCR:
-					paint.setColor(Color.BLACK); 
-					paint.setTextSize(Global.FONT_SIZE);
-					paint.setTypeface(Typeface.MONOSPACE);
-					paint.setTextAlign(Align.LEFT);
+					// Add settings particular to this textType.
 					break;
 				case TEXT_SUBTITLE:
+					// Add settings particular to this textType.
 					paint.setColor(Color.WHITE); 
-					paint.setTextSize(Global.FONT_SIZE);
-					paint.setTypeface(Typeface.MONOSPACE);
-					paint.setTextAlign(Align.CENTER);
 					break;
 				case TEXT_CENTERED:
-					paint.setColor(Color.BLACK);
+					// Add settings particular to this textType.
 					paint.setTextSize(Global.FONT_SIZE_BIG);
-					paint.setTypeface(Typeface.MONOSPACE);
-					paint.setTextAlign(Align.CENTER);
+					paint.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.BOLD));
 					break;
-				default:
-					paint.setColor(Color.BLACK); 
-					paint.setTextSize(Global.FONT_SIZE);
 			}
 		}
 		
 		private SSceneActivity activity;
 		private Paint paint;
 		private Paint strokePaint;
+		private Canvas textCanvas;
+		private Rect textBound = new Rect(); // empty Rect that will be used to find text width.
 	}
 	
 	public void repaint()
@@ -314,15 +359,15 @@ public class SSceneActivity extends Activity
     }
     
     protected void setText(String string, TextType type, boolean draw) {
-    	this.text = string;
-    	this.textType = type;
+    	this.sceneText = string;
+    	this.sceneTextType = type;
     	if (draw)
     		repaint();
     }
     
     protected void clearText(boolean draw) {
-    	this.text = null;
-    	this.textType = null;
+    	this.sceneText = null;
+    	this.sceneTextType = null;
     	if(draw)
     		repaint();
     }
@@ -336,15 +381,18 @@ public class SSceneActivity extends Activity
 	        return null;
 	    }
 
-	    StringBuffer sb = new StringBuffer(string);
-	    int endIndex = 0;
-	    
-	    if(sb.length() >= length){
+	    int endIndex = 0;	    
+	    if(string.length() > length) {
 	        if(!soft) {
-	        	endIndex = length;
-	        	return new UPair<String, Integer>(sb.substring(0, endIndex), endIndex);
+	        	StringBuffer sb = new StringBuffer(string.substring(0, length));
+	        	endIndex = sb.lastIndexOf(" ");
+	        	if (endIndex == -1)
+	        		return new UPair<String, Integer>(sb.toString(), sb.length());
+	        	else
+	        		return new UPair<String, Integer>(sb.substring(0, endIndex), endIndex+1);
 	        }
 	        else {
+	        	StringBuffer sb = new StringBuffer(string);
 	            endIndex = sb.indexOf(" ", length);
 	            if (endIndex == -1)
 	            	return new UPair<String, Integer>(string, string.length());
@@ -373,9 +421,10 @@ public class SSceneActivity extends Activity
 	public SSceneView view;
 	protected SLayout layout;        
     private Bitmap backgroundImage;
+    private SLayout.Box box;
     
-    private String text = null;
-    private TextType textType;
+    private String sceneText = null;
+    private TextType sceneTextType;
     private boolean showInventoryIcon = true;
     private boolean showBackButton = true;
     

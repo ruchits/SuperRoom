@@ -20,7 +20,8 @@ public class IItems {
 	private static HashMap<Box, Item> itemMap;
 	private static int maxListSize;
 	private static ArrayList<Box> itemBoxes;
-	private Box descriptionBox = null;
+	private static Box descriptionBox = null;
+	private static Box textBox = null;
 	private static final String TAG = "com.room.item.Items";
 	private HashMap<String, Item> itemPool;
 	
@@ -42,10 +43,14 @@ public class IItems {
 		Iterator<Box> it = itemBoxes.iterator();	
 		while(it.hasNext()) {
 			Box box = it.next();
-			if (!box.name.startsWith("item")) {
+			if (box.name.equals("descrBox")) {
 				descriptionBox = box;
 				it.remove();
 			}
+			else if (box.name.equals("textBox")) {
+				textBox = box;
+				it.remove();
+			}  
 		}
 		
 		itemMap = new HashMap<Box, Item>();
@@ -167,5 +172,10 @@ public class IItems {
 	// Get the description box on item menu screen.
 	public Box getDescriptionBox() {
 		return descriptionBox;
+	}
+	
+	// Get the text Box.
+	public Box getTextBox() {
+		return textBox;
 	}
 }

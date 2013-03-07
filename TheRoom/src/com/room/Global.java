@@ -14,6 +14,8 @@ public class Global
 {
 	public static MainActivity mainActivity;
 	public static RRenderActivity renderActivity;
+	public static float deviceDPIScale;
+	
 	public static int SCREEN_WIDTH = 0;
 	public static int SCREEN_HEIGHT = 0;
 	public static int GL_WIDTH = 0;
@@ -30,8 +32,9 @@ public class Global
 	public static boolean DEBUG_SHOW_FPS = true;
 	
 	public static int FONT_SIZE = 24;
-	public static int FONT_SIZE_BIG = 60;
-	public static int TEXT_LENGTH = 32;
+	public static int FONT_SIZE_BIG = 32;
+	public static int DEFAULT_TEXT_LENGTH = 36;
+	public static final float FONT_THRESHOLD_DP = 16.0f;
 	public static int ICON_WIDTH = 100;
 	public static int ICON_HEIGHT = 100;
 	public static int ROUND_EDGE_WIDTH = 16;

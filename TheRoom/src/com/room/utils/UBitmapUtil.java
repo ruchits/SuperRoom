@@ -82,13 +82,13 @@ public class UBitmapUtil {
 	// Scale and keep aspect ratio 
     static public Bitmap scaleToFitWidth(Bitmap b, int width) {
         float factor = width / (float) b.getWidth();
-        return Bitmap.createScaledBitmap(b, width, (int) (b.getHeight() * factor), false);
+        return Bitmap.createScaledBitmap(b, width, (int) (b.getHeight() * factor), true);
     }
 
     // Scale and keep aspect ratio     
     static public Bitmap scaleToFitHeight(Bitmap b, int height) {
         float factor = height / (float) b.getHeight();
-        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factor), height, false);  
+        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factor), height, true);  
     }
 
     // Scale and keep aspect ratio 
@@ -96,14 +96,14 @@ public class UBitmapUtil {
         float factorH = height / (float) b.getHeight();
         float factorW = width / (float) b.getWidth();
         float factorToUse = (factorH > factorW) ? factorW : factorH;
-        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorToUse), (int) (b.getHeight() * factorToUse), false);  
+        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorToUse), (int) (b.getHeight() * factorToUse), true);  
     }
 
     // Scale and don't keep aspect ratio
     static public Bitmap strechToFill(Bitmap b, int width, int height) {
         float factorH = height / (float) b.getHeight();
         float factorW = width / (float) b.getWidth();
-        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorW), (int) (b.getHeight() * factorH), false);  
+        return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factorW), (int) (b.getHeight() * factorH), true);  
     }
 
     static public ArrayList<Bitmap> populateBitmaps(String prefix, int size, int width, int height) {
