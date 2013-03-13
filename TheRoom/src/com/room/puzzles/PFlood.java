@@ -1,15 +1,12 @@
 package com.room.puzzles;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -19,7 +16,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-import com.room.Global;
 import com.room.R;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
@@ -83,6 +79,7 @@ public class PFlood extends SSceneActivity
 	{
 		super.onCreate(savedInstanceState);
 		setLayout(SLayoutLoader.getInstance().puzzleFlood);
+		setBackgroundImage(R.drawable.puzzle_flood2);
 		
 		init_puzzle();
 		tileArea = getBoxPixelCoords("tileArea");
@@ -94,12 +91,6 @@ public class PFlood extends SSceneActivity
 		
 		lifeBarImage = UBitmapUtil.loadScaledBitmap(R.drawable.lifebar_0, (int)lifeBarWidth, (int)lifeBarHeight); 
 		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, (int)tileWidth, (int)tileHeight);
-	}
-	
-	@Override	
-	protected void onResume() {
-		super.onResume();
-		setBackgroundImage(R.drawable.puzzle_flood2);
 	}
 	
 	private void init_puzzle() {

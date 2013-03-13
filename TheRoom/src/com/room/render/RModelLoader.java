@@ -46,7 +46,7 @@ public class RModelLoader
 	public RModel decalBoard;
 	public RModel decalCeilingMinor;
 	public RModel decalCeilingMajor;
-	public RModel decalNumber;
+	public RModel decalDay1;
 	public RModel decalPuzzleFlood;
 	public RModel decalDeadMan;
 	public RModel modelPOI;
@@ -97,8 +97,8 @@ public class RModelLoader
 			decalCeilingMinor = loadBinaryModel("decal_ceiling_minor.bin");
 			decalCeilingMinor.enableAlpha(true);	
 			
-			decalNumber = loadBinaryModel("decal_number.bin");
-			decalNumber.enableAlpha(true);
+			decalDay1 = loadBinaryModel("decal_day1.bin");
+			decalDay1.enableAlpha(true);
 			
 			decalPuzzleFlood = loadBinaryModel("decal_puzzle_flood.bin");
 			decalPuzzleFlood.enableAlpha(true);
@@ -353,7 +353,7 @@ public class RModelLoader
 				
 				byte[] groupNameBytes = new byte[groupNameLength];
 				is.read(groupNameBytes,0,groupNameLength);
-				String groupName = new String(groupNameBytes);
+				//String groupName = new String(groupNameBytes);
 				
 				byte[] groupMtlBytes = new byte[groupMtlLength];
 				is.read(groupMtlBytes,0,groupMtlLength);
@@ -380,6 +380,7 @@ public class RModelLoader
 	}
 	
 	//loads OBJ models
+	@SuppressWarnings("unused")
 	private RModel loadModel(String assetName)
 	{
 		RModel model = new RModel();

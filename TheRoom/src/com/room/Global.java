@@ -5,7 +5,6 @@ import com.room.render.RPOIManager;
 import com.room.days.*;
 import com.room.item.IItems.Item;
 import com.room.render.RRenderActivity;
-import com.room.utils.UPair;
 
 import android.app.ProgressDialog;
 
@@ -31,7 +30,7 @@ public class Global
 	public static boolean DEBUG_SHOW_POI_BOXES = false;
 	public static boolean DEBUG_SHOW_FPS = true;
 	
-	public static int FONT_SIZE = 24;
+	public static int FONT_SIZE = 28;
 	public static int FONT_SIZE_BIG = 32;
 	public static int DEFAULT_TEXT_LENGTH = 36;
 	public static final float FONT_THRESHOLD_DP = 16.0f;

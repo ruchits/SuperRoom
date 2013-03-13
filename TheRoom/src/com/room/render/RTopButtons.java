@@ -3,11 +3,8 @@ package com.room.render;
 import android.content.Intent;
 import android.view.MotionEvent;
 
-import com.room.DaySelection;
 import com.room.Global;
-import com.room.R;
-import com.room.media.MVideoActivity;
-import com.room.utils.UTransitionUtil;
+
 
 public class RTopButtons
 {

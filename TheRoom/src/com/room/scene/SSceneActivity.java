@@ -1,12 +1,13 @@
 package com.room.scene;
 
+import java.util.ArrayList;
+
 import com.room.Global;
 import com.room.Global.TextType;
 import com.room.R;
 import com.room.item.IItemMenu;
 import com.room.item.IItems;
 import com.room.scene.SLayout.Box;
-import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
 
 import android.app.Activity;
@@ -67,17 +68,22 @@ public class SSceneActivity extends Activity
     	super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);                
-        backgroundImage = null;
+        backgroundImageResID = -1;
+        foregroundImageResID = -1;
+        unhiddenForegroundBoxes = new ArrayList<String>();
         view = new SSceneView(this);
         setContentView(view);
-        
+          
         Resources res = Global.mainActivity.getResources();
-		inventory = BitmapFactory.decodeResource(res, R.drawable.backpack);
-		backbutton = BitmapFactory.decodeResource(res, R.drawable.back);
+        if(inventory == null)
+        	inventory = BitmapFactory.decodeResource(res, R.drawable.backpack);
+        if(backbutton == null)
+        	backbutton = BitmapFactory.decodeResource(res, R.drawable.back);
 		
 		Box textBox = IItems.getInstance().getTextBox();
 		itemTextRect = new Rect(Math.round(textBox.left*Global.SCREEN_WIDTH), Math.round(textBox.top*Global.SCREEN_HEIGHT),
 				Math.round(textBox.right*Global.SCREEN_WIDTH), Math.round(textBox.bottom*Global.SCREEN_HEIGHT));
+		
     }
 	
 	private class SSceneView extends View
@@ -183,15 +189,29 @@ public class SSceneActivity extends Activity
 				
 				switch (type) {
 				case TEXT_ITEM_DESCR:
-					canvas.drawBitmap(UBitmapUtil.scaleToFitWidth(itemTextBitmap, (itemTextRect.right - itemTextRect.left)), itemTextRect.left, itemTextRect.top, paint);
+					float factor = (float)(itemTextRect.right - itemTextRect.left)/itemTextBitmap.getWidth();
+					canvas.drawBitmap(itemTextBitmap,
+							new Rect(0,0,itemTextBitmap.getWidth(),itemTextBitmap.getHeight()),							
+							new Rect(itemTextRect.left, itemTextRect.top,itemTextRect.right,itemTextRect.top+(int)(itemTextBitmap.getHeight()*factor)),
+							paint);
+					
 					break;
 					
 				case TEXT_SUBTITLE:
-					canvas.drawBitmap(UBitmapUtil.scaleToFitWidth(subtitleBitmap, (subtitleRect.right - subtitleRect.left)), subtitleRect.left, subtitleRect.top, paint);
+					factor = (float)(subtitleRect.right - subtitleRect.left)/subtitleBitmap.getWidth();
+					canvas.drawBitmap(subtitleBitmap,
+							new Rect(0,0,subtitleBitmap.getWidth(),subtitleBitmap.getHeight()),							
+							new Rect(subtitleRect.left, subtitleRect.top,subtitleRect.right,subtitleRect.top+(int)(subtitleBitmap.getHeight()*factor)),
+							paint);
+					
 	    			break;
 	    		
 				case TEXT_CENTERED:
-					canvas.drawBitmap(UBitmapUtil.scaleToFitWidth(centeredTextBitmap, (centerRect.right - centerRect.left)), centerRect.left, centerRect.top, paint);
+					factor = (float)(centerRect.right - centerRect.left)/centeredTextBitmap.getWidth();
+					canvas.drawBitmap(centeredTextBitmap,
+							new Rect(0,0,centeredTextBitmap.getWidth(),centeredTextBitmap.getHeight()),							
+							new Rect(centerRect.left, centerRect.top,centerRect.right,centerRect.top+(int)(centeredTextBitmap.getHeight()*factor)),
+							paint);
 					break;
 				}
 			}
@@ -268,10 +288,10 @@ public class SSceneActivity extends Activity
 		
 		if (actionCode == MotionEvent.ACTION_DOWN)
 		{
-			box = null;			
-			box = layout.getBoxAtPixel(event.getX(), event.getY());
-			if(box != null)
-				onBoxDown(box, event);
+			selectedBox = null;			
+			selectedBox = layout.getBoxAtPixel(event.getX(), event.getY());
+			if(selectedBox != null)
+				onBoxDown(selectedBox, event);
 			
 			if(showInventoryIcon) {
 				// Handle touch events to inventory icon and back button on SceneLayout.
@@ -289,13 +309,13 @@ public class SSceneActivity extends Activity
 		}
 		else if (actionCode == MotionEvent.ACTION_MOVE)
 		{
-			if (box != null)
-				onBoxMove(box, event);
+			if (selectedBox != null)
+				onBoxMove(selectedBox, event);
 		}
 		else if (actionCode == MotionEvent.ACTION_UP)
 		{
-			if (box != null)
-				onBoxRelease(box, event);
+			if (selectedBox != null)
+				onBoxRelease(selectedBox, event);
 		}
 		
         return true;
@@ -323,16 +343,35 @@ public class SSceneActivity extends Activity
 	//Override this function, but super it to use the background image
 	public void onDraw(Canvas canvas, Paint paint)
 	{		
-		if(backgroundImage!=null)
+		if(backgroundImageResID!=-1)
 		{
-			canvas.drawBitmap(backgroundImage,
-					new Rect(0,0,backgroundImage.getWidth(),backgroundImage.getHeight()),
+			Bitmap backgroundBmp = SSceneBitmapProvider.getInstance().decodeImage(backgroundImageResID);
+			canvas.drawBitmap(backgroundBmp, null,
 					new Rect(0,0,Global.SCREEN_WIDTH,Global.SCREEN_HEIGHT), paint);
 		}
 		else
 		{
 			paint.setColor(Color.WHITE);
 			canvas.drawRect(new Rect(0,0,Global.SCREEN_WIDTH,Global.SCREEN_HEIGHT), paint);
+		}
+		
+		if(foregroundImageResID != -1)
+		{
+			for(String boxName:unhiddenForegroundBoxes)
+			{
+				ArrayList<Box> boxesWithName = layout.getBoxesWithName(boxName);
+				
+				for(Box b:boxesWithName)
+				{
+					Bitmap foregroundBmp = SSceneBitmapProvider.getInstance().decodeImage(foregroundImageResID);
+					canvas.drawBitmap(foregroundBmp,
+							new Rect((int)(b.left * foregroundBmp.getWidth()), (int)(b.top * foregroundBmp.getHeight()),
+									(int)(b.right * foregroundBmp.getWidth()), (int)(b.bottom * foregroundBmp.getHeight())),							
+							new RectF(b.left * Global.SCREEN_WIDTH, b.top * Global.SCREEN_HEIGHT,
+									b.right * Global.SCREEN_WIDTH, b.bottom * Global.SCREEN_HEIGHT),
+							paint);
+				}				
+			}
 		}
 	}    
     
@@ -343,14 +382,7 @@ public class SSceneActivity extends Activity
     
     public void setBackgroundImage(int resourceID)
     {
-    	if(resourceID == -1)
-    	{
-    		backgroundImage = null;
-    	}
-    	else
-    	{
-    		backgroundImage = SSceneBitmapProvider.getInstance().decodeImage(resourceID);
-    	}
+    	backgroundImageResID = resourceID;
     }
     
     public void setLayout(SLayout layout)
@@ -418,14 +450,45 @@ public class SSceneActivity extends Activity
 		return layout.getBoxPixelCoords(boxName);
     }
     
+    public void setForegroundImage(int resID)
+    {
+    	foregroundImageResID = resID;
+    }
+    
+    public void unhideForegroundImage(String boxName)
+    {
+    	if(!unhiddenForegroundBoxes.contains(boxName))
+    	{
+    		unhiddenForegroundBoxes.add(boxName);
+    		repaint();
+    	}
+    }
+    
+    public void hideForegroundImage(String boxName)
+    {
+    	unhiddenForegroundBoxes.remove(boxName);
+    	repaint();
+    }    
+    
+    public void resetForegroundImage()
+    {
+    	unhiddenForegroundBoxes.clear();
+    }    
+    
 	public SSceneView view;
-	protected SLayout layout;        
-    private Bitmap backgroundImage;
-    private SLayout.Box box;
+	protected SLayout layout;
+	
+    private int backgroundImageResID;
+    private int foregroundImageResID;
+    
+    private SLayout.Box selectedBox;
     
     private String sceneText = null;
     private TextType sceneTextType;
     private boolean showInventoryIcon = true;
     private boolean showBackButton = true;
+        
+    
+    private ArrayList<String> unhiddenForegroundBoxes;        
     
 }

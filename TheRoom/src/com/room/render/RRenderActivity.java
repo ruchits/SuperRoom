@@ -1,10 +1,8 @@
 package com.room.render;
 
 import com.room.Global;
-import com.room.MainActivity;
 import com.room.R;
 import com.room.media.MSoundManager;
-import com.room.media.MVideoActivity;
 import com.room.utils.UTransitionUtil;
 
 import android.content.*;
@@ -108,7 +106,7 @@ public class RRenderActivity extends Activity
 	protected void onDestroy()
 	{		
 		super.onDestroy();
-		MSoundManager.getInstance().muteLocationSensitiveSounds();
+		MSoundManager.getInstance().stopAndReleaseLocationSensitiveSounds();
 	}		
 }
 

@@ -9,7 +9,7 @@ public class Day3
 	public static void reset()
 	{		
 		IItems.getInstance().clearItems();		
-		IItems.getInstance().addItem("notebook");
+		IItems.getInstance().addItem("journal");
 		IItems.getInstance().addItem("photo");
 	}
 }

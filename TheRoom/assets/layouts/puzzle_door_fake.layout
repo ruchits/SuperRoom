@@ -1,6 +1,10 @@
-knob 0.32395834 0.42083332 0.46666667 0.662963 Not a real handle...
-door 0.31458333 0.6979167 0.0 0.4648148 This door is painted on.
-door 0.31979167 0.68854165 0.65925926 1.0611111 This door is painted on.
-door 0.42083332 0.68854165 0.4648148 0.6574074 This door is painted on.
-brick 0.13645834 0.31354168 0.0037037036 1.0092592 Brick seals the corner of this wall.
-brick 0.68958336 0.9145833 0.0 1.0203704 Brick seals the corner of this wall.
+knob 0.020833334 0.032291666 0.03888889 0.06481481 Not a real handle...
+brick 0.028125 0.036458332 0.1037037 0.12407407  Brick seals the corner of this wall.
+door 0.021875 0.0375 0.18703704 0.2074074  This door is painted on.
+brick 0.13229166 0.35833332 0.0018518518 1.0425926  Brick seals the corner of this wall.
+brick 0.690625 0.95104164 0.0 1.0203704  Brick seals the corner of this wall.
+hole 0.5052083 0.5885417 0.23148148 0.36296296 A peephole to see outside.
+door 0.35833332 0.690625 0.0 0.6037037  This door is painted on.
+knob 0.359375 0.43020833 0.6037037 0.8037037 Not a real handle...
+door 0.43125 0.690625 0.6037037 0.8037037  This door is painted on.
+door 0.359375 0.690625 0.8074074 1.0722222  This door is painted on.

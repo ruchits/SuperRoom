@@ -18,11 +18,6 @@ public class PUrn extends SSceneActivity
 		super.onCreate(savedInstanceState);
 		
 		setLayout(SLayoutLoader.getInstance().puzzleUrn);
-	}
-	
-	@Override	
-	protected void onResume() {
-		super.onResume();
 		setBackgroundImage(R.drawable.puzzle_urn);
 	}
 	

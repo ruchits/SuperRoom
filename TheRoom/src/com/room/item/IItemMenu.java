@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import com.room.Global;
 import com.room.R;
 import com.room.item.IItems.Item;
 import com.room.media.MSoundManager;
+import com.room.puzzles.*;
 import com.room.scene.SLayout.Box;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
@@ -141,10 +143,21 @@ public class IItemMenu extends SSceneActivity {
     
 	private void useItem(Box box) {
 		Item item = itemList.get(box);
-		Global.itemInuse = item;
+		
 		// TODO: Notify Render Activity of this item in use?
 		
-		finish();	
+		//TYPE 2 items:
+		if(item.getName().equals("cellphone"))
+		{
+			startActivity(new Intent(this, PCellphone.class));
+		}
+		
+		//TYPE 1 items (default):
+		else
+		{
+			Global.itemInuse = item;
+			finish();
+		}
 	}
 	
 	@Override

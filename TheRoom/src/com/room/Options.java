@@ -2,7 +2,6 @@ package com.room;
 import com.room.R;
 import com.room.media.MSoundManager;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;

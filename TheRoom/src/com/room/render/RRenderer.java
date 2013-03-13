@@ -8,9 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
 import com.room.Global;
 import com.room.media.MFootstepSound;
 import com.room.media.MSoundManager;
-import com.room.render.RMath.V2;
 
-import android.app.ProgressDialog;
 import android.opengl.*;
 import android.util.Log;
 

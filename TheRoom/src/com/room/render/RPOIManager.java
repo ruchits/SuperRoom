@@ -3,7 +3,6 @@ package com.room.render;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -13,7 +12,6 @@ import android.util.Log;
 
 import com.room.Global;
 import com.room.puzzles.*;
-import com.room.scene.SLayout;
 
 public class RPOIManager
 {

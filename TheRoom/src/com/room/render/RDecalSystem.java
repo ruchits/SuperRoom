@@ -1,6 +1,7 @@
 package com.room.render;
 
 import com.room.Global;
+import com.room.days.Day1;
 
 public class RDecalSystem
 {
@@ -22,7 +23,9 @@ public class RDecalSystem
 		switch(Global.getCurrentDay())
 		{
 			case 1:
-				RModelLoader.getInstance().decalNumber.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				RModelLoader.getInstance().decalDay1.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+				if(Day1.isDeadManRevealed)
+					RModelLoader.getInstance().decalDeadMan.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);					
 			break;
 			
 			case 2:

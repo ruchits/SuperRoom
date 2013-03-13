@@ -17,11 +17,6 @@ public class PBathroomDoor extends SSceneActivity
 	{
 		super.onCreate(savedInstanceState);
 		setLayout(SLayoutLoader.getInstance().puzzleBathroomDoor);
-	}
-	
-	@Override	
-	protected void onResume() {
-		super.onResume();
 		setBackgroundImage(R.drawable.puzzle_door_bathroom);
 	}
 	

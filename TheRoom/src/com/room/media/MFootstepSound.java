@@ -1,6 +1,5 @@
 package com.room.media;
 
-import com.room.Global;
 import com.room.R;
 import com.room.render.RMath;
 

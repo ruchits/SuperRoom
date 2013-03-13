@@ -1,27 +1,14 @@
 package com.room;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.room.Global;
-import com.room.item.IItems;
 import com.room.media.MSoundManager;
-import com.room.media.MVideoActivity;
-import com.room.puzzles.PFlood;
-import com.room.puzzles.PPhone;
-import com.room.puzzles.PStatues;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
-import com.room.utils.UTransitionUtil;
 
 public class MainMenu extends SSceneActivity
 {
@@ -55,8 +42,7 @@ public class MainMenu extends SSceneActivity
     	}
     	else if (box.name.equals("credits"))
     	{
-  		    startActivity(new Intent(this, PStatues.class)); //TEMPORARY
-    		//showCredits();
+    		showCredits();
     	}      	
     	else if (box.name.equals("quit"))
     	{

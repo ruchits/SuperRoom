@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import com.room.Global;
-import com.room.R;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -119,6 +118,11 @@ public class RTextureLoader
 			textureID.put("decal_small_crack", loadCompressedTexture("decal_small_crack",true,true,true));
 			textureID.put("decal_big_crack", loadCompressedTexture("decal_big_crack",true,true,true));
 			textureID.put("decal_number", loadCompressedTexture("decal_number",true,true,true));
+			textureID.put("decal_riddle1_a", loadCompressedTexture("decal_riddle1_a",true,true,true));
+			textureID.put("decal_riddle1_b", loadCompressedTexture("decal_riddle1_b",true,true,true));
+			textureID.put("decal_riddle1_c", loadCompressedTexture("decal_riddle1_c",true,true,true));
+			textureID.put("decal_riddle1_d", loadCompressedTexture("decal_riddle1_d",true,true,true));
+			textureID.put("decal_riddle1_xor", loadCompressedTexture("decal_riddle1_xor",true,true,true));
 			textureID.put("decal_puzzle_flood", loadCompressedTexture("decal_puzzle_flood",true,true,true));
 			textureID.put("decal_deadman", loadCompressedTexture("decal_deadman",true,true,true));
 		}
@@ -138,6 +142,7 @@ public class RTextureLoader
 		return id;
 	}
 	
+	@SuppressWarnings("unused")
 	private TextureID loadTexture(int resourceID, boolean clampU, boolean clampV)
 	{
 		TextureID textureID = new TextureID();

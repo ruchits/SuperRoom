@@ -1,15 +1,20 @@
 package com.room.utils;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.room.Global;
 import com.room.R;
+import com.room.scene.SLayout.Box;
 
+import android.annotation.SuppressLint;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Rect;
 import android.util.Log;
 
 public class UBitmapUtil {
@@ -20,9 +25,11 @@ public class UBitmapUtil {
 	
 	public static Bitmap loadScaledBitmap(int resID, int width, int height)
 	{
-		return Bitmap.createScaledBitmap(
-				BitmapFactory.decodeResource(res, resID),
-				width, height, true);
+		Bitmap tempBmp = BitmapFactory.decodeResource(res, resID);
+		Bitmap retBmp = Bitmap.createScaledBitmap(
+				tempBmp,width, height, true);
+		tempBmp.recycle();
+		return retBmp;
 	}
 	
 	public static Bitmap decodeSampledBitmapForResolution(int resID, Global.ResType type) {
@@ -123,4 +130,49 @@ public class UBitmapUtil {
 		}
 		return bitmaps;
 	}
+    
+    
+    //This function is not in use, but be be useful in the future:
+    // downside - requires 2.3.3+
+	@SuppressLint("NewApi")
+	public static Bitmap decodeRegion(String imageAssetName, Box box)
+	{
+		AssetManager assetManager = Global.mainActivity.getAssets();
+		
+		try
+		{
+			InputStream is = assetManager.open("images/"+imageAssetName+".png");
+			
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
+			Bitmap nullBitmap = BitmapFactory.decodeStream(is, null, options);
+		    
+			int originalWidth = options.outWidth;
+			int originalHeight = options.outHeight;
+			
+	    	int left = (int) (box.left * originalWidth);
+	    	int top = (int) (box.top * originalHeight);
+	    	int right = (int) (box.right * originalWidth);
+	    	int bottom = (int) (box.bottom * originalHeight);		
+
+			is.close();
+		    
+			is = assetManager.open("images/"+imageAssetName+".png");
+			BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(is, false);
+			
+	    	options = new BitmapFactory.Options();
+	    	options.inPreferredConfig = Bitmap.Config.RGB_565;
+		    Bitmap bmp = regionDecoder.decodeRegion(
+		    		new Rect(left,top,right,bottom),options);
+		    
+		    return bmp;
+		}
+		catch(Exception e)
+		{
+			Log.d("UBitmapUtil","decodeRegion error: "+imageAssetName);
+		}
+		
+		return null;
+	}
+    
 }

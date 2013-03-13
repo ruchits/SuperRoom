@@ -3,21 +3,13 @@ package com.room.media;
 import com.room.Global;
 import com.room.Options;
 import com.room.R;
-import com.room.render.RDecalSystem;
-import com.room.render.RRenderer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.util.Log;
 
 public class MSoundManager
 {
@@ -137,34 +129,37 @@ public class MSoundManager
 	   soundEffectsMap.put(R.raw.phone_8,soundEffectsPool.load(Global.mainActivity, R.raw.phone_8, 1));
 	   soundEffectsMap.put(R.raw.phone_9,soundEffectsPool.load(Global.mainActivity, R.raw.phone_9, 1));
 	   soundEffectsMap.put(R.raw.phone_star,soundEffectsPool.load(Global.mainActivity, R.raw.phone_star, 1));
-	   soundEffectsMap.put(R.raw.phone_sharp,soundEffectsPool.load(Global.mainActivity, R.raw.phone_sharp, 1));
+	   soundEffectsMap.put(R.raw.phone_pound,soundEffectsPool.load(Global.mainActivity, R.raw.phone_pound, 1));
 	   
-	   if ( locationSensitiveSounds == null ) locationSensitiveSounds = new ArrayList<LocationSensitiveSound>();
-	   
-	   locationSensitiveSounds.add(
-			   new LocationSensitiveSound
-			   (
-					   R.raw.water_drop,
-					   -18.6f,-56.6f,		//x,y
-					   10,40)	//inner, outer
-			   );
-	   
-	   locationSensitiveSounds.add(
-			   new LocationSensitiveSound
-			   (
-					   R.raw.doorknock,
-					   -20,40,		//x,y
-					   10,20)	//inner, outer
-			   );
-	   
-	   locationSensitiveSounds.add(
-			   new LocationSensitiveSound
-			   (
-					   R.raw.deadman,
-					   12,23,		//x,y
-					   0,15)	//inner, outer
-			   );	   
+	   if ( locationSensitiveSounds == null )
+		   locationSensitiveSounds = new HashMap<Integer, LocationSensitiveSound>();
    }	
+   
+   public void addLocationSensitiveSound(int resID, float x, float y,
+		   float innerRadius, float outerRadius)
+   {
+	   if(locationSensitiveSounds.containsKey(resID))
+		   return;
+	   
+	   locationSensitiveSounds.put(resID,
+			   new LocationSensitiveSound
+			   (
+					   resID,
+					   x,y,		//x,y
+					   innerRadius,outerRadius	//inner, outer
+			   ));	  
+   }
+   
+   public void removeLocationSensitiveSound(int resId)
+   {
+	   LocationSensitiveSound sound = locationSensitiveSounds.remove(resId);
+	   if(sound!=null)
+	   {
+		   sound.stopAndRelease();
+	   }
+   }
+   
+
 	
    public void playSoundEffect(int resource)
    {
@@ -175,25 +170,44 @@ public class MSoundManager
        }
    }
    
-   public void playTimedSound()
+   public void playLongSoundEffect(int resource, boolean loop)
    {
-	   //tbd temporary disable,
-	   // 1) SoundPools are too small to work with this
-	   // 2) may have to sync with random events
+	   stopLongSoundEffect();
 	   
-	   /*if (Options.isMusicEnabled()) {
-		   mTimer = new Timer();
-		   it = (Iterator) mSoundHashMap_BG.entrySet().iterator();
-		   mTimerTask = new TimerTask() {
-			   public void run() {
-				   if (!it.hasNext()){
-					   it = (Iterator) mSoundHashMap_BG.entrySet().iterator();
-				   }
-				   playSound((Integer)((HashMap.Entry)it.next()).getKey());
-			   }
-		   };
-		   mTimer.schedule(mTimerTask, 15000, 15000);
-	  }*/
+		//play the music if it is enabled
+		if (Options.isSoundEffectsEnabled())
+		{		
+			longSoundEffectPlayer = MediaPlayer.create(Global.mainActivity, resource);
+			float volume = MASTER_VOLUME * SOUNDEFFCTS_VOLUME;
+			
+			try{longSoundEffectPlayer.setVolume(volume, volume);}
+			catch(Exception e){}
+			
+			longSoundEffectPlayer.setLooping(loop);
+					   
+			longSoundEffectPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
+			{				
+				@Override
+				public void onPrepared(MediaPlayer player)
+				{
+					player.start();
+				}
+			});					
+		}
+   }
+   
+   public void stopLongSoundEffect()
+   {
+		if (longSoundEffectPlayer != null)
+		{
+			if(longSoundEffectPlayer.isPlaying())
+				longSoundEffectPlayer.stop();
+			
+			longSoundEffectPlayer.release();
+			
+			longSoundEffectPlayer = null;
+		}
+
    }
 
 	public void playMusic(int resource)
@@ -275,39 +289,38 @@ public class MSoundManager
    {
 	   if ( Options.isSoundEffectsEnabled() )
 	   {
-		   for(LocationSensitiveSound sound:locationSensitiveSounds)
+		   Iterator<LocationSensitiveSound> it = locationSensitiveSounds.values().iterator();	   
+		   while(it.hasNext())
 		   {
+			   LocationSensitiveSound sound = it.next();
 			   float volume = sound.getVolumeAt(x, y);
-			   sound.setVolume(volume, volume);
+			   sound.setVolume(volume, volume);			   
 		   }
 	   }
    }
    
 
-   public void muteLocationSensitiveSounds()
+   public void stopAndReleaseLocationSensitiveSounds()
    {
-	   if ( Options.isSoundEffectsEnabled() )
+	   Iterator<LocationSensitiveSound> it = locationSensitiveSounds.values().iterator();	   
+	   while(it.hasNext())
 	   {
-		   for(LocationSensitiveSound sound:locationSensitiveSounds)
-		   {
-			   sound.mute();
-		   }		   
-	   }	
+		   LocationSensitiveSound sound = it.next();
+		   sound.stopAndRelease();
+	   }
+	   locationSensitiveSounds.clear();	
    }
    
    public void stopAllSounds()
    {
-	   stopAndReleaseMusic();	   
-	   
-	   for(LocationSensitiveSound sound:locationSensitiveSounds)
-	   {
-		   sound.stopAndRelease();
-	   }	
-	   
+	   stopAndReleaseMusic();	   	   
+	   stopAndReleaseLocationSensitiveSounds();
+	   	   
 	   Iterator effectsIterator = (Iterator) soundEffectsMap.entrySet().iterator();
 	   
 	   while (effectsIterator.hasNext())
-	   {   
+	   {
+		 //TODO: wtf..
 		   soundEffectsPool.stop((Integer)((HashMap.Entry)effectsIterator.next()).getKey());
 	   }
 	   	   
@@ -320,14 +333,16 @@ public class MSoundManager
 		soundEffectsMap = null;
 		locationSensitiveSounds = null;
 	}
-   
+
+	private MediaPlayer longSoundEffectPlayer = null;
+	
    private MediaPlayer musicMediaPlayer = null;
    private int currentMusicResourceID;
 
    private SoundPool soundEffectsPool = null; //sound effects
    private HashMap<Integer, Integer> soundEffectsMap = null;
 
-   private ArrayList<LocationSensitiveSound> locationSensitiveSounds = null;
+   private HashMap<Integer, LocationSensitiveSound> locationSensitiveSounds = null;
    
    private static MSoundManager instance;   
 }

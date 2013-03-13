@@ -12,7 +12,6 @@ import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.*;
 import android.view.View.OnClickListener;
 

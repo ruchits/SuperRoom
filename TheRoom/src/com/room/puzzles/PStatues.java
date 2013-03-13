@@ -18,14 +18,17 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.Toast;
 
+import com.room.Global;
 import com.room.R;
+import com.room.Global.TextType;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
 import com.room.utils.UBitmapUtil;
 
-public class PStatues extends SSceneActivity {
+public class PStatues extends SSceneActivity
+{
 	public static final int NUM_STATUES = 3;
 	public static final int ROTATIONS = 4;
 	private static final int MAXCLICK = 6;
@@ -61,39 +64,57 @@ public class PStatues extends SSceneActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		updateLayoutAndBackground();
+		
+		if(Global.getCurrentDay()==2)
+		{
+			for (int i = 0; i < NUM_STATUES; ++i) {
+				symbolArea[i] = getBoxPixelCoords("symbol_" + i);
+				statueArea[i] = getBoxPixelCoords("statue_" + i);
+				statueArea_original[i] = new RectF(statueArea[i]);
+			}
+			submitArea = getBoxPixelCoords("submit");
+			statueWidth = statueArea[0].right - statueArea[0].left;
+			statueHeight = statueArea[0].bottom - statueArea[0].top;
+			symbolWidth = symbolArea[0].right - symbolArea[0].left;
+			symbolHeight = symbolArea[0].bottom - symbolArea[0].top;
+			submitWidth = submitArea.right - submitArea.left;
+			submitHeight = submitArea.bottom - submitArea.top;
 
-		setLayout(SLayoutLoader.getInstance().puzzleStatues);
-		for (int i = 0; i < NUM_STATUES; ++i) {
-			symbolArea[i] = getBoxPixelCoords("symbol_" + i);
-			statueArea[i] = getBoxPixelCoords("statue_" + i);
-			statueArea_original[i] = new RectF(statueArea[i]);
+			statueImages = UBitmapUtil.populateBitmaps("puzzle_statue_",
+					NUM_STATUES * ROTATIONS, (int) statueWidth, (int) statueHeight);
+			symbolImages = UBitmapUtil.populateBitmaps("puzzle_symbol_", 2,
+					(int) symbolWidth, (int) symbolHeight);
+			submitImage = UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_submit,
+					(int) submitWidth, (int) submitHeight);
+			tempRectf = new RectF();
+			final ViewConfiguration configuration = ViewConfiguration
+					.get(getApplicationContext());
+			touchSlop = configuration.getScaledTouchSlop();
+			init_puzzle();		
 		}
-		submitArea = getBoxPixelCoords("submit");
-		statueWidth = statueArea[0].right - statueArea[0].left;
-		statueHeight = statueArea[0].bottom - statueArea[0].top;
-		symbolWidth = symbolArea[0].right - symbolArea[0].left;
-		symbolHeight = symbolArea[0].bottom - symbolArea[0].top;
-		submitWidth = submitArea.right - submitArea.left;
-		submitHeight = submitArea.bottom - submitArea.top;
 
-		statueImages = UBitmapUtil.populateBitmaps("puzzle_statue_",
-				NUM_STATUES * ROTATIONS, (int) statueWidth, (int) statueHeight);
-		symbolImages = UBitmapUtil.populateBitmaps("puzzle_symbol_", 2,
-				(int) symbolWidth, (int) symbolHeight);
-		submitImage = UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_submit,
-				(int) submitWidth, (int) submitHeight);
-		tempRectf = new RectF();
-		final ViewConfiguration configuration = ViewConfiguration
-				.get(getApplicationContext());
-		touchSlop = configuration.getScaledTouchSlop();
-		init_puzzle();
 	}
-
-	@Override	
-	protected void onResume() {
-		super.onResume();
-		setBackgroundImage(R.drawable.puzzle_statues2);
-	}
+	
+	private void updateLayoutAndBackground()
+	{
+		if(Global.getCurrentDay()==1)
+		{
+			setBackgroundImage(R.drawable.puzzle_statues_neutral);
+			setLayout(SLayoutLoader.getInstance().puzzleStatuesNeutral);			
+		}
+		else if(Global.getCurrentDay()==2)
+		{
+			setBackgroundImage(R.drawable.puzzle_statues_game);
+			setLayout(SLayoutLoader.getInstance().puzzleStatuesGame);			
+		}
+		else
+		{
+			setBackgroundImage(R.drawable.puzzle_statues_active);
+			setLayout(SLayoutLoader.getInstance().puzzleStatuesActive);
+		}
+	}	
 	
 	private void init_puzzle() {
 		Random rand = new Random();
@@ -116,8 +137,15 @@ public class PStatues extends SSceneActivity {
 	}
 
 	@Override
-	public void onDraw(Canvas canvas, Paint paint) {
+	public void onDraw(Canvas canvas, Paint paint)
+	{
 		super.onDraw(canvas, paint);
+		
+		if(Global.getCurrentDay()!=2)
+		{
+			return;
+		}
+		
 		for (int i = 0; i < NUM_STATUES; ++i) {
 			canvas.drawBitmap(statueImages.get(guesses[i]), statueArea[i].left,
 					statueArea[i].top, paint);
@@ -131,8 +159,14 @@ public class PStatues extends SSceneActivity {
 	}
 
 	@Override
-	public void onBoxDown(SLayout.Box box, MotionEvent event) {
-		super.onBoxDown(box, event);
+	public void onBoxDown(SLayout.Box box, MotionEvent event)
+	{
+		if(Global.getCurrentDay()!=2)
+		{
+			setText(box.desc,TextType.TEXT_SUBTITLE,true);
+			return;
+		}
+		
 		StringTokenizer st = new StringTokenizer(box.name, "_");
 		String clickedBox = st.nextToken();
 		float positionX = event.getRawX();
@@ -145,8 +179,14 @@ public class PStatues extends SSceneActivity {
 	}
 
 	@Override
-	public void onBoxMove(SLayout.Box box, MotionEvent event) {
-		super.onBoxMove(box, event);
+	public void onBoxMove(SLayout.Box box, MotionEvent event)
+	{
+		if(Global.getCurrentDay()!=2)
+		{
+			return;
+		}
+		
+		
 		StringTokenizer st = new StringTokenizer(box.name, "_");
 		String clickedBox = st.nextToken();
 		if (!clickedBox.equals("statue"))
@@ -185,8 +225,13 @@ public class PStatues extends SSceneActivity {
 	}
 
 	@Override
-	public void onBoxRelease(SLayout.Box box, MotionEvent event) {
-		super.onBoxRelease(box, event);
+	public void onBoxRelease(SLayout.Box box, MotionEvent event)
+	{
+		if(Global.getCurrentDay()!=2)
+		{
+			return;
+		}
+		
 		StringTokenizer st = new StringTokenizer(box.name, "_");
 		String clickedBox = st.nextToken();
 		if (!clickedBox.equals("statue"))

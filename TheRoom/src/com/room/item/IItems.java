@@ -58,12 +58,12 @@ public class IItems {
 		
 		//Add all items to item pool.
 		itemPool = new HashMap<String, Item>();
-		itemPool.put("key", new IItems.Item("Key", "This item can be used to unlock doors.", R.drawable.key_icon));
-		itemPool.put("knife", new IItems.Item("Knife", "A sharp object for sharp people. Use it with caution!", R.drawable.knife_icon));
-		itemPool.put("phone", new IItems.Item("Phone", "This will save your ass when in need. Go easy on the battery!", R.drawable.phone_icon));
-		itemPool.put("notebook", new IItems.Item("Notebook", "A worn notebook with missing pages.", R.drawable.book_icon));
-		itemPool.put("notepad", new IItems.Item("Notepad", "No idea what this is doing here, looked like a cool icon.", R.drawable.notepad_icon));
-		itemPool.put("photo", new IItems.Item("Old Photograph", "Beautiful family - had to put this one in.", R.drawable.painting_icon));
+		itemPool.put("key", new IItems.Item("key", "This item can be used to unlock doors.", R.drawable.key_icon));
+		itemPool.put("knife", new IItems.Item("knife", "An extremely sharp bladed instrument, for surgical use.", R.drawable.knife_icon));
+		itemPool.put("cellphone", new IItems.Item("cellphone", "A mobile phone. There's no signal here.", R.drawable.phone_icon));
+		itemPool.put("journal", new IItems.Item("journal", "A worn journal with missing pages.", R.drawable.book_icon));
+		itemPool.put("notepad", new IItems.Item("notepad", "No idea what this is doing here, looked like a cool icon.", R.drawable.notepad_icon));
+		itemPool.put("photo", new IItems.Item("photo", "Do I... know these people?", R.drawable.painting_icon));
 	}
 	
 	public static class Item {

@@ -1,6 +1,7 @@
 package com.room.render;
 
 import com.room.Global;
+import com.room.days.Day1;
 
 public class RDrawLogic
 {
@@ -25,9 +26,18 @@ public class RDrawLogic
     		switch(Global.getCurrentDay())
     		{
     			case 1:
-    				RModelLoader.getInstance().modelPropsStatuesNeutral.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-    				RModelLoader.getInstance().modelPropClothCovered.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
-    				RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);    				
+    				RModelLoader.getInstance().modelPropsStatuesNeutral.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);    				
+    				RModelLoader.getInstance().modelDoorBathroomStage1.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+    				
+    				if(!Day1.isDeadManRevealed)
+    				{
+    					RModelLoader.getInstance().modelPropClothCovered.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+    				}
+    				else
+    				{
+        				RModelLoader.getInstance().modelPropsDeadMan.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        				RModelLoader.getInstance().modelPropsDeadManHair.draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+    				}
     			break;
 
     			case 2:

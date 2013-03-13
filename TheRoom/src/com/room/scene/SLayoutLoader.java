@@ -31,12 +31,16 @@ public class SLayoutLoader
 	public SLayout puzzleExample;
 	public SLayout puzzleBathroomDoor;
 	public SLayout puzzleDeadMan;
+	public SLayout puzzleDeadManCovered;
 	public SLayout puzzleDeadWoman;
 	public SLayout puzzleFakeDoor;
 	public SLayout puzzlePhone;
 	public SLayout puzzleSink;
-	public SLayout puzzleStatues;
+	public SLayout puzzleStatuesGame;
+	public SLayout puzzleStatuesActive;
+	public SLayout puzzleStatuesNeutral;
 	public SLayout puzzleUrn;
+	public SLayout puzzleCellphone;
 	
 	public void init()
 	{
@@ -48,12 +52,16 @@ public class SLayoutLoader
 		puzzleExample = loadLayout("puzzle_example.layout");
 		puzzleBathroomDoor = loadLayout("puzzle_door_bathroom.layout");
 		puzzleDeadMan = loadLayout("puzzle_deadman.layout");
+		puzzleDeadManCovered = loadLayout("puzzle_deadman_covered.layout");
 		puzzleDeadWoman = loadLayout("puzzle_deadwoman.layout");
 		puzzleFakeDoor = loadLayout("puzzle_door_fake.layout");
 		puzzlePhone = loadLayout("puzzle_phone.layout");
 		puzzleSink = loadLayout("puzzle_sink.layout");
-		puzzleStatues = loadLayout("puzzle_statues.layout");
+		puzzleStatuesGame = loadLayout("puzzle_statues_game.layout");
+		puzzleStatuesActive = loadLayout("puzzle_statues_active.layout");
+		puzzleStatuesNeutral = loadLayout("puzzle_statues_neutral.layout");
 		puzzleUrn = loadLayout("puzzle_urn.layout");
+		puzzleCellphone = loadLayout("puzzle_cellphone.layout");
 	}
 	
 	private SLayout loadLayout(String assetName)

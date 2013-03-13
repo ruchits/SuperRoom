@@ -1,9 +1,6 @@
 package com.room.scene;
 import java.util.ArrayList;
-
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.room.Global;
 
@@ -74,6 +71,17 @@ public class SLayout
 	public ArrayList<Box> getAllBoxes() {
 		return boxes;
 	}
+	
+	public ArrayList<Box> getBoxesWithName(String name)
+	{
+		ArrayList<Box> retBoxes = new ArrayList<Box>();
+		for(Box b:boxes)
+		{
+			if(b.name.equals(name))
+				retBoxes.add(b);
+		}
+		return retBoxes;
+	}	
 
 	private ArrayList<Box> boxes = new ArrayList<Box>();
 }
