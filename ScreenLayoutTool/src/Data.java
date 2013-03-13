@@ -195,7 +195,7 @@ public class Data
 				box.bottom = Float.parseFloat(st.nextToken());
 				
 				if(st.hasMoreTokens())
-					box.desc = st.nextToken();
+					box.desc = st.nextToken("");
 				
 				Data.addBox(box);
 				
