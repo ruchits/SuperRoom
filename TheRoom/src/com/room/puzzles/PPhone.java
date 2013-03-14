@@ -24,6 +24,7 @@ public class PPhone extends SSceneActivity
 		
 		setLayout(SLayoutLoader.getInstance().puzzlePhone);
 		setBackgroundImage(R.drawable.puzzle_phone);
+		setForegroundImage(R.drawable.puzzle_phone_foreground);
 		
 		MSoundManager.getInstance().removeLocationSensitiveSound(R.raw.deadman_cellphone);
 		Day1.isCellphoneRinging = false;
@@ -37,7 +38,12 @@ public class PPhone extends SSceneActivity
 		super.onResume();
 		if(Global.getCurrentDay() == 1)
 		{			
-			MSoundManager.getInstance().playLongSoundEffect(R.raw.phone_dialtone,true);			
+			if(Day1.isCellphoneRinging)
+				MSoundManager.getInstance().playLongSoundEffect(R.raw.phone_ring,true);
+			else if(dialedNumber.length()>=5)
+				MSoundManager.getInstance().playLongSoundEffect(R.raw.phone_busy,true);
+			else
+				MSoundManager.getInstance().playLongSoundEffect(R.raw.phone_dialtone,true);			
 		}
 	}
 	
@@ -57,7 +63,9 @@ public class PPhone extends SSceneActivity
     		setText("The line has been cut.",TextType.TEXT_SUBTITLE,true);
     		return;
     	}
-
+    	
+    	unhideForegroundImage(box.name);
+    	
 		switch (box.name.charAt(0))
 		{
 			case '0':
@@ -105,6 +113,12 @@ public class PPhone extends SSceneActivity
 		
 		if(dialedNumber.length() == 5)
 			checkNumber();
+    }
+	
+	@Override
+	public void onBoxRelease(SLayout.Box box, MotionEvent event)
+    {	
+		hideForegroundImage(box.name);
     }
 	
 	public void checkNumber()
