@@ -200,11 +200,6 @@ public class PFlood extends SSceneActivity
 			}
 		}
 	}
-
-	@Override
-	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
-		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
-	}
 	
 	private void handleFailure() {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

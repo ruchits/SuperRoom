@@ -33,7 +33,7 @@ public class PCellphone extends SSceneActivity
 		try{keyNum = Integer.parseInt(box.name);}
 		catch(Exception e){}
 		
-		if(keyNum!=-1)	
+		if(keyNum!=-1)
 		{
 			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 			
@@ -49,11 +49,6 @@ public class PCellphone extends SSceneActivity
 			}			
 		}
 		
-	}
-	
-	@Override
-	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
-		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
 	}
 	
 	boolean pattern[];

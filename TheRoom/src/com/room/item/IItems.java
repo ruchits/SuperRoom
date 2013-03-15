@@ -58,12 +58,12 @@ public class IItems {
 		
 		//Add all items to item pool.
 		itemPool = new HashMap<String, Item>();
-		itemPool.put("key", new IItems.Item("key", "This item can be used to unlock doors.", R.drawable.key_icon, Item.ITEM_TYPE.TYPE_A));
-		itemPool.put("knife", new IItems.Item("knife", "An extremely sharp bladed instrument, for surgical use.", R.drawable.knife_icon, Item.ITEM_TYPE.TYPE_A));
-		itemPool.put("cellphone", new IItems.Item("cellphone", "A mobile phone. There's no signal here.", R.drawable.phone_icon, Item.ITEM_TYPE.TYPE_B));
-		itemPool.put("journal", new IItems.Item("journal", "A worn journal with missing pages.", R.drawable.book_icon, Item.ITEM_TYPE.TYPE_A));
-		itemPool.put("notepad", new IItems.Item("notepad", "No idea what this is doing here, looked like a cool icon.", R.drawable.notepad_icon, Item.ITEM_TYPE.TYPE_A));
-		itemPool.put("photo", new IItems.Item("photo", "Do I... know these people?", R.drawable.painting_icon, Item.ITEM_TYPE.TYPE_A));
+		itemPool.put("key", new IItems.Item("key", "This item can be used to unlock doors.", R.drawable.key_icon));
+		itemPool.put("knife", new IItems.Item("knife", "An extremely sharp bladed instrument, for surgical use.", R.drawable.knife_icon));
+		itemPool.put("cellphone", new IItems.Item("cellphone", "A mobile phone. There's no signal here.", R.drawable.phone_icon));
+		itemPool.put("journal", new IItems.Item("journal", "A worn journal with missing pages.", R.drawable.book_icon));
+		itemPool.put("notepad", new IItems.Item("notepad", "No idea what this is doing here, looked like a cool icon.", R.drawable.notepad_icon));
+		itemPool.put("photo", new IItems.Item("photo", "Do I... know these people?", R.drawable.painting_icon));
 	}
 	
 	public static class Item {
@@ -71,14 +71,11 @@ public class IItems {
 		private String description;
 		private Bitmap mBitmap;
 		private int resID;
-		public static enum ITEM_TYPE { TYPE_A, TYPE_B };
-		private ITEM_TYPE type;
 	
-		public Item(String name, String description, int resourceID, ITEM_TYPE type) {
+		public Item(String name, String description, int resourceID) {
 			this.name = name;
 			this.description = description;
 			this.resID = resourceID;
-			this.type = type;
 		
 			// decode the resource into bitmap icon.
 			BitmapFactory.Options options = new BitmapFactory.Options();
@@ -92,10 +89,6 @@ public class IItems {
 	
 		public String getDescriprion() {
 			return this.description;
-		}
-		
-		public ITEM_TYPE getType() {
-			return this.type;
 		}
 	
 		// get the original size bitmap for this item.

@@ -18,7 +18,6 @@ import android.view.MotionEvent;
 import com.room.Global;
 import com.room.R;
 import com.room.item.IItems.Item;
-import com.room.item.IItems.Item.ITEM_TYPE;
 import com.room.media.MSoundManager;
 import com.room.puzzles.*;
 import com.room.scene.SLayout.Box;
@@ -160,19 +159,12 @@ public class IItemMenu extends SSceneActivity {
 		
 		itemInUse = item;
 		
-		// TODO: Get item type, and perform the appropriate action.
-		Item.ITEM_TYPE type = item.getType();
-		switch (type) {
-		case TYPE_A:
-			finish();
-			break;
-		case TYPE_B:
-			if(item.getName().equals("cellphone"))
-			{
-				startActivity(new Intent(this, PCellphone.class));
-			}
-			break;
+		if(item.getName().equals("cellphone"))
+		{
+			startActivity(new Intent(this, PCellphone.class));
 		}
+		else
+			finish();
 	}
 	
 	@Override

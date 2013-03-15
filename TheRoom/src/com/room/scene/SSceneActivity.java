@@ -113,7 +113,7 @@ public class SSceneActivity extends Activity
 				drawIconBG(canvas, paint, SSceneActivity.invDestinationF);
 				
 				Bitmap inventory;
-				if (IItemMenu.itemInUse != null && (IItemMenu.itemInUse.getType() == IItems.Item.ITEM_TYPE.TYPE_A)) {
+				if (IItemMenu.itemInUse != null) {
 					inventory = IItemMenu.itemInUse.getBitmap();
 				}
 				else {
@@ -301,8 +301,14 @@ public class SSceneActivity extends Activity
 			selectedBox = null;			
 			selectedBox = layout.getBoxAtPixel(event.getX(), event.getY());
 			if(selectedBox != null) {
-				if (IItemMenu.itemInUse != null && IItemMenu.itemInUse.getType()==Item.ITEM_TYPE.TYPE_A)
-					onBoxDownWithItemSel(selectedBox, event);
+				boolean success;
+				if (IItemMenu.itemInUse != null && showInventoryIcon) {
+					success = onBoxDownWithItemSel(selectedBox, event);
+					if (!success)
+						setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
+					
+					deselectItem();
+				}		
 				else
 					onBoxDown(selectedBox, event);
 			}
@@ -394,8 +400,9 @@ public class SSceneActivity extends Activity
     	//Override this function
     }
     
-    public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+    public boolean onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
     	//Override this function
+    	return false;
     }
     
     public void setBackgroundImage(int resourceID)
@@ -493,15 +500,13 @@ public class SSceneActivity extends Activity
     	unhiddenForegroundBoxes.clear();
     }
     
-	protected void notifyItemused() {
+	protected void deselectItem() {
 		IItemMenu.itemInUse = null;
-		repaint();
 	}
     
     @Override
     protected void onPause() {
     	super.onPause();
-    	clearText(false);
     }
     
 	public SSceneView view;

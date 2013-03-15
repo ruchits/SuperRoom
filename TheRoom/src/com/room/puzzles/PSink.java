@@ -25,9 +25,5 @@ public class PSink extends SSceneActivity
 	{	
 		Log.d("BOXCLICK",box.name);
 	}
-	
-	@Override
-	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
-		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
-	}
+
 }

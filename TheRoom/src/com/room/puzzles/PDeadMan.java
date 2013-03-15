@@ -65,16 +65,15 @@ public class PDeadMan extends SSceneActivity
 	}
 	
 	@Override
-	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+	public boolean onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
 		Item itemInUse = IItemMenu.itemInUse;
 		if (box.name.equals("body") && itemInUse.getName().equals("knife")) {
 			// TODO: Open up the body, and retrieve the phone
 			
-			notifyItemused(); // notify ItemMeny that item has been used.
+			return true;
 		}
-		else {
-			setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
-		}
+		
+		return false;
 	}
 	
 }
