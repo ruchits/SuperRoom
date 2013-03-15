@@ -28,14 +28,14 @@ public class PPhone extends SSceneActivity
 		
 		MSoundManager.getInstance().removeLocationSensitiveSound(R.raw.deadman_cellphone);
 		Day1.isCellphoneRinging = false;
-		
-		dialedNumber = ""; 
 	}
 	
 	@Override	
 	protected void onResume()
 	{
 		super.onResume();
+		dialedNumber = "";
+		
 		if(Global.getCurrentDay() == 1)
 		{			
 			if(Day1.isCellphoneRinging)
@@ -120,6 +120,11 @@ public class PPhone extends SSceneActivity
     {	
 		hideForegroundImage(box.name);
     }
+	
+	@Override
+	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
+	}
 	
 	public void checkNumber()
 	{

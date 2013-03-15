@@ -7,6 +7,7 @@ import com.room.Global.TextType;
 import com.room.R;
 import com.room.item.IItemMenu;
 import com.room.item.IItems;
+import com.room.item.IItems.Item;
 import com.room.scene.SLayout.Box;
 import com.room.utils.UPair;
 
@@ -109,10 +110,19 @@ public class SSceneActivity extends Activity
 			
 			// Draw the Icons
 			if(activity.showInventoryIcon) {
-    			drawIconBG(canvas, paint, SSceneActivity.invDestinationF);
-				Bitmap inventory = SSceneActivity.inventory;
+				drawIconBG(canvas, paint, SSceneActivity.invDestinationF);
+				
+				Bitmap inventory;
+				if (IItemMenu.itemInUse != null && (IItemMenu.itemInUse.getType() == IItems.Item.ITEM_TYPE.TYPE_A)) {
+					inventory = IItemMenu.itemInUse.getBitmap();
+				}
+				else {
+					inventory = SSceneActivity.inventory;
+				}
+				
 				canvas.drawBitmap(inventory, null, SSceneActivity.invDestination, paint);
 			}
+			
 			if (activity.showBackButton) {
     			drawIconBG(canvas, paint, SSceneActivity.backbtnDestinationF);
 				Bitmap backButton = SSceneActivity.backbutton;
@@ -290,8 +300,12 @@ public class SSceneActivity extends Activity
 		{
 			selectedBox = null;			
 			selectedBox = layout.getBoxAtPixel(event.getX(), event.getY());
-			if(selectedBox != null)
-				onBoxDown(selectedBox, event);
+			if(selectedBox != null) {
+				if (IItemMenu.itemInUse != null && IItemMenu.itemInUse.getType()==Item.ITEM_TYPE.TYPE_A)
+					onBoxDownWithItemSel(selectedBox, event);
+				else
+					onBoxDown(selectedBox, event);
+			}
 			
 			if(showInventoryIcon) {
 				// Handle touch events to inventory icon and back button on SceneLayout.
@@ -377,6 +391,10 @@ public class SSceneActivity extends Activity
     
     public void onBoxDown(SLayout.Box box, MotionEvent event)
     {
+    	//Override this function
+    }
+    
+    public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
     	//Override this function
     }
     
@@ -473,7 +491,18 @@ public class SSceneActivity extends Activity
     public void resetForegroundImage()
     {
     	unhiddenForegroundBoxes.clear();
-    }    
+    }
+    
+	protected void notifyItemused() {
+		IItemMenu.itemInUse = null;
+		repaint();
+	}
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	clearText(false);
+    }
     
 	public SSceneView view;
 	protected SLayout layout;
@@ -487,8 +516,8 @@ public class SSceneActivity extends Activity
     private TextType sceneTextType;
     private boolean showInventoryIcon = true;
     private boolean showBackButton = true;
-        
-    
+    protected static final String DEFAULT_ITEMUSE_TEXT = "Can't Use this Item here!";
+
     private ArrayList<String> unhiddenForegroundBoxes;        
     
 }

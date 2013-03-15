@@ -177,6 +177,11 @@ public class PStatues extends SSceneActivity
 			prevX = positionX;
 		}
 	}
+	
+	@Override
+	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
+	}
 
 	@Override
 	public void onBoxMove(SLayout.Box box, MotionEvent event)

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.room.R;
+import com.room.Global.TextType;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
@@ -24,5 +25,10 @@ public class PDeadWoman extends SSceneActivity
 	public void onBoxDown(SLayout.Box box, MotionEvent event)
 	{	
 		Log.d("BOXCLICK",box.name);
+	}
+	
+	@Override
+	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
 	}
 }

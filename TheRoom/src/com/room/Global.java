@@ -38,7 +38,6 @@ public class Global
 	public static int ICON_HEIGHT = 100;
 	public static int ROUND_EDGE_WIDTH = 16;
 	public enum TextType { TEXT_ITEM_DESCR, TEXT_SUBTITLE, TEXT_CENTERED };
-	public static Item itemInuse;
 	
 	public static int VMMemSize;
 	public enum ResType { LOW_RES, MED_RES, HI_RES};

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.room.R;
+import com.room.Global.TextType;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
@@ -48,6 +49,11 @@ public class PCellphone extends SSceneActivity
 			}			
 		}
 		
+	}
+	
+	@Override
+	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
 	}
 	
 	boolean pattern[];

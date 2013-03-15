@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.room.R;
+import com.room.Global.TextType;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
@@ -200,6 +201,11 @@ public class PFlood extends SSceneActivity
 		}
 	}
 
+	@Override
+	public void onBoxDownWithItemSel(SLayout.Box box, MotionEvent event) {
+		setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
+	}
+	
 	private void handleFailure() {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		v.vibrate(300);
