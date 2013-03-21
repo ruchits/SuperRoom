@@ -29,16 +29,15 @@ public class PPhone extends SSceneActivity
 		MSoundManager.getInstance().removeLocationSensitiveSound(R.raw.deadman_cellphone);
 		Day1.isCellphoneRinging = false;
 		
-		dialedNumber = "";
+		dialedNumber = ""; 
 	}
 	
 	@Override	
 	protected void onResume()
 	{
 		super.onResume();
-		
 		if(Global.getCurrentDay() == 1)
-		{
+		{			
 			if(Day1.isCellphoneRinging)
 				MSoundManager.getInstance().playLongSoundEffect(R.raw.phone_ring,true);
 			else if(dialedNumber.length()>=5)

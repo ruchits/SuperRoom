@@ -87,7 +87,7 @@ public class PStatues extends SSceneActivity
 			symbolImages = UBitmapUtil.populateBitmaps("puzzle_symbol_", 2,
 					(int) symbolWidth, (int) symbolHeight);
 			submitImage = UBitmapUtil.loadScaledBitmap(R.drawable.puzzle_submit,
-					(int) submitWidth, (int) submitHeight);
+					(int) submitWidth, (int) submitHeight,false);
 			tempRectf = new RectF();
 			final ViewConfiguration configuration = ViewConfiguration
 					.get(getApplicationContext());

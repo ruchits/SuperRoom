@@ -1,5 +1,6 @@
 package com.room.item;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,25 +18,29 @@ import android.view.MotionEvent;
 
 import com.room.Global;
 import com.room.R;
-import com.room.item.IItems.Item;
+import com.room.item.IItemManager.Item;
 import com.room.media.MSoundManager;
 import com.room.puzzles.*;
 import com.room.scene.SLayout.Box;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
+import com.room.utils.UBitmapUtil;
 
-public class IItemMenu extends SSceneActivity {
+public class IItemMenu extends SSceneActivity
+{	
 	public static Item itemInUse = null;
+	private static Item selectedItem = null;
 	
-	private static final String DEFAULT_MSG = "No items in inventory";
-	private static HashMap<Box, IItems.Item> itemList = null;
-	private static boolean showDescription = false;
-	private static Box selectedBox = null;
+	private static final String DEFAULT_MSG = "No items in inventory.";
+	private static int ICON_ROUND_EDGE_WIDTH = 16;
+		
+	private static boolean isLayoutInitialized = false;
+	private static RectF enlargedImgDestination;
+	private static int numItemsToDisplay;
 	
-	private static Box descriptionBox = IItems.getInstance().getDescriptionBox();
-	private static Rect descrDestination = new Rect((int)(descriptionBox.left*Global.SCREEN_WIDTH), (int)(descriptionBox.top*Global.SCREEN_HEIGHT),
-			(int)(descriptionBox.right*Global.SCREEN_WIDTH), (int)(descriptionBox.bottom*Global.SCREEN_HEIGHT));
+	private ArrayList<String> itemList;	
+	private boolean showDescription = false;
 	
 	@Override	
 	protected void onCreate(Bundle savedInstanceState)
@@ -44,28 +49,40 @@ public class IItemMenu extends SSceneActivity {
 		
 		// Initialize background layout.
 		setLayout(SLayoutLoader.getInstance().itemMenu);
+		setBackgroundImage(R.drawable.items_menu);
 		showInventory(false);
-		showBackButton(true);
+		showBackButton(true);				
+		
+        if(!isLayoutInitialized)
+        {
+        	SLayout itemMenuLayout = SLayoutLoader.getInstance().itemMenu;
+        	enlargedImgDestination = itemMenuLayout.getBoxPixelCoords("imgBox");        	
+        	numItemsToDisplay = itemMenuLayout.getAllBoxesContainingName("item").size();        	        	
+			isLayoutInitialized = true;
+        }		
  	}
 
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-		setBackgroundImage(R.drawable.items_menu);
+
+		itemList = IItemManager.getInstance().getInventory();
 		
-		itemList = IItems.getInstance().getItemList();
-		if(itemList == null || itemList.size() ==0) {
+		if(itemList.size() == 0)
+		{
 			setText(DEFAULT_MSG, Global.TextType.TEXT_CENTERED, false);
 		}
 		
 		// Take the item menu to it's default state
-		if (itemInUse==null) {
-			selectedBox = null;
+		if (itemInUse==null)
+		{
+			selectedItem = null;
 			showDescription = false;
 		}
-		else {	// Display the item that was previously selected, but de-select it.
-			setText(itemInUse.getDescriprion(), Global.TextType.TEXT_ITEM_DESCR, false);
+		else
+		{	// Display the item that was previously selected, but de-select it.
+			setText(itemInUse.getDescription(), Global.TextType.TEXT_ITEM_DESCR, false);
 			itemInUse = null;
 		}
 	}
@@ -73,28 +90,27 @@ public class IItemMenu extends SSceneActivity {
 	@Override
     public void onBoxDown(SLayout.Box box, MotionEvent event)
     {
-		if (itemList != null) {
-			Iterator<Entry<Box, Item>> it = itemList.entrySet().iterator();
+		if(box.name.contains("item"))
+		{
+			int itemNum = Integer.parseInt(box.name.substring(4));
 			
-			while(it.hasNext()) {
-				Map.Entry<Box, Item> pairs = (Map.Entry<Box, Item>) it.next();
-				Box currBox = (Box) pairs.getKey();
-				Item currItem = (Item) pairs.getValue();
+			if(itemNum>=itemList.size())
+				return;
 			
-				if(currBox.name.equals(box.name)) {
-					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
-					//double click on the same box, i.e. use the item now.
-					if ((selectedBox != null) && selectedBox.name.equals(box.name)) {
-						useItem(currBox, currItem);
-					}
-					else {
-						showDescription = true;
-						selectedBox = currBox;
-						setText(currItem.getDescriprion(), Global.TextType.TEXT_ITEM_DESCR, true);
-						itemInUse = null;
-					}
-					break;
-				}
+			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
+			
+			String itemID = itemList.get(itemNum);
+			
+			if (selectedItem != null && itemID.equals(selectedItem.getID()))
+			{
+				useItem(selectedItem);
+			}
+			else
+			{
+				showDescription = true;
+				selectedItem = IItemManager.getInstance().getItemFromPool(itemID);
+				setText(selectedItem.getDescription(), Global.TextType.TEXT_ITEM_DESCR, true);
+				itemInUse = null;
 			}
 		}
     }
@@ -105,61 +121,62 @@ public class IItemMenu extends SSceneActivity {
 		super.onDraw(canvas, paint);
 		
 		drawItemBoxes(canvas, paint);
-		drawDescriptionBox(canvas, paint);	
+		drawEnlargedImage(canvas, paint);	
 	}
 	
-	private void drawItemBoxes(Canvas canvas, Paint paint) {
-		// Draw different icons on the screen.
-		if(itemList != null && itemList.size() > 0) {
-			Iterator<Entry<Box, Item>> it = itemList.entrySet().iterator();
+	private void drawItemBoxes(Canvas canvas, Paint paint)
+	{
+		int itemIndex = 0;
+		SLayout itemMenuLayout = SLayoutLoader.getInstance().itemMenu;
+		
+		for(String itemID:itemList)
+		{			
+			if(itemIndex>=numItemsToDisplay)
+				break;
 			
-			while (it.hasNext()) {
-				Map.Entry<Box, Item> pairs = (Map.Entry<Box, Item>) it.next();
-			    Box box = (Box) pairs.getKey();
-			    Item item = (Item) pairs.getValue();
-			    		
-			    int iconLeft = (int)(box.left*Global.SCREEN_WIDTH);
-			  	int iconRight = (int)(box.right*Global.SCREEN_WIDTH);
-			    int iconTop = (int)(box.top*Global.SCREEN_HEIGHT);
-			    int iconBottom = (int)(box.bottom*Global.SCREEN_HEIGHT);						
-			    Rect icon = new Rect(iconLeft, iconTop, iconRight, iconBottom);
-			    RectF iconF = new RectF(iconLeft, iconTop, iconRight, iconBottom);
-			    		
-			    if ((selectedBox != null) && selectedBox.name.equals(box.name)) {
-			    	// set paint for when the box is selected.
-			    }
-			    else {
-					int alpha = paint.getAlpha();
-					paint.setColor(Color.BLACK);
-					paint.setAlpha(50);
-					canvas.drawRoundRect(iconF, Global.ROUND_EDGE_WIDTH, Global.ROUND_EDGE_WIDTH, paint);
-					paint.setAlpha(alpha);
-			    }
-			    		
-			    // Draw the bitmap for this icon.
-			    Bitmap bm = item.getBitmap();
-			    canvas.drawBitmap(bm, null, icon, paint);
-			}
+			RectF iconF = itemMenuLayout.getBoxPixelCoords("item"+itemIndex);
+		    		
+		    if ((selectedItem != null) && selectedItem.getID().equals(itemID))
+		    {
+		    	// set paint for when the box is selected.
+		    }
+		    else
+		    {
+				int alpha = paint.getAlpha();
+				paint.setColor(Color.BLACK);
+				paint.setAlpha(50);
+				canvas.drawRoundRect(iconF, ICON_ROUND_EDGE_WIDTH, ICON_ROUND_EDGE_WIDTH, paint);
+				paint.setAlpha(alpha);
+		    }
+		    		
+		    // Draw the bitmap for this icon.
+		    Item item = IItemManager.getInstance().getItemFromPool(itemID);
+		    Bitmap bm = item.getThumbnailBitmap();
+		    canvas.drawBitmap(bm, null, iconF, paint);
+		    ++itemIndex;
 		}
 	}
 	
-	private void drawDescriptionBox(Canvas canvas, Paint paint) {
-		if(showDescription) {
-    		if(selectedBox != null) {
-    			Item item = itemList.get(selectedBox);
-			
-    			Bitmap bm = item.getBitmap();
-    			canvas.drawBitmap(bm, null, descrDestination, paint);
+	private void drawEnlargedImage(Canvas canvas, Paint paint)
+	{
+		if(showDescription)
+		{
+    		if(selectedItem != null)
+    		{
+    			Bitmap bm = UBitmapUtil.loadBitmap(selectedItem.getResID(), false);
+    			canvas.drawBitmap(bm, null, enlargedImgDestination, paint);
+    			bm.recycle();
     		}
     	}
 	}
     
-	private void useItem(Box box, Item item) {
+	private void useItem(Item item)
+	{
 		// TODO: Notify Render Activity of this item in use?
 		
 		itemInUse = item;
 		
-		if(item.getName().equals("cellphone"))
+		if(item.getID().equals("cellphone") || item.getID().equals("cellphone_cracked"))
 		{
 			startActivity(new Intent(this, PCellphone.class));
 		}

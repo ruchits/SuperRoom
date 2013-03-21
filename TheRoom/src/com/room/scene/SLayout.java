@@ -12,6 +12,15 @@ public class SLayout
 		public String desc=null;
 		public float left,right,top,bottom;
 		public Box(){}
+		public Box(Box b)
+		{
+			this.name = b.name+"";
+			this.desc = b.desc+"";
+			this.left = b.left;
+			this.right = b.right;
+			this.top = b.top;
+			this.bottom = b.bottom;				
+		}
 		public Box(String name, float left, float right, float top, float bottom) {
 			this.name = name;
 			this.left = left;
@@ -68,9 +77,32 @@ public class SLayout
 		return null;
 	}
 	
-	public ArrayList<Box> getAllBoxes() {
-		return boxes;
+	public ArrayList<Box> getAllBoxes()
+	{
+		//cant return the boxes directly if you're going to start removing items in it		
+		//return boxes;
+		
+		ArrayList<Box> copyOfBoxes = new ArrayList<Box>();
+		
+		for(Box b:boxes)
+			copyOfBoxes.add(new Box(b));
+		
+		return copyOfBoxes;		
 	}
+	
+	
+	public ArrayList<Box> getAllBoxesContainingName(String substr)
+	{
+		ArrayList<Box> copyOfBoxes = new ArrayList<Box>();
+		
+		for(Box b:boxes)
+		{
+			if(b.name.contains(substr))
+				copyOfBoxes.add(new Box(b));	
+		}
+					
+		return copyOfBoxes;		
+	}	
 	
 	public ArrayList<Box> getBoxesWithName(String name)
 	{
@@ -81,7 +113,17 @@ public class SLayout
 				retBoxes.add(b);
 		}
 		return retBoxes;
-	}	
+	}
+	
+	public Box getBoxWithName(String name)
+	{
+		for(Box b:boxes)
+		{
+			if(b.name.equals(name))
+				return b;
+		}
+		return null;
+	}		
 
 	private ArrayList<Box> boxes = new ArrayList<Box>();
 }

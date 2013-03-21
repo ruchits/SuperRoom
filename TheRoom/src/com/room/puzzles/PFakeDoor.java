@@ -27,5 +27,4 @@ public class PFakeDoor extends SSceneActivity
 		Log.d("BOXCLICK",box.name);		
 		setText(box.desc,TextType.TEXT_SUBTITLE,true);
 	}
-
 }

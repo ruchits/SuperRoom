@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.room.R;
-import com.room.Global.TextType;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
@@ -33,7 +32,7 @@ public class PCellphone extends SSceneActivity
 		try{keyNum = Integer.parseInt(box.name);}
 		catch(Exception e){}
 		
-		if(keyNum!=-1)
+		if(keyNum!=-1)	
 		{
 			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 			

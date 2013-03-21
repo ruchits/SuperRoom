@@ -1,6 +1,6 @@
 package com.room.days;
 
-import com.room.item.IItems;
+import com.room.item.IItemManager;
 
 public class Day5
 {
@@ -8,8 +8,10 @@ public class Day5
 	
 	public static void reset()
 	{		
-		IItems.getInstance().clearItems();		
-		IItems.getInstance().addItem("journal");
-		IItems.getInstance().addItem("photo");
+		IItemManager.getInstance().clearInventory();		
+		IItemManager.getInstance().addItemToInventory("journal");
+		IItemManager.getInstance().addItemToInventory("photo");
+		IItemManager.getInstance().addItemToInventory("knife");
+		IItemManager.getInstance().addItemToInventory("cellphone_cracked");
 	}
 }

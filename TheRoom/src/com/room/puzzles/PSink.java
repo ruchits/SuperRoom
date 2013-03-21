@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.room.R;
-import com.room.Global.TextType;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
@@ -25,5 +24,4 @@ public class PSink extends SSceneActivity
 	{	
 		Log.d("BOXCLICK",box.name);
 	}
-
 }

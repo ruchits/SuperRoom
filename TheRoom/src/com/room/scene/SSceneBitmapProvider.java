@@ -5,16 +5,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import com.room.Global;
+import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
 
 
 public class SSceneBitmapProvider {
 	private static Queue <UPair<Integer, Bitmap>> sPool;
 	private static int POOL_SIZE = 2;
-	private static BitmapFactory.Options sOptions = new BitmapFactory.Options();
 
 	private static SSceneBitmapProvider instance = null;
 	public static SSceneBitmapProvider getInstance() {
@@ -47,8 +45,7 @@ public class SSceneBitmapProvider {
 			entry.getRight().recycle();
 		}
 		
-		sOptions.inPreferredConfig = Bitmap.Config.RGB_565;
-		UPair<Integer, Bitmap> entry = new UPair<Integer, Bitmap>(resourceID, BitmapFactory.decodeResource(Global.mainActivity.getResources(), resourceID, sOptions));
+		UPair<Integer, Bitmap> entry = new UPair<Integer, Bitmap>(resourceID, UBitmapUtil.loadBitmap(resourceID, true));
 		sPool.add(entry);
 		return entry.getRight();
 	}

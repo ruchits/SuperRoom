@@ -26,6 +26,7 @@ public class SLayoutLoader
 	public SLayout mainMenu;
 	public SLayout daySelection;
 	public SLayout itemMenu;
+	public SLayout sceneActivity;
 	public SLayout options;
 	
 	public SLayout puzzleFlood;
@@ -48,6 +49,7 @@ public class SLayoutLoader
 		mainMenu = loadLayout("main_menu.layout");
 		daySelection = loadLayout("day_selection.layout");
 		itemMenu = loadLayout("items_menu.layout");
+		sceneActivity = loadLayout("scene_activity.layout");
 		options = loadLayout("options.layout");
 		
 		puzzleFlood = loadLayout("puzzle_flood.layout");

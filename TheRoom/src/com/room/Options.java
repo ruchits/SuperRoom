@@ -52,9 +52,9 @@ public class Options extends SSceneActivity {
 		keyWidth = (barArea[0].right - barArea[0].left) / REL_KEY_SIZE;
 		keyHeight = barArea[0].bottom - barArea[0].top;
 		checkImage = UBitmapUtil.loadScaledBitmap(R.drawable.options_check,
-				(int) checkboxWidth, (int) checkboxHeight);
+				(int) checkboxWidth, (int) checkboxHeight,false);
 		keyImage = UBitmapUtil.loadScaledBitmap(R.drawable.options_key,
-				(int) keyWidth, (int) keyHeight);
+				(int) keyWidth, (int) keyHeight,false);
 	}
 
 	@Override

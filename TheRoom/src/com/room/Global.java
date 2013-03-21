@@ -3,7 +3,7 @@ package com.room;
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
 import com.room.days.*;
-import com.room.item.IItems.Item;
+import com.room.item.IItemManager.Item;
 import com.room.render.RRenderActivity;
 
 import android.app.ProgressDialog;
@@ -36,7 +36,6 @@ public class Global
 	public static final float FONT_THRESHOLD_DP = 16.0f;
 	public static int ICON_WIDTH = 100;
 	public static int ICON_HEIGHT = 100;
-	public static int ROUND_EDGE_WIDTH = 16;
 	public enum TextType { TEXT_ITEM_DESCR, TEXT_SUBTITLE, TEXT_CENTERED };
 	
 	public static int VMMemSize;

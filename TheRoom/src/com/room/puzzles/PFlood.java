@@ -17,7 +17,6 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.room.R;
-import com.room.Global.TextType;
 import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
@@ -90,7 +89,7 @@ public class PFlood extends SSceneActivity
 		tileHeight =  ( tileArea.bottom - tileArea.top )/tilesPerSide;
 		tileWidth =  ( tileArea.right - tileArea.left )/tilesPerSide;
 		
-		lifeBarImage = UBitmapUtil.loadScaledBitmap(R.drawable.lifebar_0, (int)lifeBarWidth, (int)lifeBarHeight); 
+		lifeBarImage = UBitmapUtil.loadScaledBitmap(R.drawable.lifebar_0, (int)lifeBarWidth, (int)lifeBarHeight,false); 
 		tileImages = UBitmapUtil.populateBitmaps("puzzle_flood_tile", numSymbols, (int)tileWidth, (int)tileHeight);
 	}
 	
@@ -200,7 +199,7 @@ public class PFlood extends SSceneActivity
 			}
 		}
 	}
-	
+
 	private void handleFailure() {
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		v.vibrate(300);

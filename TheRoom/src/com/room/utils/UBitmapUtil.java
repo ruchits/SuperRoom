@@ -23,14 +23,31 @@ public class UBitmapUtil {
 	
 	private static Resources res = Global.mainActivity.getResources();
 	
-	public static Bitmap loadScaledBitmap(int resID, int width, int height)
+	public static Bitmap loadScaledBitmap(int resID, int width, int height, boolean useRGB565)
 	{
-		Bitmap tempBmp = BitmapFactory.decodeResource(res, resID);
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = useRGB565 ? Bitmap.Config.RGB_565 : Bitmap.Config.ARGB_8888;
+		Bitmap tempBmp = BitmapFactory.decodeResource(res, resID, options);
+		
+		//if no scaling needed, then return the bmp right away
+		if(tempBmp.getWidth() == width && tempBmp.getHeight() == height)
+			return tempBmp;
+		
+		//otherwise, create a scaled bmp, recycling the old one
 		Bitmap retBmp = Bitmap.createScaledBitmap(
 				tempBmp,width, height, true);
 		tempBmp.recycle();
+		
 		return retBmp;
 	}
+	
+	public static Bitmap loadBitmap(int resID, boolean useRGB565)
+	{
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = useRGB565 ? Bitmap.Config.RGB_565 : Bitmap.Config.ARGB_8888;		
+		Bitmap bmp = BitmapFactory.decodeResource(res, resID, options);
+		return bmp;
+	}	
 	
 	public static Bitmap decodeSampledBitmapForResolution(int resID, Global.ResType type) {
 		switch (type) {
@@ -122,7 +139,7 @@ public class UBitmapUtil {
 			try {
 				Field field = res.getField(prefix+i);
 				int drawableId = field.getInt(null);
-				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, width, height));
+				bitmaps.add(UBitmapUtil.loadScaledBitmap(drawableId, width, height, false));
 			}
 			catch (Exception e) { 
 				Log.e("UBitmapUtil", "Failed to load the image " + prefix + i +". Check the name again.");

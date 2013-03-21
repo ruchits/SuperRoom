@@ -5,24 +5,25 @@ import java.util.ArrayList;
 import com.room.Global;
 import com.room.Global.TextType;
 import com.room.R;
+import com.room.item.IItemManager;
 import com.room.item.IItemMenu;
-import com.room.item.IItems;
-import com.room.item.IItems.Item;
+import com.room.item.IItemManager.Item;
 import com.room.scene.SLayout.Box;
+import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -31,38 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class SSceneActivity extends Activity
-{
-	private static Bitmap inventory;
-	private static Bitmap backbutton;
-	
-	private static final Box inventoryBox = new Box("inventory", 0f, 0.0800f, 0f, 0.133f);
-	private static final Box backBtnBox = new Box("backBtn", 0.9200f, 1.0f, 0f, 0.133f);
-	
-	//left, top, right, bottom
-	private static final Rect invDestination = new Rect(Math.round(inventoryBox.left*Global.SCREEN_WIDTH), Math.round(inventoryBox.top*Global.SCREEN_HEIGHT),
-			Math.round(inventoryBox.right*Global.SCREEN_WIDTH), Math.round(inventoryBox.bottom*Global.SCREEN_HEIGHT));
-	private static final Rect backbtnDestination = new Rect(Math.round(backBtnBox.left*Global.SCREEN_WIDTH), Math.round(backBtnBox.top*Global.SCREEN_HEIGHT), 
-			Math.round(backBtnBox.right*Global.SCREEN_WIDTH), Math.round(backBtnBox.bottom*Global.SCREEN_HEIGHT));
-	private static final RectF invDestinationF = new RectF(inventoryBox.left*Global.SCREEN_WIDTH, inventoryBox.top*Global.SCREEN_HEIGHT,
-			inventoryBox.right*Global.SCREEN_WIDTH, inventoryBox.bottom*Global.SCREEN_HEIGHT);
-	private static final RectF backbtnDestinationF = new RectF(backBtnBox.left*Global.SCREEN_WIDTH, backBtnBox.top*Global.SCREEN_HEIGHT, 
-			backBtnBox.right*Global.SCREEN_WIDTH, backBtnBox.bottom*Global.SCREEN_HEIGHT);
-	
-	
-	private static Bitmap itemTextBitmap = Bitmap.createBitmap(500, 200, Bitmap.Config.ARGB_8888);
-	private static Bitmap subtitleBitmap = Bitmap.createBitmap(800, 100, Bitmap.Config.ARGB_8888);
-	private static Bitmap centeredTextBitmap = Bitmap.createBitmap(500, 70, Bitmap.Config.ARGB_8888);
-	
-	private static final Box subtitleBox = new Box("subtitle", 0.18020834f, 0.8385417f, 0.85f, 0.9907407f);
-	private static final Rect subtitleRect = new Rect(Math.round(subtitleBox.left*Global.SCREEN_WIDTH), Math.round(subtitleBox.top*Global.SCREEN_HEIGHT),
-			Math.round(subtitleBox.right*Global.SCREEN_WIDTH), Math.round(subtitleBox.bottom*Global.SCREEN_HEIGHT));
-	
-	private static final Box centerBox = new Box("center", 0.321875f, 0.703125f, 0.4037037f, 0.5611111f);
-	private static final Rect centerRect = new Rect(Math.round(centerBox.left*Global.SCREEN_WIDTH), Math.round(centerBox.top*Global.SCREEN_HEIGHT),
-			Math.round(centerBox.right*Global.SCREEN_WIDTH), Math.round(centerBox.bottom*Global.SCREEN_HEIGHT));
-	
-	private static Rect itemTextRect;
-	
+{	
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,15 +45,26 @@ public class SSceneActivity extends Activity
         view = new SSceneView(this);
         setContentView(view);
           
-        Resources res = Global.mainActivity.getResources();
-        if(inventory == null)
-        	inventory = BitmapFactory.decodeResource(res, R.drawable.backpack);
-        if(backbutton == null)
-        	backbutton = BitmapFactory.decodeResource(res, R.drawable.back);
-		
-		Box textBox = IItems.getInstance().getTextBox();
-		itemTextRect = new Rect(Math.round(textBox.left*Global.SCREEN_WIDTH), Math.round(textBox.top*Global.SCREEN_HEIGHT),
-				Math.round(textBox.right*Global.SCREEN_WIDTH), Math.round(textBox.bottom*Global.SCREEN_HEIGHT));
+        if(!isLayoutInitialized)
+        {
+        	inventory = UBitmapUtil.loadBitmap(R.drawable.icon_items,false);
+        	backbutton = UBitmapUtil.loadBitmap(R.drawable.icon_back,false);
+        	
+        	SLayout sceneActivityLayout = SLayoutLoader.getInstance().sceneActivity;        	
+        	inventoryBtnDestination = sceneActivityLayout.getBoxPixelCoords("inventoryBtn");
+        	backBtnDestination = sceneActivityLayout.getBoxPixelCoords("backBtn");
+        	subtitleTextDestination = sceneActivityLayout.getBoxPixelCoords("subtitleTextArea");
+        	centerTextDestination = sceneActivityLayout.getBoxPixelCoords("centerTextArea");
+        	itemPickupImgDestination = sceneActivityLayout.getBoxPixelCoords("itemPickupImg");
+        	
+        	SLayout itemMenuLayout = SLayoutLoader.getInstance().itemMenu;
+        	itemTextDestination = itemMenuLayout.getBoxPixelCoords("textBox");	
+
+            linearGradientShader = new LinearGradient(0, 0,0,Global.SCREEN_HEIGHT,0x30000000,0xE0000000,TileMode.CLAMP);
+            linearGradientRect = new Rect(0,0,Global.SCREEN_WIDTH,Global.SCREEN_HEIGHT);
+            
+			isLayoutInitialized = true;
+        }
 		
     }
 	
@@ -96,6 +77,7 @@ public class SSceneActivity extends Activity
 			paint.setAntiAlias(true);
 			paint.setFilterBitmap(true);
 			paint.setDither(true);
+			
 			activity = (SSceneActivity)context;
 			textCanvas = new Canvas();
 			
@@ -108,29 +90,50 @@ public class SSceneActivity extends Activity
 			super.onDraw(canvas);
 			activity.onDraw(canvas, paint);
 			
-			// Draw the Icons
-			if(activity.showInventoryIcon) {
-				drawIconBG(canvas, paint, SSceneActivity.invDestinationF);
+						
+			if(activity.itemPickedUp!=null)
+			{
+				paint.setShader(linearGradientShader);
+				canvas.drawRect(linearGradientRect, paint);
+				paint.setShader(null);
 				
-				Bitmap inventory;
-				if (IItemMenu.itemInUse != null) {
-					inventory = IItemMenu.itemInUse.getBitmap();
-				}
-				else {
-					inventory = SSceneActivity.inventory;
-				}
-				
-				canvas.drawBitmap(inventory, null, SSceneActivity.invDestination, paint);
+				setText(activity.itemPickedUp.getName()+SSceneActivity.ITEM_PICKUP_TEXT,TextType.TEXT_SUBTITLE,false);
+				Bitmap itemBmp = UBitmapUtil.loadBitmap(activity.itemPickedUp.getResID(), false);
+				canvas.drawBitmap(itemBmp,null,itemPickupImgDestination,paint);
+				itemBmp.recycle();
 			}
 			
-			if (activity.showBackButton) {
-    			drawIconBG(canvas, paint, SSceneActivity.backbtnDestinationF);
-				Bitmap backButton = SSceneActivity.backbutton;
-				canvas.drawBitmap(backButton, null, SSceneActivity.backbtnDestination, paint);
+			else
+			{
+				// Draw the Icons
+				if(activity.showInventoryIcon)
+				{
+					drawIconBG(canvas, paint, SSceneActivity.inventoryBtnDestination);
+				
+					Bitmap inventory;
+					if (IItemMenu.itemInUse != null)
+					{
+						inventory = IItemMenu.itemInUse.getThumbnailBitmap();
+					}
+					else
+					{
+						inventory = SSceneActivity.inventory;
+					}
+				
+					canvas.drawBitmap(inventory, null, SSceneActivity.inventoryBtnDestination, paint);
+				}
+				if (activity.showBackButton)
+				{
+	    			drawIconBG(canvas, paint, SSceneActivity.backBtnDestination);
+					Bitmap backButton = SSceneActivity.backbutton;
+					canvas.drawBitmap(backButton, null, SSceneActivity.backBtnDestination, paint);
+				}			
 			}
 			
 			// Draw text
-			drawText(canvas);
+			drawText(canvas);				
+			
+
 		}
 		
 		private void drawText(Canvas canvas) {
@@ -199,28 +202,37 @@ public class SSceneActivity extends Activity
 				
 				switch (type) {
 				case TEXT_ITEM_DESCR:
-					float factor = (float)(itemTextRect.right - itemTextRect.left)/itemTextBitmap.getWidth();
+					float factor = (float)(itemTextDestination.right - itemTextDestination.left)/itemTextBitmap.getWidth();
 					canvas.drawBitmap(itemTextBitmap,
-							new Rect(0,0,itemTextBitmap.getWidth(),itemTextBitmap.getHeight()),							
-							new Rect(itemTextRect.left, itemTextRect.top,itemTextRect.right,itemTextRect.top+(int)(itemTextBitmap.getHeight()*factor)),
+							null,							
+							new RectF(itemTextDestination.left,
+									itemTextDestination.top,
+									itemTextDestination.right,
+									itemTextDestination.top+itemTextBitmap.getHeight()*factor),
 							paint);
 					
 					break;
 					
 				case TEXT_SUBTITLE:
-					factor = (float)(subtitleRect.right - subtitleRect.left)/subtitleBitmap.getWidth();
+					factor = (float)(subtitleTextDestination.right - subtitleTextDestination.left)/subtitleBitmap.getWidth();
 					canvas.drawBitmap(subtitleBitmap,
-							new Rect(0,0,subtitleBitmap.getWidth(),subtitleBitmap.getHeight()),							
-							new Rect(subtitleRect.left, subtitleRect.top,subtitleRect.right,subtitleRect.top+(int)(subtitleBitmap.getHeight()*factor)),
+							null,							
+							new RectF(subtitleTextDestination.left,
+									subtitleTextDestination.top,
+									subtitleTextDestination.right,
+									subtitleTextDestination.top+subtitleBitmap.getHeight()*factor),
 							paint);
 					
 	    			break;
 	    		
 				case TEXT_CENTERED:
-					factor = (float)(centerRect.right - centerRect.left)/centeredTextBitmap.getWidth();
+					factor = (float)(centerTextDestination.right - centerTextDestination.left)/centeredTextBitmap.getWidth();
 					canvas.drawBitmap(centeredTextBitmap,
-							new Rect(0,0,centeredTextBitmap.getWidth(),centeredTextBitmap.getHeight()),							
-							new Rect(centerRect.left, centerRect.top,centerRect.right,centerRect.top+(int)(centeredTextBitmap.getHeight()*factor)),
+							null,							
+							new RectF(centerTextDestination.left,
+									centerTextDestination.top,
+									centerTextDestination.right,
+									centerTextDestination.top+centeredTextBitmap.getHeight()*factor),
 							paint);
 					break;
 				}
@@ -291,13 +303,22 @@ public class SSceneActivity extends Activity
     public boolean onTouchEvent(MotionEvent event)
     {
     	if(layout == null)
-    		return true;
+    		return true;    	    	
     	
 		int action = event.getAction();
 		int actionCode = action & MotionEvent.ACTION_MASK;
 		
 		if (actionCode == MotionEvent.ACTION_DOWN)
 		{
+			//if item modal is up, then kill it
+			if(this.itemPickedUp != null)
+			{
+				this.itemPickedUp = null;
+				setText("",TextType.TEXT_SUBTITLE,false);
+				repaint();
+				return true;
+			}
+			
 			selectedBox = null;			
 			selectedBox = layout.getBoxAtPixel(event.getX(), event.getY());
 			if(selectedBox != null) {
@@ -315,16 +336,19 @@ public class SSceneActivity extends Activity
 			
 			if(showInventoryIcon) {
 				// Handle touch events to inventory icon and back button on SceneLayout.
-				boolean result = getTouchAt(event.getX(), event.getY(), invDestination);
+				boolean result = getTouchAt(event.getX(), event.getY(), inventoryBtnDestination);
 				if (result) {
 					Intent intent = new Intent(this, IItemMenu.class);
 					startActivity(intent);
 				}
 			}
 			if (showBackButton) {
-				boolean result = getTouchAt(event.getX(), event.getY(), backbtnDestination);
+				boolean result = getTouchAt(event.getX(), event.getY(), backBtnDestination);
 				if (result)
-					finish();
+				{
+					deselectItem();
+					finish();				
+				}
  			}
 		}
 		else if (actionCode == MotionEvent.ACTION_MOVE)
@@ -349,7 +373,7 @@ public class SSceneActivity extends Activity
     	//Override this function
     }
     
-    private boolean getTouchAt(float x, float y, Rect dest)
+    private boolean getTouchAt(float x, float y, RectF dest)
     {
 		if(dest.left <= x && x <= dest.right
 			&& dest.top <= y && y <= dest.bottom)
@@ -413,6 +437,13 @@ public class SSceneActivity extends Activity
     public void setLayout(SLayout layout)
     {
     	this.layout = layout;
+    }
+    
+    protected void showItemPickUpModal(String itemID)
+    {
+    	Item item = IItemManager.getInstance().getItemFromPool(itemID);
+    	itemPickedUp = item;
+    	repaint();
     }
     
     protected void setText(String string, TextType type, boolean draw) {
@@ -503,26 +534,39 @@ public class SSceneActivity extends Activity
 	protected void deselectItem() {
 		IItemMenu.itemInUse = null;
 	}
-    
-    @Override
-    protected void onPause() {
-    	super.onPause();
-    }
-    
+	
 	public SSceneView view;
 	protected SLayout layout;
 	
     private int backgroundImageResID;
     private int foregroundImageResID;
+    private ArrayList<String> unhiddenForegroundBoxes;
     
     private SLayout.Box selectedBox;
+    private Item itemPickedUp = null;
     
     private String sceneText = null;
     private TextType sceneTextType;
     private boolean showInventoryIcon = true;
-    private boolean showBackButton = true;
-    protected static final String DEFAULT_ITEMUSE_TEXT = "Can't Use this Item here!";
-
-    private ArrayList<String> unhiddenForegroundBoxes;        
+    private boolean showBackButton = true;        
+    
+    private static final String DEFAULT_ITEMUSE_TEXT = "Can't use this item here.";
+    private static final String ITEM_PICKUP_TEXT = " added to iventory.";
+    
+    //scene activity top layout vars    
+	private static boolean isLayoutInitialized = false;	
+	private static Bitmap inventory;
+	private static Bitmap backbutton;	
+	private static Bitmap itemTextBitmap = Bitmap.createBitmap(500, 200, Bitmap.Config.ARGB_8888);
+	private static Bitmap subtitleBitmap = Bitmap.createBitmap(800, 100, Bitmap.Config.ARGB_8888);
+	private static Bitmap centeredTextBitmap = Bitmap.createBitmap(500, 70, Bitmap.Config.ARGB_8888);	
+	private static RectF inventoryBtnDestination;
+	private static RectF backBtnDestination;	
+	private static RectF subtitleTextDestination;	
+	private static RectF centerTextDestination;	
+	private static RectF itemTextDestination;
+	private static RectF itemPickupImgDestination;
+    private static LinearGradient linearGradientShader;
+    private static Rect linearGradientRect;
     
 }
