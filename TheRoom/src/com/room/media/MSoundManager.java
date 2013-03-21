@@ -251,6 +251,7 @@ public class MSoundManager
 
 	public void updateMusicVolume()
 	{
+		if ( musicMediaPlayer == null ) return;
 		musicMediaPlayer.setVolume(OptionManager.getMasterVolume() * OptionManager.getMusicVolume(),
 								   OptionManager.getMasterVolume() * OptionManager.getMusicVolume());
 	}
