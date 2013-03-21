@@ -11,13 +11,14 @@ import android.os.*;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity implements OnClickListener
 {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -32,6 +33,9 @@ public class MainActivity extends Activity implements OnClickListener
         // Get the screen's density scale
         Global.deviceDPIScale = this.getResources().getDisplayMetrics().density;
         
+        OptionManager.pref = getSharedPreferences("pref", 0);
+        OptionManager.editor = OptionManager.pref.edit();
+
         new LoadTask(this, null).execute();
 	}
 

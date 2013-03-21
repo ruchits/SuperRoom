@@ -1,7 +1,7 @@
 package com.room.media;
 
 import com.room.Global;
-import com.room.Options;
+import com.room.OptionManager;
 import com.room.R;
 
 import java.util.HashMap;
@@ -13,11 +13,6 @@ import android.media.SoundPool;
 
 public class MSoundManager
 {
-	//TBD - put these in the options
-	public static final float MASTER_VOLUME = 1.0f;
-	public static final float MUSIC_VOLUME = 1.0f;
-	public static final float SOUNDEFFCTS_VOLUME = 1.0f;
-	
 	//SINGLETON!!
 	public static MSoundManager getInstance()
 	{
@@ -69,7 +64,7 @@ public class MSoundManager
 				volume = 0;
 			}			
 			
-			return volume * MASTER_VOLUME * SOUNDEFFCTS_VOLUME;
+			return volume * OptionManager.getMasterVolume() * OptionManager.getSoundVolume();
 		}
 		
 		public void setVolume(float leftVolume, float rightVolume)
@@ -163,9 +158,9 @@ public class MSoundManager
 	
    public void playSoundEffect(int resource)
    {
-	   if ( Options.isSoundEffectsEnabled() && soundEffectsMap != null && soundEffectsMap.containsKey(resource) )
+	   if ( OptionManager.isSoundEnabled() && soundEffectsMap != null && soundEffectsMap.containsKey(resource) )
 	   {
-		   float volume = MASTER_VOLUME * SOUNDEFFCTS_VOLUME;
+		   float volume = OptionManager.getMasterVolume() * OptionManager.getSoundVolume();
            soundEffectsPool.play(soundEffectsMap.get(resource), volume, volume, 1, 0, 1f);           
        }
    }
@@ -175,10 +170,10 @@ public class MSoundManager
 	   stopLongSoundEffect();
 	   
 		//play the music if it is enabled
-		if (Options.isSoundEffectsEnabled())
+		if (OptionManager.isSoundEnabled())
 		{		
 			longSoundEffectPlayer = MediaPlayer.create(Global.mainActivity, resource);
-			float volume = MASTER_VOLUME * SOUNDEFFCTS_VOLUME;
+			float volume = OptionManager.getMasterVolume() * OptionManager.getSoundVolume();
 			
 			try{longSoundEffectPlayer.setVolume(volume, volume);}
 			catch(Exception e){}
@@ -213,7 +208,7 @@ public class MSoundManager
 	public void playMusic(int resource)
 	{				
 		//stop the music if music is disabled
-		if (!Options.isMusicEnabled())
+		if (!OptionManager.isMusicEnabled())
 		{
 			if ( musicMediaPlayer != null )
 			{
@@ -226,7 +221,7 @@ public class MSoundManager
 			return;		
 		
 		//play the music if it is enabled
-		if (Options.isMusicEnabled())
+		if (OptionManager.isMusicEnabled())
 		{
 			if ( musicMediaPlayer != null )
 			{
@@ -234,7 +229,7 @@ public class MSoundManager
 			}
 			
 			musicMediaPlayer = MediaPlayer.create(Global.mainActivity, resource);
-			float volume = MASTER_VOLUME * MUSIC_VOLUME;
+			float volume = OptionManager.getMasterVolume() * OptionManager.getMusicVolume();
 			
 			try{musicMediaPlayer.setVolume(volume, volume);}
 			catch(Exception e){}
@@ -253,11 +248,17 @@ public class MSoundManager
 			currentMusicResourceID = resource;
 		}
 	}
-   
+
+	public void updateMusicVolume()
+	{
+		musicMediaPlayer.setVolume(OptionManager.getMasterVolume() * OptionManager.getMusicVolume(),
+								   OptionManager.getMasterVolume() * OptionManager.getMusicVolume());
+	}
+
 	public void stopMusic()
 	{				
 		//stop the music if music is disabled
-		if (!Options.isMusicEnabled())
+		if (!OptionManager.isMusicEnabled())
 		{
 			if ( musicMediaPlayer != null )
 			{
@@ -287,7 +288,7 @@ public class MSoundManager
    
    public void updateLocation(float x, float y)
    {
-	   if ( Options.isSoundEffectsEnabled() )
+	   if ( OptionManager.isSoundEnabled() )
 	   {
 		   Iterator<LocationSensitiveSound> it = locationSensitiveSounds.values().iterator();	   
 		   while(it.hasNext())
