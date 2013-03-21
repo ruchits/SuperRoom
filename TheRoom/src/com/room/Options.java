@@ -78,9 +78,8 @@ public class Options extends SSceneActivity {
 			canvas.drawBitmap(checkImage, checkboxArea[2].left,
 					checkboxArea[2].top, paint);
 		}
-		canvas.drawBitmap(keyImage, getLeftKeyPosn(0), barArea[0].top, paint);
-		canvas.drawBitmap(keyImage, getLeftKeyPosn(1), barArea[1].top, paint);
-		canvas.drawBitmap(keyImage, getLeftKeyPosn(2), barArea[2].top, paint);
+		for (int i = 0; i < NUM_OPTIONS; ++i)
+			canvas.drawBitmap(keyImage, getLeftKeyPosn(i), barArea[i].top, paint);
 	}
 
 	@Override
@@ -115,11 +114,15 @@ public class Options extends SSceneActivity {
 			}
 		} else if (clicked.equals("bar")) {
 			touchedBar = Integer.parseInt(st.nextToken());
-			if (isTouchingKey(touchedBar, event.getRawX())) {
+			prevX = event.getRawX();
+			if (isTouchingKey(touchedBar, prevX)) {
 				touchedKey = touchedBar;
-				prevX = event.getRawX();
 			} else {
 				touchedKey = -1;
+				float newVolume = (prevX - barArea[0].left) / barWidth;
+				setVolume(touchedBar, newVolume);
+				if (touchedKey != 2)
+					MSoundManager.getInstance().updateMusicVolume();
 			}
 		}
 		repaint();
@@ -128,38 +131,17 @@ public class Options extends SSceneActivity {
 	@Override
 	public void onBoxMove(SLayout.Box box, MotionEvent event) {
 		StringTokenizer st = new StringTokenizer(box.name, "_");
-		//
-		// initial check
+
 		if (!st.nextToken().equals("bar"))
 			return;
 		if (touchedKey == -1)
 			return;
-		float positionX = event.getRawX();
-		float deltaX = positionX - prevX;
 
-		//
-		// Check boundary
-		// Moving left
-		if (deltaX < 0
-				&& getVolume(touchedKey) + deltaX / Global.SCREEN_WIDTH >= 0.0f) {
-			prevX = positionX;
-			float newVolume = getVolume(touchedKey) + deltaX
-					/ Global.SCREEN_WIDTH;
-			setVolume(touchedKey, newVolume);
-			if (touchedKey != 2)
-				MSoundManager.getInstance().updateMusicVolume();
-			repaint();
-		} // Moving right
-		else if (deltaX > 0
-				&& getVolume(touchedKey) + deltaX / Global.SCREEN_WIDTH <= 1.0f) {
-			prevX = positionX;
-			float newVolume = getVolume(touchedKey) + deltaX
-					/ Global.SCREEN_WIDTH;
-			setVolume(touchedKey, newVolume);
-			if (touchedKey != 2)
-				MSoundManager.getInstance().updateMusicVolume();
-			repaint();
-		}
+		float newVolume = Math.max(Math.min((event.getRawX() - barArea[0].left) / barWidth, 1.0f),0.0f);
+		setVolume(touchedKey, newVolume);
+		if (touchedKey != 2)
+			MSoundManager.getInstance().updateMusicVolume();
+		repaint();
 	}
 
 	@Override
