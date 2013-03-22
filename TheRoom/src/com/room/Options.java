@@ -56,19 +56,23 @@ public class Options extends SSceneActivity {
 	public void onDraw(Canvas canvas, Paint paint) {
 		super.onDraw(canvas, paint);
 		if(OptionManager.isMusicEnabled() || OptionManager.isSoundEnabled()) {
-			canvas.drawBitmap(checkImage, checkboxArea[0].left,
-					checkboxArea[0].top, paint);			
+			canvas.drawBitmap(checkImage, null, checkboxArea[0], paint);			
 		}
 		if (OptionManager.isMusicEnabled()) {
-			canvas.drawBitmap(checkImage, checkboxArea[1].left,
-					checkboxArea[1].top, paint);
+			canvas.drawBitmap(checkImage, null, checkboxArea[1], paint);
 		}
 		if (OptionManager.isSoundEnabled()) {
-			canvas.drawBitmap(checkImage, checkboxArea[2].left,
-					checkboxArea[2].top, paint);
+			canvas.drawBitmap(checkImage, null, checkboxArea[2], paint);
 		}
 		for (int i = 0; i < NUM_OPTIONS; ++i)
-			canvas.drawBitmap(keyImage, getLeftKeyPosn(i), barArea[i].top, paint);
+		{
+			RectF dest = new RectF();
+			dest.left = getLeftKeyPosn(i);			
+			dest.top = barArea[i].top;
+			dest.bottom = barArea[i].bottom;
+			dest.right = getLeftKeyPosn(i) + dest.bottom - dest.top;
+			canvas.drawBitmap(keyImage, null, dest, paint);
+		}
 	}
 
 	@Override
