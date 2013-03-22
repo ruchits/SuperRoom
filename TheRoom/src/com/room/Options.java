@@ -115,10 +115,8 @@ public class Options extends SSceneActivity {
 		} else if (clicked.equals("bar")) {
 			touchedBar = Integer.parseInt(st.nextToken());
 			prevX = event.getRawX();
-			if (isTouchingKey(touchedBar, prevX)) {
-				touchedKey = touchedBar;
-			} else {
-				touchedKey = -1;
+			touchedKey = touchedBar;
+			if (!isTouchingKey(touchedBar, prevX)){
 				float newVolume = (prevX - barArea[0].left) / barWidth;
 				setVolume(touchedBar, newVolume);
 				if (touchedKey != 2)
