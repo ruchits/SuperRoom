@@ -1,5 +1,6 @@
 package com.room.puzzles;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,6 +14,7 @@ import com.room.item.IItemManager.Item;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
+import com.room.utils.UBitmapUtil;
 
 public class PUrn extends SSceneActivity
 {	
@@ -21,24 +23,40 @@ public class PUrn extends SSceneActivity
 	{
 		super.onCreate(savedInstanceState);
 		
+		knifeBmp = UBitmapUtil.loadBitmap(R.drawable.puzzle_urn_knife, true);		
+		
 		setLayout(SLayoutLoader.getInstance().puzzleUrn);
-		setBackgroundImage(R.drawable.puzzle_urn);
+		setBackgroundImage(R.drawable.puzzle_urn);		
+		
+		if(Global.getCurrentDay() == 1)
+		{
+			if(!Day1.hasPickedUpKnife)
+			{
+				mapBoxBitmap("knife", knifeBmp);
+			}
+		}
 	}
 	
 	@Override
 	public void onBoxDown(SLayout.Box box, MotionEvent event)
 	{	
 		Log.d("BOXCLICK",box.name);
-		setText(box.desc,TextType.TEXT_SUBTITLE,true);
-		
+				
 		if(Global.getCurrentDay() == 1)				
 		{
-			if(!Day1.hasPickedUpKnife)
+			if(box.name.equals("knife") && !Day1.hasPickedUpKnife)
 			{
 				IItemManager.getInstance().addItemToInventory("knife");
-				showItemPickUpModal("knife");		
+				showItemPickUpModal("knife");	
+				upmapBoxBitmap("knife");
 				Day1.hasPickedUpKnife = true;
+				return;
 			}
 		}
+
+		setText(box.desc,TextType.TEXT_SUBTITLE,true);	
 	}
+	
+	private Bitmap knifeBmp;
+	
 }

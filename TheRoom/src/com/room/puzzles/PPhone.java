@@ -36,7 +36,7 @@ public class PPhone extends SSceneActivity
 	protected void onResume()
 	{
 		super.onResume();
-		if(Global.getCurrentDay() == 1)
+		if(Global.getCurrentDay() == 1 && !Day1.hasPickedUpCellphone)
 		{			
 			if(Day1.isCellphoneRinging)
 				MSoundManager.getInstance().playLongSoundEffect(R.raw.phone_ring,true);
@@ -58,7 +58,7 @@ public class PPhone extends SSceneActivity
     {	
     	Log.d("BOXCLICK",box.name);
     	
-    	if(Global.getCurrentDay() != 1)
+    	if(Global.getCurrentDay() != 1 || Day1.hasPickedUpCellphone)
     	{
     		setText("The line has been cut.",TextType.TEXT_SUBTITLE,true);
     		return;

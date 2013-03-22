@@ -28,6 +28,16 @@ public class SLayout
 			this.top = top;
 			this.bottom = bottom;
 		}
+		
+		public RectF getPixelCoords()
+		{
+			RectF rect = new RectF();			
+			rect.left = left * Global.SCREEN_WIDTH;
+			rect.right = right * Global.SCREEN_WIDTH;
+			rect.top = top * Global.SCREEN_HEIGHT;
+			rect.bottom = bottom * Global.SCREEN_HEIGHT;
+			return rect;
+		}		
 	}
 		
 	public void addBox(Box b)
@@ -64,13 +74,7 @@ public class SLayout
 		{
 			if ( box.name.equals(boxName) )
 			{
-				RectF rect = new RectF();
-				
-				rect.left = box.left * Global.SCREEN_WIDTH;
-				rect.right = box.right * Global.SCREEN_WIDTH;
-				rect.top = box.top * Global.SCREEN_HEIGHT;
-				rect.bottom = box.bottom * Global.SCREEN_HEIGHT;
-				return rect;
+				return box.getPixelCoords();
 			}
 		}
 		

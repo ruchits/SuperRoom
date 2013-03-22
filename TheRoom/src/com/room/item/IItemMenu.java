@@ -40,7 +40,6 @@ public class IItemMenu extends SSceneActivity
 	private static int numItemsToDisplay;
 	
 	private ArrayList<String> itemList;	
-	private boolean showDescription = false;
 	
 	@Override	
 	protected void onCreate(Bundle savedInstanceState)
@@ -78,7 +77,7 @@ public class IItemMenu extends SSceneActivity
 		if (itemInUse==null)
 		{
 			selectedItem = null;
-			showDescription = false;
+			setText("", Global.TextType.TEXT_ITEM_DESCR, false);
 		}
 		else
 		{	// Display the item that was previously selected, but de-select it.
@@ -107,7 +106,6 @@ public class IItemMenu extends SSceneActivity
 			}
 			else
 			{
-				showDescription = true;
 				selectedItem = IItemManager.getInstance().getItemFromPool(itemID);
 				setText(selectedItem.getDescription(), Global.TextType.TEXT_ITEM_DESCR, true);
 				itemInUse = null;
@@ -159,15 +157,12 @@ public class IItemMenu extends SSceneActivity
 	
 	private void drawEnlargedImage(Canvas canvas, Paint paint)
 	{
-		if(showDescription)
+		if(selectedItem != null)
 		{
-    		if(selectedItem != null)
-    		{
-    			Bitmap bm = UBitmapUtil.loadBitmap(selectedItem.getResID(), false);
-    			canvas.drawBitmap(bm, null, enlargedImgDestination, paint);
-    			bm.recycle();
-    		}
-    	}
+			Bitmap bm = UBitmapUtil.loadBitmap(selectedItem.getResID(), false);
+			canvas.drawBitmap(bm, null, enlargedImgDestination, paint);
+			bm.recycle();
+		}
 	}
     
 	private void useItem(Item item)

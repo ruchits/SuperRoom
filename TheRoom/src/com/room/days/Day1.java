@@ -10,14 +10,18 @@ public class Day1
 	public static boolean isDeadManRevealed;
 	public static boolean isCellphoneRinging;
 	public static boolean hasDeadManCoverBeenExamined;
+	public static boolean isCellphoneRevealed;
 	public static boolean hasPickedUpKnife;
+	public static boolean hasPickedUpCellphone;
 	
 	public static void reset()
 	{
 		isDeadManRevealed = false;
 		isCellphoneRinging = false;
 		hasDeadManCoverBeenExamined = false;
+		isCellphoneRevealed = false;
 		hasPickedUpKnife = false;
+		hasPickedUpCellphone = false;
 		
 		
 		IItemManager.getInstance().clearInventory();

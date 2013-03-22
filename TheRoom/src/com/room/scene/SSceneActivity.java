@@ -1,6 +1,9 @@
 package com.room.scene;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.room.Global;
 import com.room.Global.TextType;
@@ -8,6 +11,7 @@ import com.room.R;
 import com.room.item.IItemManager;
 import com.room.item.IItemMenu;
 import com.room.item.IItemManager.Item;
+import com.room.media.MSoundManager;
 import com.room.scene.SLayout.Box;
 import com.room.utils.UBitmapUtil;
 import com.room.utils.UPair;
@@ -42,6 +46,7 @@ public class SSceneActivity extends Activity
         backgroundImageResID = -1;
         foregroundImageResID = -1;
         unhiddenForegroundBoxes = new ArrayList<String>();
+        boxBitmapTable = new HashMap<String,Bitmap>();
         view = new SSceneView(this);
         setContentView(view);
           
@@ -315,6 +320,7 @@ public class SSceneActivity extends Activity
 			{
 				this.itemPickedUp = null;
 				setText("",TextType.TEXT_SUBTITLE,false);
+				MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 				repaint();
 				return true;
 			}
@@ -332,12 +338,15 @@ public class SSceneActivity extends Activity
 				}		
 				else
 					onBoxDown(selectedBox, event);
+				
+				repaint();
 			}
 			
 			if(showInventoryIcon) {
 				// Handle touch events to inventory icon and back button on SceneLayout.
 				boolean result = getTouchAt(event.getX(), event.getY(), inventoryBtnDestination);
 				if (result) {
+					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 					Intent intent = new Intent(this, IItemMenu.class);
 					startActivity(intent);
 				}
@@ -346,6 +355,7 @@ public class SSceneActivity extends Activity
 				boolean result = getTouchAt(event.getX(), event.getY(), backBtnDestination);
 				if (result)
 				{
+					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 					deselectItem();
 					finish();				
 				}
@@ -387,6 +397,7 @@ public class SSceneActivity extends Activity
 	//Override this function, but super it to use the background image
 	public void onDraw(Canvas canvas, Paint paint)
 	{		
+		//draw background
 		if(backgroundImageResID!=-1)
 		{
 			Bitmap backgroundBmp = SSceneBitmapProvider.getInstance().decodeImage(backgroundImageResID);
@@ -399,6 +410,7 @@ public class SSceneActivity extends Activity
 			canvas.drawRect(new Rect(0,0,Global.SCREEN_WIDTH,Global.SCREEN_HEIGHT), paint);
 		}
 		
+		//draw any revealed foreground
 		if(foregroundImageResID != -1)
 		{
 			for(String boxName:unhiddenForegroundBoxes)
@@ -411,10 +423,28 @@ public class SSceneActivity extends Activity
 					canvas.drawBitmap(foregroundBmp,
 							new Rect((int)(b.left * foregroundBmp.getWidth()), (int)(b.top * foregroundBmp.getHeight()),
 									(int)(b.right * foregroundBmp.getWidth()), (int)(b.bottom * foregroundBmp.getHeight())),							
-							new RectF(b.left * Global.SCREEN_WIDTH, b.top * Global.SCREEN_HEIGHT,
-									b.right * Global.SCREEN_WIDTH, b.bottom * Global.SCREEN_HEIGHT),
+							b.getPixelCoords(),
 							paint);
 				}				
+			}
+		}
+		
+		//draw any bitmap mapped boxes
+		Iterator<Map.Entry<String,Bitmap>> boxBitmapTableIt
+			= boxBitmapTable.entrySet().iterator();
+		
+		while(boxBitmapTableIt.hasNext())
+		{
+			Map.Entry<String,Bitmap> entry = boxBitmapTableIt.next();
+			
+			Box box = layout.getBoxWithName(entry.getKey());
+			
+			if(box!=null)
+			{
+				canvas.drawBitmap(entry.getValue(),
+						null,							
+						box.getPixelCoords(),
+						paint);
 			}
 		}
 	}    
@@ -429,6 +459,14 @@ public class SSceneActivity extends Activity
     	return false;
     }
     
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		if(this.sceneText!=null && this.sceneText.equals(DEFAULT_ITEMUSE_TEXT))
+			this.sceneText = null;
+	}    
+    
     public void setBackgroundImage(int resourceID)
     {
     	backgroundImageResID = resourceID;
@@ -441,6 +479,7 @@ public class SSceneActivity extends Activity
     
     protected void showItemPickUpModal(String itemID)
     {
+    	MSoundManager.getInstance().playSoundEffect(R.raw.tick);
     	Item item = IItemManager.getInstance().getItemFromPool(itemID);
     	itemPickedUp = item;
     	repaint();
@@ -535,12 +574,29 @@ public class SSceneActivity extends Activity
 		IItemMenu.itemInUse = null;
 	}
 	
+	public void mapBoxBitmap(String boxName, Bitmap bmp)
+	{
+		boxBitmapTable.put(boxName, bmp);
+	}
+	
+	public void upmapBoxBitmap(String boxName)
+	{
+		boxBitmapTable.remove(boxName);
+	}	
+	
+	public void upmapAllBoxBitmaps()
+	{
+		boxBitmapTable.clear();
+	}
+	
 	public SSceneView view;
 	protected SLayout layout;
 	
     private int backgroundImageResID;
     private int foregroundImageResID;
     private ArrayList<String> unhiddenForegroundBoxes;
+    
+    private HashMap<String,Bitmap> boxBitmapTable;
     
     private SLayout.Box selectedBox;
     private Item itemPickedUp = null;

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.view.MotionEvent;
 
 import com.room.Global;
+import com.room.R;
+import com.room.media.MSoundManager;
 
 
 public class RTopButtons
@@ -44,6 +46,7 @@ public class RTopButtons
 		
 		if(poiImage.containsPoint(glX, glY))
 		{
+			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 			Class c = RPOIManager.getInstance().getActivityForPOI(poiName);
 			Intent intent = new Intent(Global.mainActivity, c);
 		    Global.renderActivity.startActivity(intent);
