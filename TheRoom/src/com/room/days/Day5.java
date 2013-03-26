@@ -13,5 +13,10 @@ public class Day5
 		IItemManager.getInstance().addItemToInventory("photo");
 		IItemManager.getInstance().addItemToInventory("knife");
 		IItemManager.getInstance().addItemToInventory("cellphone_cracked");
+		IItemManager.getInstance().addItemToInventory("gear1");
+		IItemManager.getInstance().addItemToInventory("key");
+		IItemManager.getInstance().addItemToInventory("gear2");		
+		IItemManager.getInstance().addItemToInventory("gear3");
+		IItemManager.getInstance().addItemToInventory("brick");
 	}
 }

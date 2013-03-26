@@ -38,12 +38,16 @@ public class IItemManager
 		
 		//Add all items to item pool.
 		itemPool = new HashMap<String, Item>();
-		itemPool.put("key", new IItemManager.Item("key","Tarnished Key", "This item can be used to unlock doors.", R.drawable.item_key));
-		itemPool.put("knife", new IItemManager.Item("knife","Rusted Knife", "An extremely sharp bladed instrument, for surgical use.", R.drawable.item_knife));
+		itemPool.put("key", new IItemManager.Item("key","Tarnished Key", "A tarnished key.", R.drawable.item_key));
+		itemPool.put("knife", new IItemManager.Item("knife","Rusted Knife", "An dull, rusted blade.", R.drawable.item_knife));
 		itemPool.put("cellphone", new IItemManager.Item("cellphone","Tainted Cellphone", "A mobile phone. There's no signal here.", R.drawable.item_cellphone));
-		itemPool.put("cellphone_cracked", new IItemManager.Item("cellphone_cracked","Cracked Cellphone", "A mobile phone. The screen's cracked.", R.drawable.item_cellphone_cracked));
+		itemPool.put("cellphone_cracked", new IItemManager.Item("cellphone_cracked","Cracked Cellphone", "A defunct mobile phone. The screen's cracked.", R.drawable.item_cellphone_cracked));
 		itemPool.put("journal", new IItemManager.Item("journal","Journal", "A worn journal with missing pages.", R.drawable.item_journal));
 		itemPool.put("photo", new IItemManager.Item("photo", "Old Polaroid", "Do I... know these people?", R.drawable.item_picture));
+		itemPool.put("gear1", new IItemManager.Item("gear1", "Bronze Gear", "A damaged gear made of bronze.", R.drawable.item_gear1));
+		itemPool.put("gear2", new IItemManager.Item("gear2", "Silver Gear", "An old gear made of silver.", R.drawable.item_gear2));
+		itemPool.put("gear3", new IItemManager.Item("gear3", "Golden Gear", "A shiny gear plated in gold.", R.drawable.item_gear3));
+		itemPool.put("brick", new IItemManager.Item("brick", "Red Brick", "A heavy brick of clay.", R.drawable.item_brick));
 	}
 	
 	public static class Item

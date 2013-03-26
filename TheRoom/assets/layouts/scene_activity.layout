@@ -1,5 +1,5 @@
-inventoryBtn 0.0 0.08 0.0 0.133 nodesc
-backBtn 0.92 1.0 0.0 0.133 nodesc
-subtitleTextArea 0.18020834 0.8385417 0.85 0.9907407 nodesc
-centerTextArea 0.321875 0.703125 0.4037037 0.5611111 nodesc
-itemPickupImg 0.321875 0.703125 0.1574074 0.7648148 nodesc
+subtitleTextArea 0.18020834 0.8385417 0.85 0.9907407  nodesc
+centerTextArea 0.321875 0.703125 0.4037037 0.5611111  nodesc
+itemPickupImg 0.321875 0.703125 0.1574074 0.7648148  nodesc
+backBtn 0.0 0.090625 0.0 0.15555556 nodesc
+inventoryBtn 0.90729165 0.99895835 0.0 0.1574074 nodesc

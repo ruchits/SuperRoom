@@ -325,6 +325,27 @@ public class SSceneActivity extends Activity
 				return true;
 			}
 			
+			if(showInventoryIcon) {
+				// Handle touch events to inventory icon and back button on SceneLayout.
+				boolean result = getTouchAt(event.getX(), event.getY(), inventoryBtnDestination);
+				if (result) {
+					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
+					Intent intent = new Intent(this, IItemMenu.class);
+					startActivity(intent);
+					return true;
+				}
+			}
+			if (showBackButton) {
+				boolean result = getTouchAt(event.getX(), event.getY(), backBtnDestination);
+				if (result)
+				{
+					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
+					deselectItem();
+					finish();
+					return true;
+				}
+ 			}			
+			
 			selectedBox = null;			
 			selectedBox = layout.getBoxAtPixel(event.getX(), event.getY());
 			if(selectedBox != null) {
@@ -341,25 +362,7 @@ public class SSceneActivity extends Activity
 				
 				repaint();
 			}
-			
-			if(showInventoryIcon) {
-				// Handle touch events to inventory icon and back button on SceneLayout.
-				boolean result = getTouchAt(event.getX(), event.getY(), inventoryBtnDestination);
-				if (result) {
-					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
-					Intent intent = new Intent(this, IItemMenu.class);
-					startActivity(intent);
-				}
-			}
-			if (showBackButton) {
-				boolean result = getTouchAt(event.getX(), event.getY(), backBtnDestination);
-				if (result)
-				{
-					MSoundManager.getInstance().playSoundEffect(R.raw.tick);
-					deselectItem();
-					finish();				
-				}
- 			}
+
 		}
 		else if (actionCode == MotionEvent.ACTION_MOVE)
 		{
