@@ -15,6 +15,9 @@ import javax.swing.event.DocumentListener;
 
 public class ScreenLayoutTool extends JFrame
 {
+	
+	public static String layoutDir = "C:\\workspace\\TheRoom\\assets\\layouts\\";
+	public static String imageDir = "C:\\workspace\\TheRoom\\res\\drawable\\";
 
 	public static void main(String args[])
 	{
@@ -44,7 +47,7 @@ public class ScreenLayoutTool extends JFrame
 		sceneView = new SceneView();
 		
 		setLocation(new Point(0,0));
-		setSize(200,250);
+		setSize(200,300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		
@@ -63,6 +66,7 @@ public class ScreenLayoutTool extends JFrame
         clearLayoutButton = new JButton("Clear Layout");
         loadLayoutButton = new JButton("Load Layout");
         saveLayoutButton = new JButton("Save Layout");
+        dumpImagesButton = new JButton("Dump Box Images");
         nameTextField = new JTextField(10);
         nameTextField.setEnabled(false);        
         descTextField = new JTextField(10);
@@ -84,13 +88,17 @@ public class ScreenLayoutTool extends JFrame
         layout.putConstraint(SpringLayout.WEST, saveLayoutButton, 10, SpringLayout.WEST, contentPane);
 		layout.putConstraint(SpringLayout.NORTH, saveLayoutButton, 10 + 30*3, SpringLayout.NORTH, contentPane);
 		
+        contentPane.add(dumpImagesButton);
+        layout.putConstraint(SpringLayout.WEST, dumpImagesButton, 10, SpringLayout.WEST, contentPane);
+		layout.putConstraint(SpringLayout.NORTH, dumpImagesButton, 10 + 30*4, SpringLayout.NORTH, contentPane);		
+		
         contentPane.add(nameTextField);
         layout.putConstraint(SpringLayout.WEST, nameTextField, 10, SpringLayout.WEST, contentPane);
-		layout.putConstraint(SpringLayout.NORTH, nameTextField, 10 + 30*4, SpringLayout.NORTH, contentPane);
+		layout.putConstraint(SpringLayout.NORTH, nameTextField, 10 + 30*5, SpringLayout.NORTH, contentPane);
 		
         contentPane.add(descTextField);
         layout.putConstraint(SpringLayout.WEST, descTextField, 10, SpringLayout.WEST, contentPane);
-		layout.putConstraint(SpringLayout.NORTH, descTextField, 10 + 30*5, SpringLayout.NORTH, contentPane);		
+		layout.putConstraint(SpringLayout.NORTH, descTextField, 10 + 30*6, SpringLayout.NORTH, contentPane);		
 	}
 
 	
@@ -100,7 +108,7 @@ public class ScreenLayoutTool extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				String filename = getFileName();
+				String filename = getFileName("Select an image","OK",imageDir);
 				if(filename != null)
 				{
 					sceneView.loadImage(filename);
@@ -126,7 +134,7 @@ public class ScreenLayoutTool extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				String filename = getFileName();
+				String filename = getFileName("Load a layout","Load",layoutDir);
 				if(filename != null)
 				{
 					Data.loadFromFile(filename);
@@ -138,10 +146,23 @@ public class ScreenLayoutTool extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				String filename = getFileName();
+				String filename = getFileName("Save layout as","Save",layoutDir);
 				if(filename != null)
 				{
 					Data.saveToFile(filename);
+				}
+			}
+		});		
+		
+		dumpImagesButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				String filename = getDirName("Select path to save images","Save",imageDir);
+
+				if(filename != null)
+				{
+					sceneView.dumpImages(filename);				
 				}
 			}
 		});		
@@ -163,10 +184,13 @@ public class ScreenLayoutTool extends JFrame
 		});		
 	}
 	
-	private String getFileName()
+	
+	private String getFileName(String title, String okButton, String currentDirectory)
 	{
 		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setCurrentDirectory(new File("."));
+		fileChooser.setDialogTitle(title);
+		fileChooser.setApproveButtonText(okButton);
+		fileChooser.setCurrentDirectory(new File(currentDirectory));
 		int result = fileChooser.showOpenDialog(this);
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
@@ -174,6 +198,21 @@ public class ScreenLayoutTool extends JFrame
 		}
 		return null;
 	}
+	
+	private String getDirName(String title, String okButton, String currentDirectory)
+	{
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle(title);
+		fileChooser.setApproveButtonText(okButton);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fileChooser.setCurrentDirectory(new File(currentDirectory));
+		int result = fileChooser.showOpenDialog(this);
+		if (result == JFileChooser.APPROVE_OPTION) {
+		    File selectedFile = fileChooser.getSelectedFile();
+		    return selectedFile.getAbsolutePath();
+		}
+		return null;
+	}	
 	
 	public void enableText(String name, String desc)
 	{
@@ -211,6 +250,7 @@ public class ScreenLayoutTool extends JFrame
 	private JButton clearLayoutButton;
 	private JButton loadLayoutButton;
 	private JButton saveLayoutButton;
+	private JButton dumpImagesButton;
 	public JTextField nameTextField;
 	public JTextField descTextField;
 	private Container contentPane;

@@ -139,7 +139,7 @@ public class Data
 	
 	public static void draw(Graphics g)
 	{
-		if(ScreenLayoutTool.sceneView.img == null)
+		if(ScreenLayoutTool.sceneView==null || ScreenLayoutTool.sceneView.img == null)
 			return;
 		
 		g.setColor(boxColor);

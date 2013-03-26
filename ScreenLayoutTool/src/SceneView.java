@@ -124,6 +124,8 @@ public class SceneView extends JDialog
 		
 	}
 	
+
+	
 	public void loadImage(String path)
 	{
 		img = ImgFileIO.readImage(path);
@@ -140,6 +142,22 @@ public class SceneView extends JDialog
 		
 		repaint();
 	}
+	
+	
+	public void dumpImages(String path)
+	{
+		if(img==null) return;
+		
+		for(Data.Box b:Data.boxes)
+		{
+			int x = (int)(b.left * img.getWidth());
+			int y = (int)(b.top * img.getHeight());
+			int w = (int)((b.right - b.left) * img.getWidth());
+			int h = (int)((b.bottom - b.top) * img.getHeight());
+			BufferedImage subImage = img.getSubimage(x,y,w,h);
+			ImgFileIO.saveimage(subImage, path+b.name+".png");
+		}
+	}	
 	
 	public void draw(Graphics g)
 	{

@@ -33,4 +33,16 @@ public class ImgFileIO
 			return null;
 		}
 	}
+	
+	public static void saveimage(BufferedImage img, String filePath)
+	{
+		try
+		{
+			ImageIO.write(img, "png", new File(filePath));
+		}
+		catch(Exception e)
+		{
+			System.out.println("FileIO error - "+filePath);
+		}		
+	}
 }
