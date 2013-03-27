@@ -61,7 +61,6 @@ public class RModelLoader
 	public void init()
 	{
 		
-		
 		if(!Global.DEBUG_NO_PROPS)	
 		{
 			modelProps = loadBinaryModel("model_props.bin");
@@ -130,163 +129,22 @@ public class RModelLoader
 		activePropBoundary = boundaryProps;
 	}
 
-	private class OBJFace
+
+	private void addModelGroup(RModel model, 
+			FloatBuffer vertices, FloatBuffer normals, FloatBuffer textures,
+			ShortBuffer indices, String textureName, String groupName)
 	{
-		int v1,vt1,vn1;
-		int v2,vt2,vn2;
-		int v3,vt3,vn3;
-	}
-	
-	private void addModelGroup(RModel model, ArrayList<RMath.V3> vertices,
-			ArrayList<RMath.V3> normals, ArrayList<RMath.V2> textures,
-			ArrayList<OBJFace> faces, String textureName)
-	{
-		FloatBuffer vertexBuffer;
-		FloatBuffer normalBuffer;
-		FloatBuffer texBuffer;
-		int numTriangles;
+		indices.position(0);				
+		int numTriangles = indices.capacity()/3; //3 shorts per face				
 		
-        // #faces * 3(3 verts in a tri) * 3(x,y,z per vert) * 4 (4 bytes per float)    	
-		vertexBuffer = ByteBuffer.allocateDirect(faces.size() * 3 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-		normalBuffer = ByteBuffer.allocateDirect(faces.size() * 3 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-		texBuffer = ByteBuffer.allocateDirect(faces.size() * 3 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		vertices.position(0);
+		normals.position(0);
+		textures.position(0);
 		
-		for(int i=0; i<faces.size(); ++i)
-		{
-			OBJFace face = faces.get(i);
-			
-			RMath.V3 v1 = vertices.get(face.v1-1);
-			RMath.V3 v2 = vertices.get(face.v2-1);
-			RMath.V3 v3 = vertices.get(face.v3-1);
-			RMath.V3 vn1 = normals.get(face.vn1-1);
-			RMath.V3 vn2 = normals.get(face.vn2-1);
-			RMath.V3 vn3 = normals.get(face.vn3-1);
-			RMath.V2 vt1 = textures.get(face.vt1-1);
-			RMath.V2 vt2 = textures.get(face.vt2-1);
-			RMath.V2 vt3 = textures.get(face.vt3-1);
-			
-			vertexBuffer.put(v1.x);
-			vertexBuffer.put(v1.y);
-			vertexBuffer.put(v1.z);
-			vertexBuffer.put(v2.x);
-			vertexBuffer.put(v2.y);
-			vertexBuffer.put(v2.z);
-			vertexBuffer.put(v3.x);
-			vertexBuffer.put(v3.y);
-			vertexBuffer.put(v3.z);		
-			
-			normalBuffer.put(vn1.x);
-			normalBuffer.put(vn1.y);
-			normalBuffer.put(vn1.z);
-			normalBuffer.put(vn2.x);
-			normalBuffer.put(vn2.y);
-			normalBuffer.put(vn2.z);
-			normalBuffer.put(vn3.x);
-			normalBuffer.put(vn3.y);
-			normalBuffer.put(vn3.z);		
-			
-			texBuffer.put(vt1.x);
-			texBuffer.put(vt1.y);
-			texBuffer.put(vt2.x);
-			texBuffer.put(vt2.y);
-			texBuffer.put(vt3.x);
-			texBuffer.put(vt3.y);
-		}
-				
-		vertexBuffer.position(0);
-		normalBuffer.position(0);
-		texBuffer.position(0);
-		
-		numTriangles = faces.size();
-		
-		model.vertexBuffer.add(vertexBuffer);
-		model.normalBuffer.add(normalBuffer);
-		model.texBuffer.add(texBuffer);
-		model.numTriangles.add(numTriangles);
-		model.textureID.add(textureName);
-		
-		model.numGroups++;
-	}
-	
-	private void addModelGroup(RModel model, FloatBuffer vertices,
-			FloatBuffer normals, FloatBuffer textures,
-			ShortBuffer faces, String textureName)
-	{
-		faces.position(0);		
-		
-		FloatBuffer vertexBuffer;
-		FloatBuffer normalBuffer;
-		FloatBuffer texBuffer;
-		int numTriangles = faces.capacity()/9; //9 shorts per face				
-		
-        // #faces * 3(3 verts in a tri) * 3(x,y,z per vert) * 4 (4 bytes per float)    	
-		vertexBuffer = ByteBuffer.allocateDirect(numTriangles * 3 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-		normalBuffer = ByteBuffer.allocateDirect(numTriangles * 3 * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-		texBuffer = ByteBuffer.allocateDirect(numTriangles * 3 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-		
-		for(int i=0; i<numTriangles; ++i)
-		{
-			OBJFace face = new OBJFace();
-			face.v1 = faces.get();
-			face.v2 = faces.get();
-			face.v3 = faces.get();
-			face.vn1 = faces.get();
-			face.vn2 = faces.get();
-			face.vn3 = faces.get();
-			face.vt1 = faces.get();
-			face.vt2 = faces.get();
-			face.vt3 = faces.get();			
-			
-			vertices.position((face.v1-1)*3); //3 floats per vertex
-			vertexBuffer.put(vertices.get());
-			vertexBuffer.put(vertices.get());
-			vertexBuffer.put(vertices.get());			
-			
-			vertices.position((face.v2-1)*3); //3 floats per vertex
-			vertexBuffer.put(vertices.get());
-			vertexBuffer.put(vertices.get());
-			vertexBuffer.put(vertices.get());	
-			
-			vertices.position((face.v3-1)*3); //3 floats per vertex
-			vertexBuffer.put(vertices.get());
-			vertexBuffer.put(vertices.get());
-			vertexBuffer.put(vertices.get());				
-			
-			normals.position((face.vn1-1)*3); //3 floats per vertex
-			normalBuffer.put(normals.get());
-			normalBuffer.put(normals.get());
-			normalBuffer.put(normals.get());				
-			
-			normals.position((face.vn2-1)*3); //3 floats per vertex
-			normalBuffer.put(normals.get());
-			normalBuffer.put(normals.get());
-			normalBuffer.put(normals.get());			
-			
-			normals.position((face.vn3-1)*3); //3 floats per vertex
-			normalBuffer.put(normals.get());
-			normalBuffer.put(normals.get());
-			normalBuffer.put(normals.get());			
-			
-			textures.position((face.vt1-1)*2); //2 floats per vertex
-			texBuffer.put(textures.get());
-			texBuffer.put(textures.get());			
-			
-			textures.position((face.vt2-1)*2); //2 floats per vertex
-			texBuffer.put(textures.get());
-			texBuffer.put(textures.get());				
-			
-			textures.position((face.vt3-1)*2); //2 floats per vertex
-			texBuffer.put(textures.get());
-			texBuffer.put(textures.get());				
-		}
-				
-		vertexBuffer.position(0);
-		normalBuffer.position(0);
-		texBuffer.position(0);
-		
-		model.vertexBuffer.add(vertexBuffer);
-		model.normalBuffer.add(normalBuffer);
-		model.texBuffer.add(texBuffer);
+		model.vertexBuffer.add(vertices);
+		model.normalBuffer.add(normals);
+		model.texBuffer.add(textures);
+		model.indexBuffer.add(indices);
 		model.numTriangles.add(numTriangles);
 		model.textureID.add(textureName);
 		
@@ -297,46 +155,13 @@ public class RModelLoader
 	{
 		RModel model = new RModel();
 		AssetManager assetManager = Global.mainActivity.getAssets();
-		int FILE_HEADER_SIZE = 6;
-		int GROUP_HEADER_SIZE = 6;
+		//int FILE_HEADER_SIZE = 6;
+		int GROUP_HEADER_SIZE = 8;
 		
 		try
 		{
 			InputStream is = assetManager.open("geometry/"+assetName);
-			
-			byte[] header = new byte[FILE_HEADER_SIZE];
-			is.read(header, 0, FILE_HEADER_SIZE);			
-			
-			ByteBuffer headerByteBuffer = ByteBuffer.wrap(header);
-			headerByteBuffer.order(ByteOrder.BIG_ENDIAN);
-			ShortBuffer headerBuffer = headerByteBuffer.asShortBuffer();
-
-			short numVertices = headerBuffer.get();
-			short numNormals = headerBuffer.get();
-			short numTextures = headerBuffer.get();
-			
-			byte[] vertices = new byte[numVertices*4*3];
-			is.read(vertices,0,numVertices*4*3);
-			
-			ByteBuffer verticesByteBuffer = ByteBuffer.wrap(vertices);
-			verticesByteBuffer.order(ByteOrder.BIG_ENDIAN);
-			FloatBuffer verticesBuffer = verticesByteBuffer.asFloatBuffer();
-			
-			byte[] normals = new byte[numNormals*4*3];
-			is.read(normals,0,numNormals*4*3);
-			
-			ByteBuffer normalsByteBuffer = ByteBuffer.wrap(normals);
-			normalsByteBuffer.order(ByteOrder.BIG_ENDIAN);
-			FloatBuffer normalsBuffer = normalsByteBuffer.asFloatBuffer();
-			
-			byte[] textures = new byte[numTextures*4*2];
-			is.read(textures,0,numTextures*4*2);
-			
-			ByteBuffer texturesByteBuffer = ByteBuffer.wrap(textures);
-			texturesByteBuffer.order(ByteOrder.BIG_ENDIAN);
-			FloatBuffer texturesBuffer = texturesByteBuffer.asFloatBuffer();			
-			
-			
+	
 			while(true)
 			{
 				byte[] groupHeader = new byte[GROUP_HEADER_SIZE];
@@ -344,29 +169,60 @@ public class RModelLoader
 				if(status == -1) break;
 				
 				ByteBuffer groupHeaderByteBuffer = ByteBuffer.wrap(groupHeader);
-				groupHeaderByteBuffer.order(ByteOrder.BIG_ENDIAN);
+				groupHeaderByteBuffer.order(ByteOrder.nativeOrder());
 				ShortBuffer groupHeaderBuffer = groupHeaderByteBuffer.asShortBuffer();
 
 				short groupNameLength = groupHeaderBuffer.get();
 				short groupMtlLength = groupHeaderBuffer.get();
 				short numFaces = groupHeaderBuffer.get();
+				short numVerts = groupHeaderBuffer.get();
 				
 				byte[] groupNameBytes = new byte[groupNameLength];
 				is.read(groupNameBytes,0,groupNameLength);
-				//String groupName = new String(groupNameBytes);
+				String groupName = new String(groupNameBytes);
 				
 				byte[] groupMtlBytes = new byte[groupMtlLength];
 				is.read(groupMtlBytes,0,groupMtlLength);
 				String groupMtl = new String(groupMtlBytes);						
 				
-				byte[] faces = new byte[numFaces*2*9];
-				is.read(faces, 0, numFaces*2*9);			
+				byte[] indices = new byte[numFaces*2*3];
+				is.read(indices, 0, numFaces*2*3);			
 				
-				ByteBuffer facesByteBuffer = ByteBuffer.wrap(faces);
-				facesByteBuffer.order(ByteOrder.BIG_ENDIAN);
-				ShortBuffer facesBuffer = facesByteBuffer.asShortBuffer();
+				ByteBuffer indicesByteBuffer = ByteBuffer.wrap(indices);
+				indicesByteBuffer.order(ByteOrder.nativeOrder());
+				ShortBuffer indicesBuffer = indicesByteBuffer.asShortBuffer();
 				
-				addModelGroup(model,verticesBuffer,normalsBuffer,texturesBuffer,facesBuffer,groupMtl);
+				byte[] vertices = new byte[numVerts*4*3];
+				is.read(vertices, 0, numVerts*4*3);			
+				
+				ByteBuffer verticesByteBuffer = ByteBuffer.wrap(vertices);
+				verticesByteBuffer.order(ByteOrder.nativeOrder());
+				FloatBuffer verticesBuffer = verticesByteBuffer.asFloatBuffer();	
+				
+				byte[] normals = new byte[numVerts*4*3];
+				is.read(normals, 0, numVerts*4*3);			
+				
+				ByteBuffer normalsByteBuffer = ByteBuffer.wrap(normals);
+				normalsByteBuffer.order(ByteOrder.nativeOrder());
+				FloatBuffer normalsBuffer = normalsByteBuffer.asFloatBuffer();		
+				
+				byte[] textures = new byte[numVerts*4*2];
+				is.read(textures, 0, numVerts*4*2);			
+				
+				ByteBuffer texturesByteBuffer = ByteBuffer.wrap(textures);
+				texturesByteBuffer.order(ByteOrder.nativeOrder());
+				FloatBuffer texturesBuffer = texturesByteBuffer.asFloatBuffer();
+				
+				ShortBuffer directIndicesBuffer =  ByteBuffer.allocateDirect(numFaces*2*3).order(ByteOrder.nativeOrder()).asShortBuffer();
+				directIndicesBuffer.put(indicesBuffer);
+				FloatBuffer directVerticesBuffer = ByteBuffer.allocateDirect(numVerts*4*3).order(ByteOrder.nativeOrder()).asFloatBuffer();
+				directVerticesBuffer.put(verticesBuffer);
+				FloatBuffer directNormalsBuffer = ByteBuffer.allocateDirect(numVerts*4*3).order(ByteOrder.nativeOrder()).asFloatBuffer();
+				directNormalsBuffer.put(normalsBuffer);
+				FloatBuffer directTexturesBuffer = ByteBuffer.allocateDirect(numVerts*4*2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+				directTexturesBuffer.put(texturesBuffer);
+
+				addModelGroup(model,directVerticesBuffer,directNormalsBuffer,directTexturesBuffer,directIndicesBuffer,groupMtl,groupName);
 			}
 
 			is.close();
@@ -379,118 +235,6 @@ public class RModelLoader
 		return model;
 	}
 	
-	//loads OBJ models
-	@SuppressWarnings("unused")
-	private RModel loadModel(String assetName)
-	{
-		RModel model = new RModel();
-		
-		ArrayList<RMath.V3> vertices = new ArrayList<RMath.V3>();
-		ArrayList<RMath.V3> normals = new ArrayList<RMath.V3>();
-		ArrayList<RMath.V2> textures = new ArrayList<RMath.V2>();
-		ArrayList<OBJFace> faces = new ArrayList<OBJFace>();
-		String textureName = null;
-		
-		boolean groupStart = false;
-				
-		AssetManager assetManager = Global.mainActivity.getAssets();
-		
-		try
-		{
-			InputStream is = assetManager.open("geometry/"+assetName);			
-			BufferedReader in = new BufferedReader(new InputStreamReader(is));
-			
-			while(true)
-			{
-				String line = in.readLine();
-				if(line==null) break;
-				
-				StringTokenizer st = new StringTokenizer(line, " /\t");
-				if(st.countTokens()==0) continue;
-				
-				String type = st.nextToken();
-					
-				if(type.equals("usemtl"))
-				{
-					textureName = st.nextToken();
-				}
-				else if(type.equals("f"))
-				{
-					OBJFace f = new OBJFace();
-					f.v1 = Integer.parseInt(st.nextToken());
-					f.vt1 = Integer.parseInt(st.nextToken());
-					f.vn1 = Integer.parseInt(st.nextToken());
-					f.v2 = Integer.parseInt(st.nextToken());
-					f.vt2 = Integer.parseInt(st.nextToken());
-					f.vn2 = Integer.parseInt(st.nextToken());
-					f.v3 = Integer.parseInt(st.nextToken());
-					f.vt3 = Integer.parseInt(st.nextToken());
-					f.vn3 = Integer.parseInt(st.nextToken());
-					faces.add(f);
-				}
-
-				else if(groupStart && type.equals("g"))
-				{
-					//String groupName = st.nextToken();
-					
-					//end the group if it has started
-					addModelGroup(model,vertices,normals,textures,faces,textureName);
-					faces.clear();
-					textureName = null;
-				}
-				
-				else if(type.equals("g"))
-				{
-					//String groupName = st.nextToken();
-					groupStart = true;
-				}				
-				
-				else if(type.equals("v"))
-				{
-					RMath.V3 p = new RMath.V3(
-							Float.parseFloat(st.nextToken()),
-							Float.parseFloat(st.nextToken()),
-							Float.parseFloat(st.nextToken()));
-					vertices.add(p);
-				}
-				else if(type.equals("vn"))
-				{
-					RMath.V3 p = new RMath.V3(
-							Float.parseFloat(st.nextToken()),
-							Float.parseFloat(st.nextToken()),
-							Float.parseFloat(st.nextToken()));
-					normals.add(p);
-				}		
-				else if(type.equals("vt"))
-				{
-					RMath.V2 p = new RMath.V2(
-							Float.parseFloat(st.nextToken()),
-							Float.parseFloat(st.nextToken()));
-					textures.add(p);
-				}				
-				
-			}
-			
-			in.close();
-			is.close();
-			
-			//if there is a group remaining, add it to the model:
-			if(groupStart)
-			{
-				//end the group if it has started
-				groupStart = false;
-				addModelGroup(model,vertices,normals,textures,faces,textureName);
-				faces.clear();
-				textureName = null;				
-			}			
-		}
-		catch(Exception e)
-		{
-			Log.d("Model Loader", assetName+" failed to load!");
-		}
-	
-		return model;
-	}
 
 	/* loads Boundaries from *.boundary file.
 	 * Minimal error checking, make sure items in boundary file is valid.
