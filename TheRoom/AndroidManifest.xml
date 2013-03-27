@@ -47,6 +47,7 @@
         <activity android:name=".puzzles.PFlood" android:label="@string/app_name" android:screenOrientation="landscape"></activity>
         <activity android:screenOrientation="landscape" android:name=".puzzles.PCellphone" android:label="@string/app_name"></activity>
         <activity android:screenOrientation="landscape" android:name=".scene.STextScene" android:label="@string/app_name"></activity>
+        <activity android:screenOrientation="landscape" android:name=".media.MPeepholeVideoActivity" android:label="@string/app_name"></activity>
     </application>
 
 </manifest>

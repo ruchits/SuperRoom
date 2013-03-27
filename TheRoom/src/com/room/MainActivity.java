@@ -104,7 +104,7 @@ public class MainActivity extends Activity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		System.exit(0);
+		finish();
 	}
 	
 	private MFullScreenVideoView logoVideo = null;	
