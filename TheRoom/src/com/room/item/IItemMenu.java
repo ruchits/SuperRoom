@@ -1,17 +1,12 @@
 package com.room.item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -21,7 +16,6 @@ import com.room.R;
 import com.room.item.IItemManager.Item;
 import com.room.media.MSoundManager;
 import com.room.puzzles.*;
-import com.room.scene.SLayout.Box;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;

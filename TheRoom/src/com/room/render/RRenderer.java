@@ -82,6 +82,7 @@ public class RRenderer implements GLSurfaceView.Renderer
 		lastDrawTime = System.currentTimeMillis();
 		headbobCtr = 0;
 		lastStep = 0;
+		isVisible = false;
 
 	    fpsCtrBaseFrame = 0;
 	    fpsCtrBaseTime = lastDrawTime;
@@ -90,7 +91,9 @@ public class RRenderer implements GLSurfaceView.Renderer
 		//set starting camera angle
 		cameraPitch(-23.71069f);
 		cameraYaw(16.102112f);
-        Global.progDailog.dismiss();
+		
+        Global.renderActivity.loadingDialog.dismiss(); 
+		Global.renderActivity.showTextScene();
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
@@ -203,7 +206,9 @@ public class RRenderer implements GLSurfaceView.Renderer
         float spotLightVariation = RMath.getRandFlashlightFlicker();
 
         //Draw objects
-        RDrawLogic.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        if(isVisible)
+        	RDrawLogic.getInstance().draw(viewProjMatrix,spotLightPos,spotLightVec,spotLightVariation);
+        
         ++frameCtr;
     }
 
@@ -567,7 +572,23 @@ public class RRenderer implements GLSurfaceView.Renderer
     {
     	return camCurrentPitch;
     }
-
+    
+    public void resetFlashlightHeight()
+    {
+    	currentFLHeight = 5;
+    }
+    
+    public void resetLastDrawTime()
+    {
+    	lastDrawTime = System.currentTimeMillis();
+    }
+    
+    public void setVisible(boolean visibility)
+    {
+    	isVisible = visibility;
+    }
+    
+    private boolean isVisible;
     private float currentFLHeight = FLASHLIGHT_HEIGHT_MIN;
     private float targetFLHeight = 0;
 

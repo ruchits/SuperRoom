@@ -10,7 +10,6 @@ import com.room.R;
 import com.room.Global.TextType;
 import com.room.days.Day1;
 import com.room.item.IItemManager;
-import com.room.item.IItemManager.Item;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;

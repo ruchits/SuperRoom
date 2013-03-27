@@ -16,9 +16,4 @@ void main()
 		aPosition.y * uSize.y + uPosition.y,
 		aPosition.z,
 		aPosition.w);
-
-	/*gl_Position = vec4(
-		aPosition.x * uSize.x + uPosition.x,
-		aPosition.y * uSize.y + uPosition.y,
-		0.0,0.0);*/
 }

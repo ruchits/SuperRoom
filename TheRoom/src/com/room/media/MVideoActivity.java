@@ -16,11 +16,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.VideoView;
 
 public class MVideoActivity extends Activity implements OnTouchListener{
-	VideoView video = null;
-	int stopPosition = 0;
+	private MFullScreenVideoView video = null;
+	private int stopPosition = 0;
 	
 	public static final String DAY1_VIDEO = "android.resource://com.room/raw/day1";
 	public static final String DAY2_VIDEO = "android.resource://com.room/raw/sample";
@@ -38,7 +37,7 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 		super.onCreate(savedInstanceState);
 		MSoundManager.getInstance().stopAndReleaseMusic();
 		setContentView(R.layout.video);
-		video = (VideoView) findViewById(R.id.video);
+		video = (MFullScreenVideoView) findViewById(R.id.video);
 		video.setOnTouchListener(this);
 		video.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 

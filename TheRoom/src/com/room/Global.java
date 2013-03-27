@@ -3,10 +3,7 @@ package com.room;
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
 import com.room.days.*;
-import com.room.item.IItemManager.Item;
 import com.room.render.RRenderActivity;
-
-import android.app.ProgressDialog;
 
 
 public class Global
@@ -40,8 +37,6 @@ public class Global
 	
 	public static int VMMemSize;
 	public enum ResType { LOW_RES, MED_RES, HI_RES};
-	
-	public static ProgressDialog progDailog;
 
 	public static int getCurrentDay()
 	{

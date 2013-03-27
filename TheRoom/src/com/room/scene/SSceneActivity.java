@@ -409,7 +409,7 @@ public class SSceneActivity extends Activity
 		}
 		else
 		{
-			paint.setColor(Color.WHITE);
+			paint.setColor(Color.BLACK);
 			canvas.drawRect(new Rect(0,0,Global.SCREEN_WIDTH,Global.SCREEN_HEIGHT), paint);
 		}
 		

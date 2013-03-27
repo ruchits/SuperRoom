@@ -1,32 +1,31 @@
 package com.room;
 
 import com.room.item.IItemManager;
+import com.room.media.MFullScreenVideoView;
 import com.room.media.MSoundManager;
 import com.room.render.RModelLoader;
 import com.room.render.RPOIManager;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneBitmapProvider;
 
+import android.media.MediaPlayer;
 import android.os.*;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.util.DisplayMetrics;
-import android.view.*;
-import android.view.View.OnClickListener;
 
-public class MainActivity extends Activity implements OnClickListener
+public class MainActivity extends Activity
 {
+	private static final String logoVideoPath = "android.resource://com.room/raw/logo";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
         //store reference to first activity for any asset loaders
         Global.mainActivity = this;
-
-        setContentView(R.layout.activity_main);
+        
         ActivityManager am= (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         Global.VMMemSize = am.getMemoryClass();
         
@@ -35,6 +34,19 @@ public class MainActivity extends Activity implements OnClickListener
         
         OptionManager.pref = getSharedPreferences("pref", 0);
         OptionManager.editor = OptionManager.pref.edit();
+                
+        setContentView(R.layout.video);
+		logoVideo = (MFullScreenVideoView) findViewById(R.id.video);		
+		
+		logoVideo.setOnPreparedListener (new MediaPlayer.OnPreparedListener() {                    
+		    @Override
+		    public void onPrepared(MediaPlayer mp) {
+		        mp.setLooping(true);
+		    }
+		});     
+		
+		logoVideo.setVideoPath(logoVideoPath);
+		logoVideo.start();		
 
         new LoadTask(this, null).execute();
 	}
@@ -44,12 +56,7 @@ public class MainActivity extends Activity implements OnClickListener
 	     Context context;
 	     LoadTask(Context context,String userid)
 	     {
-	               this.context=context;
-	     }
-	     @Override
-	     protected void onPreExecute()
-	     {
-	         super.onPreExecute();
+	    	 this.context=context;
 	     }
 
 	     @Override
@@ -88,31 +95,17 @@ public class MainActivity extends Activity implements OnClickListener
 	     protected void onPostExecute(String result)
 	     {
 	         super.onPostExecute(result);
+	         logoVideo.stopPlayback();
 	         Intent intent = new Intent(this.context, MainMenu.class);
 		     startActivityForResult(intent, 1);
 	     }
 	}
 
 	@Override
-	public void onClick(View v) {
-		// do nothing here, since this is just loading activity.
-	}
-
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-	}
-
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
-	}
-
-	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		finish();
+		System.exit(0);
 	}
+	
+	private MFullScreenVideoView logoVideo = null;	
 }

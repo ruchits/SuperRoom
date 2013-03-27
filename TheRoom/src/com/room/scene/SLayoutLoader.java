@@ -28,6 +28,7 @@ public class SLayoutLoader
 	public SLayout itemMenu;
 	public SLayout sceneActivity;
 	public SLayout options;
+	public SLayout textScene;
 	
 	public SLayout puzzleFlood;
 	public SLayout puzzleExample;
@@ -51,6 +52,7 @@ public class SLayoutLoader
 		itemMenu = loadLayout("items_menu.layout");
 		sceneActivity = loadLayout("scene_activity.layout");
 		options = loadLayout("options.layout");
+		textScene = loadLayout("text_scene.layout");
 		
 		puzzleFlood = loadLayout("puzzle_flood.layout");
 		puzzleExample = loadLayout("puzzle_example.layout");

@@ -3,6 +3,7 @@ package com.room.render;
 import com.room.Global;
 import com.room.R;
 import com.room.media.MSoundManager;
+import com.room.scene.STextScene;
 import com.room.utils.UTransitionUtil;
 
 import android.content.*;
@@ -14,6 +15,7 @@ import android.view.*;
 public class RRenderActivity extends Activity
 {
 	public RRenderView view;
+	public RLoadingDialog loadingDialog;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -22,8 +24,10 @@ public class RRenderActivity extends Activity
     	Global.renderActivity = this;
     	
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);           
-        Global.progDailog = ProgressDialog.show(this, "Please wait", "Loading game ...", true);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
+        loadingDialog = new RLoadingDialog(this);
+        loadingDialog.show();
         
         view = new RRenderView(this);
         setContentView(view);                
@@ -44,6 +48,11 @@ public class RRenderActivity extends Activity
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(RRenderer.getInstance());
         }    
+    }
+    
+    public void showTextScene()
+    {
+    	startActivity(new Intent(this, STextScene.class));
     }
     
     @Override
@@ -97,7 +106,7 @@ public class RRenderActivity extends Activity
 	protected void onResume()
 	{
 		super.onResume();
-		
+		RRenderer.getInstance().resetLastDrawTime();
 		//tbd - replace with real bg music here:
 		MSoundManager.getInstance().playMusic(R.raw.music_game);
 	}

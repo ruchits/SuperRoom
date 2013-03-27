@@ -2,19 +2,11 @@ package com.room.item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
-import com.room.Global;
 import com.room.R;
-import com.room.item.IItemManager.Item;
-import com.room.scene.SLayoutLoader;
-import com.room.scene.SLayout.Box;
 import com.room.utils.UBitmapUtil;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 public class IItemManager
 {
