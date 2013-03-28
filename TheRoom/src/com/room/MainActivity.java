@@ -106,6 +106,13 @@ public class MainActivity extends Activity
 		super.onActivityResult(requestCode, resultCode, data);
 		finish();
 	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		android.os.Process.killProcess(android.os.Process.myPid());
+	}
 	
 	private MFullScreenVideoView logoVideo = null;	
 }
