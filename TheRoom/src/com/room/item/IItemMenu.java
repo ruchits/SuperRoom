@@ -169,6 +169,9 @@ public class IItemMenu extends SSceneActivity
 		{
 			startActivity(new Intent(this, PCellphone.class));
 		}
+		else if(item.getID().equals("journal")) {
+			startActivity(new Intent(this, PJournal.class));
+		}
 		else
 			finish();
 	}

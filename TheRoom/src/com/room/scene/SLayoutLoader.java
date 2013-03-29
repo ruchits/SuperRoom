@@ -44,6 +44,7 @@ public class SLayoutLoader
 	public SLayout puzzleStatuesNeutral;
 	public SLayout puzzleUrn;
 	public SLayout puzzleCellphone;
+	public SLayout journal;
 	
 	public void init()
 	{
@@ -53,6 +54,7 @@ public class SLayoutLoader
 		sceneActivity = loadLayout("scene_activity.layout");
 		options = loadLayout("options.layout");
 		textScene = loadLayout("text_scene.layout");
+		journal = loadLayout("journal.layout");
 		
 		puzzleFlood = loadLayout("puzzle_flood.layout");
 		puzzleExample = loadLayout("puzzle_example.layout");
