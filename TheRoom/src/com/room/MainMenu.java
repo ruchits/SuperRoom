@@ -42,7 +42,7 @@ public class MainMenu extends SSceneActivity
     	}
     	else if (box.name.equals("credits"))
     	{
-    		showCredits();
+    		//showCredits();
     	}      	
     	else if (box.name.equals("quit"))
     	{

@@ -22,7 +22,7 @@ public class MVideoActivity extends Activity implements OnTouchListener{
 	private int stopPosition = 0;
 	
 	public static final String DAY1_VIDEO = "android.resource://com.room/raw/day1";
-	public static final String DAY2_VIDEO = "android.resource://com.room/raw/sample";
+	public static final String DAY2_VIDEO = "android.resource://com.room/raw/day2";
 	public static final String DAY3_VIDEO = "android.resource://com.room/raw/sample";
 	public static final String DAY4_VIDEO = "android.resource://com.room/raw/sample";
 	public static final String DAY5_VIDEO = "android.resource://com.room/raw/sample";
