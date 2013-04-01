@@ -164,6 +164,7 @@ public class PStatues extends SSceneActivity
 		if(Global.getCurrentDay()!=2)
 		{
 			setText(box.desc,TextType.TEXT_SUBTITLE,true);
+			MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 			return;
 		}
 		

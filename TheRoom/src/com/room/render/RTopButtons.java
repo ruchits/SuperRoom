@@ -28,6 +28,14 @@ public class RTopButtons
 		poiImage.setPosition(0.8f, 0.7f);
 		
 		poiImage.setVisible(false);
+		
+		
+		cheatImage = new RScreenImage(
+				RTextureLoader.getInstance().getTextureID("ui_cheat"));
+		cheatImage.setSize(0.3f);
+		cheatImage.setPosition(-0.85f, 0.75f);
+		
+		cheatImage.setVisible(true);		
 	}
 	
 	public boolean processTouchEvent(MotionEvent event)
@@ -53,6 +61,13 @@ public class RTopButtons
 			return true;
 		}
 		
+		if(cheatImage.containsPoint(glX, glY))
+		{
+			int nextDay = (Global.getCurrentDay()==5)? 1:Global.getCurrentDay()+1;
+			Global.setDay(nextDay);
+			return true;
+		}		
+		
 		return false;
 	}
 	
@@ -73,9 +88,11 @@ public class RTopButtons
 	public void draw()
 	{
 		poiImage.draw();
+		cheatImage.draw();
 	}
 	
 	private RScreenImage poiImage;
+	private RScreenImage cheatImage;
 	private String poiName;
 	
 	private static RTopButtons instance;

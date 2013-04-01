@@ -104,6 +104,7 @@ public class RTextureLoader
 		textureID.put("joystick_knob", loadCompressedTexture("joystick_knob",true,true,true));
 		textureID.put("joystick_ring", loadCompressedTexture("joystick_ring",true,true,true));
 		textureID.put("ui_poi", loadCompressedTexture("ui_poi",true,true,true));
+		textureID.put("ui_cheat", loadCompressedTexture("ui_cheat",true,true,true));
 		
 		if(!Global.DEBUG_NO_DECALS)
 		{		

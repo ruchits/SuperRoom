@@ -118,6 +118,7 @@ public class PDeadMan extends SSceneActivity
 		}
 		
 		setText(box.desc,TextType.TEXT_SUBTITLE,true);
+		MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 	
 	}
 	
@@ -130,6 +131,7 @@ public class PDeadMan extends SSceneActivity
 		{
 			if (Day1.isCellphoneRinging && box.name.equals("body") && itemInUse.getID().equals("knife"))
 			{
+				MSoundManager.getInstance().playLongSoundEffect(R.raw.deadman_cut, false);
 				Day1.isCellphoneRevealed = true;
 				updateLayoutAndBackground();
 				return true;

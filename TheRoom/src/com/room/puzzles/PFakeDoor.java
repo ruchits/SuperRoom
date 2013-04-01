@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.room.Global.TextType;
 import com.room.R;
 import com.room.media.MPeepholeVideoActivity;
+import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
@@ -34,5 +35,6 @@ public class PFakeDoor extends SSceneActivity
 		
 		Log.d("BOXCLICK",box.name);		
 		setText(box.desc,TextType.TEXT_SUBTITLE,true);
+		MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 	}
 }

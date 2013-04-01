@@ -48,7 +48,7 @@ public class PJournal extends SSceneActivity {
 		// TODO: 	This will be removed from here in the future.
 		//			addJournalEntry() is responsible for adding any entry to a player's journal.
 		journalEntries = new SparseArray<UPair<Integer, Integer>>();
-		journalEntries.put(1, new UPair<Integer, Integer>(R.drawable.journal_day1_1, R.drawable.journal_day1_2));
+		journalEntries.put(1, new UPair<Integer, Integer>(R.drawable.journal_day1_1_b, R.drawable.journal_day1_2_b));
 		journalEntries.put(2, new UPair<Integer, Integer>(R.drawable.journal_day2_1, R.drawable.journal_day2_2));
 		journalEntries.put(3, new UPair<Integer, Integer>(R.drawable.journal_day3_1, R.drawable.journal_day3_2));
 		journalEntries.put(4, new UPair<Integer, Integer>(R.drawable.journal_day4_1, R.drawable.journal_day4_2));

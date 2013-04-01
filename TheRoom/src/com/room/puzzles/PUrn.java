@@ -10,6 +10,7 @@ import com.room.R;
 import com.room.Global.TextType;
 import com.room.days.Day1;
 import com.room.item.IItemManager;
+import com.room.media.MSoundManager;
 import com.room.scene.SLayout;
 import com.room.scene.SLayoutLoader;
 import com.room.scene.SSceneActivity;
@@ -53,7 +54,8 @@ public class PUrn extends SSceneActivity
 			}
 		}
 
-		setText(box.desc,TextType.TEXT_SUBTITLE,true);	
+		setText(box.desc,TextType.TEXT_SUBTITLE,true);
+		MSoundManager.getInstance().playSoundEffect(R.raw.tick);
 	}
 	
 	private Bitmap knifeBmp;

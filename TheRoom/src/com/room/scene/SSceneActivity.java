@@ -353,7 +353,10 @@ public class SSceneActivity extends Activity
 				if (IItemMenu.itemInUse != null && showInventoryIcon) {
 					success = onBoxDownWithItemSel(selectedBox, event);
 					if (!success)
+					{
+						MSoundManager.getInstance().playLongSoundEffect(R.raw.invalid_item, false);							
 						setText(DEFAULT_ITEMUSE_TEXT, TextType.TEXT_SUBTITLE, true);
+					}
 					
 					deselectItem();
 				}		
@@ -483,6 +486,7 @@ public class SSceneActivity extends Activity
     protected void showItemPickUpModal(String itemID)
     {
     	MSoundManager.getInstance().playSoundEffect(R.raw.tick);
+    	MSoundManager.getInstance().playLongSoundEffect(R.raw.item_pickup, false);
     	Item item = IItemManager.getInstance().getItemFromPool(itemID);
     	itemPickedUp = item;
     	repaint();
