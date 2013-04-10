@@ -5,6 +5,8 @@ import android.content.SharedPreferences.Editor;
 
 public class OptionManager {
 	
+	//
+	// Option related
 	public static final String MUSIC_ON = "music_on";
 	public static final String SOUND_ON = "sound_on"; //sound effects
 	public static final String MASTER_VOLUME = "mastervolume";
@@ -13,6 +15,11 @@ public class OptionManager {
 	public static final float MUSIC_VOLUME_DEF = 1.0f;
 	public static final String SOUND_VOLUME = "soundvolume";
 	public static final float SOUND_VOLUME_DEF = 1.0f;
+	
+	//
+	// Others
+	public static final String HIGHEST_STAGE = "highest_stage";
+	public static final int HIGHEST_STAGE_DEF = 5; //TODO: Change to 1 later
 	
 	static SharedPreferences pref;
 	static Editor editor;
@@ -54,6 +61,11 @@ public class OptionManager {
 		return pref.getFloat(SOUND_VOLUME,SOUND_VOLUME_DEF);
 	}
 	
+	public static int getHighestStage()
+	{
+		return pref.getInt(HIGHEST_STAGE, HIGHEST_STAGE_DEF);
+	}
+	
 	public static void setMasterVolume(float volume)
 	{
 		editor.putFloat(MASTER_VOLUME, volume);
@@ -70,5 +82,11 @@ public class OptionManager {
 	{
 		editor.putFloat(SOUND_VOLUME, volume);
 		editor.commit();
-	}	
+	}
+	
+	public static void setHighestStage(int stage)
+	{
+		editor.putInt(HIGHEST_STAGE, stage);
+		editor.commit();
+	}
 }

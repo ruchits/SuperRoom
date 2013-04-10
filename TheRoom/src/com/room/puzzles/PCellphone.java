@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 
 import com.room.Global;
 import com.room.Global.TextType;
+import com.room.OptionManager;
 import com.room.R;
 import com.room.item.IItemMenu;
 import com.room.media.MSoundManager;
@@ -59,6 +60,9 @@ public class PCellphone extends SSceneActivity
 				
 				//end day 1
 				Global.setDay(2);
+				if ( OptionManager.getHighestStage() < 2 ) {
+					 OptionManager.setHighestStage(2);
+				}
 				MVideoActivity.videoToPlay = MVideoActivity.DAY2_VIDEO;
 				Intent intent = new Intent(this,MVideoActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
